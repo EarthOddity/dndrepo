@@ -5,7 +5,7 @@
 As students ourselves, we noticed a need for a platform that would enable people to access teaching materials, share notes and presentations from different courses and semesters, 
 facilitating the overall knowledge sharing and learning process. 
 
-Therefore, we came up with an idea to create a student community, a common space where students can share knowledge and support each other.
+Therefore, we came up with an idea to create a student community, a common space where students can share knowledge and support each other by finding their StudyBuddy.
 
 ### Users  :smirk_cat:
 
