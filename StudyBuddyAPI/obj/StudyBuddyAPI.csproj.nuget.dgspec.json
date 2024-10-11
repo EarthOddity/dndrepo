@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\sergi\\OneDrive - ViaUC\\College\\4th smester\\SEP4\\dndrepo\\StudyBuddyAPI\\StudyBuddyAPI.csproj": {}
+    "C:\\Users\\aleja\\Documents\\GitHub\\dndrepo\\StudyBuddyAPI\\StudyBuddyAPI.csproj": {}
   },
   "projects": {
-    "C:\\Users\\sergi\\OneDrive - ViaUC\\College\\4th smester\\SEP4\\dndrepo\\StudyBuddyAPI\\StudyBuddyAPI.csproj": {
+    "C:\\Users\\aleja\\Documents\\GitHub\\dndrepo\\StudyBuddyAPI\\StudyBuddyAPI.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\sergi\\OneDrive - ViaUC\\College\\4th smester\\SEP4\\dndrepo\\StudyBuddyAPI\\StudyBuddyAPI.csproj",
+        "projectUniqueName": "C:\\Users\\aleja\\Documents\\GitHub\\dndrepo\\StudyBuddyAPI\\StudyBuddyAPI.csproj",
         "projectName": "StudyBuddyAPI",
-        "projectPath": "C:\\Users\\sergi\\OneDrive - ViaUC\\College\\4th smester\\SEP4\\dndrepo\\StudyBuddyAPI\\StudyBuddyAPI.csproj",
-        "packagesPath": "C:\\Users\\sergi\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\sergi\\OneDrive - ViaUC\\College\\4th smester\\SEP4\\dndrepo\\StudyBuddyAPI\\obj\\",
+        "projectPath": "C:\\Users\\aleja\\Documents\\GitHub\\dndrepo\\StudyBuddyAPI\\StudyBuddyAPI.csproj",
+        "packagesPath": "C:\\Users\\aleja\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\aleja\\Documents\\GitHub\\dndrepo\\StudyBuddyAPI\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\sergi\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\aleja\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
@@ -71,7 +71,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.403/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.401/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
