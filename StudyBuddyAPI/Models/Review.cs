@@ -10,9 +10,4 @@ public class Review
         ReviewText = reviewText;
         Author = author;
     }
-
-    public override string ToString()
-    {
-        return $"Review: {ReviewText}\nAuthor: {Author.Name}";
-    }
 }
