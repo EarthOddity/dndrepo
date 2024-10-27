@@ -487,11 +487,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\sergi\\OneDrive - ViaUC\\College\\4th smester\\SEP4\\dndrepo\\StudyBuddyAPI\\StudyBuddyAPI.csproj",
+      "projectUniqueName": "D:\\DND project\\dndrepo\\StudyBuddyAPI\\StudyBuddyAPI.csproj",
       "projectName": "StudyBuddyAPI",
-      "projectPath": "C:\\Users\\sergi\\OneDrive - ViaUC\\College\\4th smester\\SEP4\\dndrepo\\StudyBuddyAPI\\StudyBuddyAPI.csproj",
+      "projectPath": "D:\\DND project\\dndrepo\\StudyBuddyAPI\\StudyBuddyAPI.csproj",
       "packagesPath": "C:\\Users\\sergi\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\sergi\\OneDrive - ViaUC\\College\\4th smester\\SEP4\\dndrepo\\StudyBuddyAPI\\obj\\",
+      "outputPath": "D:\\DND project\\dndrepo\\StudyBuddyAPI\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\sergi\\AppData\\Roaming\\NuGet\\NuGet.Config"
