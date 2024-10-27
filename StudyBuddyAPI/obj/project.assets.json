@@ -482,19 +482,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\48663\\.nuget\\packages\\": {}
+    "C:\\Users\\sergi\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Dania\\DND\\dndrepo\\StudyBuddyAPI\\StudyBuddyAPI.csproj",
+      "projectUniqueName": "D:\\DND project\\dndrepo\\StudyBuddyAPI\\StudyBuddyAPI.csproj",
       "projectName": "StudyBuddyAPI",
-      "projectPath": "C:\\Dania\\DND\\dndrepo\\StudyBuddyAPI\\StudyBuddyAPI.csproj",
-      "packagesPath": "C:\\Users\\48663\\.nuget\\packages\\",
-      "outputPath": "C:\\Dania\\DND\\dndrepo\\StudyBuddyAPI\\obj\\",
+      "projectPath": "D:\\DND project\\dndrepo\\StudyBuddyAPI\\StudyBuddyAPI.csproj",
+      "packagesPath": "C:\\Users\\sergi\\.nuget\\packages\\",
+      "outputPath": "D:\\DND project\\dndrepo\\StudyBuddyAPI\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\48663\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "C:\\Users\\sergi\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
