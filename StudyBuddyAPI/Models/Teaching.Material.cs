@@ -8,9 +8,4 @@ public class TeachingMaterial
         Title = title;
         Description = description;
     }
-
-    public override string ToString()
-    {
-        return $"Title: {Title}\nDescription: {Description}";
-    }
 }
