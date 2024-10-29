@@ -1,0 +1,36 @@
+### Get all students
+GET http://localhost:5044/api/Student
+Accept: application/json
+
+### Get student by id
+GET http://localhost:5044/api/Student/2
+Accept: application/json
+
+###Post Student
+
+POST http://localhost:5044/api/Student
+Content-Type: application/json
+
+{
+  "id": 2,
+  "name": "Pepe",
+  "surname": "string",
+  "email": "string",
+  "phoneNumber": 0,
+  "isTutor": false,
+  "language": "string"
+}
+
+###Put Student
+PUT http://localhost:5044/api/Student/1
+Content-Type: application/json
+
+{
+    "isTutor": false,
+    "language": "string",
+    "id": 1,
+    "name": "Pepe",
+    "surname": "string",
+    "email": "string",
+    "phoneNumber": 0
+}
