@@ -36,5 +36,11 @@ public class StudentController: ControllerBase{
         var newStudent = await _studentService.RegisterStudent(student);
         return CreatedAtAction(nameof(GetStudent), new {id = newStudent.id}, newStudent);
     }
+
+    [HttpPut("{id}")]
+    public async Task<ActionResult> UpdateStudent(int id, Student student){
+        await _studentService.UpdateStudent(id, student);
+        return NoContent();
+    }
 }
 
