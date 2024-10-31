@@ -31,6 +31,12 @@ public class StudentController: ControllerBase{
         return Ok(student);
     }
 
+    [HttpGet("name/{name}")]
+    public async Task<ActionResult<IEnumerable<Student>>> GetStudentsByName(string name){
+        var students = await _studentService.GetStudentsByName(name);
+        return Ok(students);
+    }
+
     [HttpPost]
     public async Task<ActionResult<Student>> RegisterStudent(Student student){
         var newStudent = await _studentService.RegisterStudent(student);
@@ -40,6 +46,12 @@ public class StudentController: ControllerBase{
     [HttpPut("{id}")]
     public async Task<ActionResult> UpdateStudent(int id, Student student){
         await _studentService.UpdateStudent(id, student);
+        return NoContent();
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<ActionResult> DeleteStudent(int id){
+        await _studentService.DeleteStudent(id);
         return NoContent();
     }
 }

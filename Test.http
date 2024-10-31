@@ -3,7 +3,11 @@ GET http://localhost:5044/api/Student
 Accept: application/json
 
 ### Get student by id
-GET http://localhost:5044/api/Student/2
+GET http://localhost:5044/api/Student/1
+Accept: application/json
+
+###Get student by name
+GET http://localhost:5044/api/Student/Name/Pepe
 Accept: application/json
 
 ###Post Student
@@ -34,6 +38,10 @@ Content-Type: application/json
     "email": "string",
     "phoneNumber": 0
 }
+
+###Delete Student
+DELETE http://localhost:5044/api/Student/1
+Accept: application/json
 ###Get all moderators
 GET http://localhost:5044/api/Moderator
 Accept: application/json
@@ -61,4 +69,7 @@ PUT http://localhost:5044/api/Moderator/1/assignSection
 Content-Type: application/json
 
 "Materials"
-###
+###Delete Moderator
+DELETE http://localhost:5044/api/Moderator/1
+Accept: application/json
+
