@@ -41,4 +41,13 @@ public class ModeratorService{
         var moderator = moderatorsList.FirstOrDefault(m => m.id == id);
         return Task.FromResult(moderator);
      }
+<<<<<<< HEAD
+=======
+
+     public Task deleteModerator(int id){
+        var moderator = moderatorsList.FirstOrDefault(m => m.id == id);
+        moderatorsList.Remove(moderator);
+        return Task.CompletedTask;
+     }
+>>>>>>> Sergio
 }

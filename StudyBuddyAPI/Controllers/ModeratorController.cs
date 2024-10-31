@@ -45,4 +45,13 @@ public class ModeratorController: ControllerBase{
         return NoContent();
     }
 
+<<<<<<< HEAD
+=======
+    [HttpDelete("{id}")]
+    public async Task<ActionResult> DeleteModerator(int id){
+        await _moderatorService.deleteModerator(id);
+        return NoContent();
+    }
+
+>>>>>>> Sergio
 }

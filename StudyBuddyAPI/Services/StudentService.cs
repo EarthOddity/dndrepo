@@ -34,4 +34,20 @@ public class StudentService{
        
         return Task.CompletedTask;
     }
+<<<<<<< HEAD
+=======
+
+    public Task DeleteStudent(int id)
+    {
+        var student = studentsList.FirstOrDefault(s => s.id == id);
+        studentsList.Remove(student);
+        return Task.CompletedTask;
+    }
+
+    public Task<IEnumerable<Student>> GetStudentsByName(string name)
+    {
+        var students = studentsList.Where(s => s.name == name);
+        return Task.FromResult(students);
+    }
+>>>>>>> Sergio
 }

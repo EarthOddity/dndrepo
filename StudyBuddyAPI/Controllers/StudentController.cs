@@ -31,6 +31,15 @@ public class StudentController: ControllerBase{
         return Ok(student);
     }
 
+<<<<<<< HEAD
+=======
+    [HttpGet("name/{name}")]
+    public async Task<ActionResult<IEnumerable<Student>>> GetStudentsByName(string name){
+        var students = await _studentService.GetStudentsByName(name);
+        return Ok(students);
+    }
+
+>>>>>>> Sergio
     [HttpPost]
     public async Task<ActionResult<Student>> RegisterStudent(Student student){
         var newStudent = await _studentService.RegisterStudent(student);
@@ -42,5 +51,14 @@ public class StudentController: ControllerBase{
         await _studentService.UpdateStudent(id, student);
         return NoContent();
     }
+<<<<<<< HEAD
+=======
+
+    [HttpDelete("{id}")]
+    public async Task<ActionResult> DeleteStudent(int id){
+        await _studentService.DeleteStudent(id);
+        return NoContent();
+    }
+>>>>>>> Sergio
 }
 
