@@ -3,7 +3,7 @@ public class Bachelor{
 
     public string programName;
 
-    public List<Subject> associatedSubjects;
+   // public List<Subject> associatedSubjects;
     
     public Bachelor(int bachelorID, string name) {
         id = bachelorID;
