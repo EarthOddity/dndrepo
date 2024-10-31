@@ -1,3 +1,5 @@
+
+namespace StudyBuddyAPI.Models;
 public class TeachingMaterial
 {
     public string Title { get; set; }
