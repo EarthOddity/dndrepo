@@ -21,8 +21,19 @@ public class SubjectController : ControllerBase
         return Ok(subjects);
     }
 
-    [HttpGet("{Name}")]
-    public ActionResult<Subject> GetSubjectByName(int name)
+    [HttpGet("{id}")]
+    public ActionResult<Subject> GetSubjectById(int id)
+    {
+        var subject = _subjectService.GetSubjectById(id);
+        if (subject == null)
+        {
+            return NotFound();
+        }
+        return Ok(subject);
+    }
+
+    [HttpGet("name/{name}")]
+    public ActionResult<Subject> GetSubjectByName(string name)
     {
         var subject = _subjectService.GetSubjectByName(name);
         if (subject == null)
@@ -36,20 +47,20 @@ public class SubjectController : ControllerBase
     public ActionResult<Subject> AddSubject(Subject subject)
     {
         _subjectService.AddSubject(subject);
-        return CreatedAtAction(nameof(GetSubjectById), new { id = subject.Id }, subject);
+        return CreatedAtAction(nameof(GetSubjectByName), new { name = subject.Name }, subject);
     }
 
-    [HttpPut]
+    [HttpPut("{id}")]
     public ActionResult UpdateSubject(Subject subject)
     {
         _subjectService.UpdateSubject(subject);
         return NoContent();
     }
 
-    [HttpDelete("{Name}")]
-    public ActionResult DeleteSubject(string name)
+    [HttpDelete("{id}")]
+    public ActionResult DeleteSubject(int Id)
     {
-        bool isDeleted = _subjectService.DeleteSubject(id);
+        bool isDeleted = _subjectService.DeleteSubject(Id);
         if (!isDeleted)
         {
             return NotFound();

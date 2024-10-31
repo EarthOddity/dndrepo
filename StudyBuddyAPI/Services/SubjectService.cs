@@ -2,10 +2,15 @@ namespace StudyBuddyAPI.models;
 
 public class SubjectService
 {
-    private List<Subject> subjects = new List<Subject>();
+    private static List<Subject> subjects = new List<Subject>();
     public void AddSubject(Subject subject)
     {
         subjects.Add(subject);
+    }
+
+    public Subject GetSubjectById(int id)
+    {
+        return subjects.FirstOrDefault(s => s.Id == id);
     }
     public Subject GetSubjectByName(string name)
     {
@@ -25,9 +30,9 @@ public class SubjectService
             subject.Description = updatedSubject.Description;
         }
     }
-    public bool DeleteSubject(string name)
+    public bool DeleteSubject(int Id)
     {
-        var subject = GetSubjectByName(name);
+        var subject = GetSubjectById(Id);
         if (subject != null)
         {
             subjects.Remove(subject);
