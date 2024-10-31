@@ -32,3 +32,14 @@ D:\DND project\dndrepo\StudyBuddyAPI\obj\Debug\net8.0\refint\StudyBuddyAPI.dll
 D:\DND project\dndrepo\StudyBuddyAPI\obj\Debug\net8.0\StudyBuddyAPI.pdb
 D:\DND project\dndrepo\StudyBuddyAPI\obj\Debug\net8.0\StudyBuddyAPI.genruntimeconfig.cache
 D:\DND project\dndrepo\StudyBuddyAPI\obj\Debug\net8.0\ref\StudyBuddyAPI.dll
+C:\Users\aleja\Documents\GitHub\dndrepo\StudyBuddyAPI\obj\Debug\net8.0\StudyBuddyAPI.csproj.AssemblyReference.cache
+C:\Users\aleja\Documents\GitHub\dndrepo\StudyBuddyAPI\obj\Debug\net8.0\StudyBuddyAPI.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\aleja\Documents\GitHub\dndrepo\StudyBuddyAPI\obj\Debug\net8.0\StudyBuddyAPI.AssemblyInfoInputs.cache
+C:\Users\aleja\Documents\GitHub\dndrepo\StudyBuddyAPI\obj\Debug\net8.0\StudyBuddyAPI.AssemblyInfo.cs
+C:\Users\aleja\Documents\GitHub\dndrepo\StudyBuddyAPI\obj\Debug\net8.0\StudyBuddyAPI.csproj.CoreCompileInputs.cache
+C:\Users\aleja\Documents\GitHub\dndrepo\StudyBuddyAPI\obj\Debug\net8.0\StudyBuddyAPI.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\aleja\Documents\GitHub\dndrepo\StudyBuddyAPI\obj\Debug\net8.0\StudyBuddyAPI.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\aleja\Documents\GitHub\dndrepo\StudyBuddyAPI\obj\Debug\net8.0\StudyBuddyAPI.sourcelink.json
+C:\Users\aleja\Documents\GitHub\dndrepo\StudyBuddyAPI\obj\Debug\net8.0\StudyBuddyAPI.dll
+C:\Users\aleja\Documents\GitHub\dndrepo\StudyBuddyAPI\obj\Debug\net8.0\refint\StudyBuddyAPI.dll
+C:\Users\aleja\Documents\GitHub\dndrepo\StudyBuddyAPI\obj\Debug\net8.0\StudyBuddyAPI.pdb
