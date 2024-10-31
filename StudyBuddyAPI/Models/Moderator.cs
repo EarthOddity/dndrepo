@@ -1,3 +1,4 @@
+namespace StudyBuddyAPI.Models;
 public class Moderator: User
 {
     public string accessLevel { get; set; }

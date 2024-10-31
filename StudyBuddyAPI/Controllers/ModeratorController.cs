@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using StudyBuddyAPI.models;
 using System.Collections.Generic;
+using StudyBuddyAPI.Models;
+using StudyBuddyAPI.Services;
 namespace StudyBuddyAPI;
 [Route("api/[controller]")]
 [ApiController]

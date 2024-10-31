@@ -1,4 +1,5 @@
 namespace StudyBuddyAPI.models;
+using StudyBuddyAPI.Models;
 public class StudentService{
     private static List<Student> studentsList = new List<Student>();
 
