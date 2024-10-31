@@ -34,8 +34,6 @@ public class StudentService{
        
         return Task.CompletedTask;
     }
-<<<<<<< HEAD
-=======
 
     public Task DeleteStudent(int id)
     {
@@ -49,5 +47,4 @@ public class StudentService{
         var students = studentsList.Where(s => s.name == name);
         return Task.FromResult(students);
     }
->>>>>>> Sergio
 }
