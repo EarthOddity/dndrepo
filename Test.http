@@ -3,15 +3,11 @@ GET http://localhost:5044/api/Student
 Accept: application/json
 
 ### Get student by id
-<<<<<<< HEAD
-GET http://localhost:5044/api/Student/2
-=======
 GET http://localhost:5044/api/Student/1
 Accept: application/json
 
 ###Get student by name
 GET http://localhost:5044/api/Student/Name/Pepe
->>>>>>> Sergio
 Accept: application/json
 
 ###Post Student
@@ -42,13 +38,10 @@ Content-Type: application/json
     "email": "string",
     "phoneNumber": 0
 }
-<<<<<<< HEAD
-=======
 
 ###Delete Student
 DELETE http://localhost:5044/api/Student/1
 Accept: application/json
->>>>>>> Sergio
 ###Get all moderators
 GET http://localhost:5044/api/Moderator
 Accept: application/json
@@ -76,11 +69,25 @@ PUT http://localhost:5044/api/Moderator/1/assignSection
 Content-Type: application/json
 
 "Materials"
-<<<<<<< HEAD
-###
-=======
 ###Delete Moderator
 DELETE http://localhost:5044/api/Moderator/1
 Accept: application/json
 
->>>>>>> Sergio
+###Post TeachingMaterial
+POST http://localhost:5044/api/TeachingMaterial
+Content-Type: application/json
+
+{
+    "title": "Chemistry 101",
+    "description": "An introduction to basic chemistry concepts.",
+    "isApproved": true,
+    "author": {
+        "isTutor": false,
+        "language": "English",
+        "bachelor": null, // Add appropriate Bachelor object if needed
+        "semester": 1,
+        "subjects": [],
+        "savedMaterials": [],
+        "writtenReviews": []
+    }
+}
