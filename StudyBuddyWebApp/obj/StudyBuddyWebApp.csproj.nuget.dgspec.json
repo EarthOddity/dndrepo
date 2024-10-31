@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\DND project\\dndrepo\\studyBuddyWebAPP\\StudyBuddyWebApp.csproj": {}
+    "D:\\DND project\\dndrepo\\StudyBuddyWebApp\\StudyBuddyWebApp.csproj": {}
   },
   "projects": {
-    "D:\\DND project\\dndrepo\\studyBuddyWebAPP\\StudyBuddyWebApp.csproj": {
+    "D:\\DND project\\dndrepo\\StudyBuddyWebApp\\StudyBuddyWebApp.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\DND project\\dndrepo\\studyBuddyWebAPP\\StudyBuddyWebApp.csproj",
+        "projectUniqueName": "D:\\DND project\\dndrepo\\StudyBuddyWebApp\\StudyBuddyWebApp.csproj",
         "projectName": "StudyBuddyWebApp",
-        "projectPath": "D:\\DND project\\dndrepo\\studyBuddyWebAPP\\StudyBuddyWebApp.csproj",
+        "projectPath": "D:\\DND project\\dndrepo\\StudyBuddyWebApp\\StudyBuddyWebApp.csproj",
         "packagesPath": "C:\\Users\\sergi\\.nuget\\packages\\",
-        "outputPath": "D:\\DND project\\dndrepo\\studyBuddyWebAPP\\obj\\",
+        "outputPath": "D:\\DND project\\dndrepo\\StudyBuddyWebApp\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\sergi\\AppData\\Roaming\\NuGet\\NuGet.Config"
