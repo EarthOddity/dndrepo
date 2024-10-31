@@ -8,6 +8,5 @@ public class Student : User {
         this.language = language;
         //this.bachelor = bachelor;
     }
-    //Hola
 
 }
