@@ -12,7 +12,7 @@ POST http://localhost:5044/api/Student
 Content-Type: application/json
 
 {
-  "id": 2,
+  "id": 1,
   "name": "Pepe",
   "surname": "string",
   "email": "string",
@@ -26,7 +26,7 @@ PUT http://localhost:5044/api/Student/1
 Content-Type: application/json
 
 {
-    "isTutor": false,
+    "isTutor": true,
     "language": "string",
     "id": 1,
     "name": "Pepe",
