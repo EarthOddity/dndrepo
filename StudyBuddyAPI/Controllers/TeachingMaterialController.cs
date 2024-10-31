@@ -1,7 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using StudyBuddyAPI;
 using StudyBuddyAPI.Services; 
-using System.Collections.Generic;
 
 namespace StudyBuddyAPI.Controllers
 {
@@ -11,20 +9,17 @@ namespace StudyBuddyAPI.Controllers
     {
         private readonly TeachingMaterialService _teachingMaterialService;
 
-        // Constructor Injection
         public TeachingMaterialController(TeachingMaterialService teachingMaterialService)
         {
             _teachingMaterialService = teachingMaterialService;
         }
 
-        // GET: api/TeachingMaterial
         [HttpGet]
         public ActionResult<List<TeachingMaterial>> GetAllMaterials()
         {
             return Ok(_teachingMaterialService.GetAllMaterials());
         }
 
-        // GET: api/TeachingMaterial/{title}
         [HttpGet("{title}")]
         public ActionResult<TeachingMaterial> GetMaterialByTitle(string title)
         {
@@ -35,7 +30,6 @@ namespace StudyBuddyAPI.Controllers
             return Ok(material);
         }
 
-        // POST: api/TeachingMaterial
         [HttpPost]
         public ActionResult<TeachingMaterial> AddMaterial([FromBody] TeachingMaterial material)
         {
@@ -43,7 +37,6 @@ namespace StudyBuddyAPI.Controllers
             return CreatedAtAction(nameof(GetMaterialByTitle), new { title = material.Title }, material);
         }
 
-        // PUT: api/TeachingMaterial/{title}
         [HttpPut("{title}")]
         public ActionResult UpdateMaterial(string title, [FromBody] TeachingMaterial updatedMaterial)
         {
@@ -54,7 +47,6 @@ namespace StudyBuddyAPI.Controllers
             return NoContent();
         }
 
-        // DELETE: api/TeachingMaterial/{title}
         [HttpDelete("{title}")]
         public ActionResult DeleteMaterial(string title)
         {
