@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 using StudyBuddyAPI.models;
+using StudyBuddyAPI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +10,7 @@ builder.Services.AddControllers();
 builder.Services.AddSingleton<StudentService>();
 builder.Services.AddSingleton<ModeratorService>();
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSingleton<TeachingMaterialService>();
 builder.Services.AddSwaggerGen();
 
 
