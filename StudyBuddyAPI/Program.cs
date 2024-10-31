@@ -2,20 +2,21 @@ using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 using StudyBuddyAPI;
 using StudyBuddyAPI.Models;
 using StudyBuddyAPI.Services;
+using StudyBuddyAPI.models;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddControllers();
-// builder.Services.AddSingleton<StudentService>();
-// builder.Services.AddSingleton<ModeratorService>();
+builder.Services.AddSingleton<StudentService>();
+builder.Services.AddSingleton<ModeratorService>();
+builder.Services.AddControllers();
 builder.Services.AddSingleton<CalendarService>();
 builder.Services.AddSingleton<EventService>();
 builder.Services.AddSingleton<BachelorService>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
 
 var app = builder.Build();
 

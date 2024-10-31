@@ -1,9 +1,13 @@
-namespace StudyBuddyAPI.Models
+public class Moderator: User
 {
-    public class Moderator : User
+    public string accessLevel { get; set; }
+    public List<string> assignedSections { get; set; }
+    public List<Review> bannedReviews { get; set; }
+
+    public Moderator(int id, string name, string surname, string email, int phoneNumber, string accessLevel, List<string> assignedSections, List<Review> bannedReviews ): base(id, name, surname, email, phoneNumber)
     {
-        public List<Review> NotApprovedReviews { get; set; }
-
-
+        this.accessLevel = accessLevel;
+        this.assignedSections = assignedSections;
+        this.bannedReviews = bannedReviews;
     }
 }
