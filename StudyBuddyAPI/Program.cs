@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
-using StudyBuddyAPI.models;
 
 var builder = WebApplication.CreateBuilder(args);
 
