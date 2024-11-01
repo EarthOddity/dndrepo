@@ -32,3 +32,37 @@ D:\DND project\dndrepo\StudyBuddyAPI\obj\Debug\net8.0\refint\StudyBuddyAPI.dll
 D:\DND project\dndrepo\StudyBuddyAPI\obj\Debug\net8.0\StudyBuddyAPI.pdb
 D:\DND project\dndrepo\StudyBuddyAPI\obj\Debug\net8.0\StudyBuddyAPI.genruntimeconfig.cache
 D:\DND project\dndrepo\StudyBuddyAPI\obj\Debug\net8.0\ref\StudyBuddyAPI.dll
+C:\Users\aleja\Documents\GitHub\dndrepo\StudyBuddyAPI\obj\Debug\net8.0\StudyBuddyAPI.csproj.AssemblyReference.cache
+C:\Users\aleja\Documents\GitHub\dndrepo\StudyBuddyAPI\obj\Debug\net8.0\StudyBuddyAPI.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\aleja\Documents\GitHub\dndrepo\StudyBuddyAPI\obj\Debug\net8.0\StudyBuddyAPI.AssemblyInfoInputs.cache
+C:\Users\aleja\Documents\GitHub\dndrepo\StudyBuddyAPI\obj\Debug\net8.0\StudyBuddyAPI.AssemblyInfo.cs
+C:\Users\aleja\Documents\GitHub\dndrepo\StudyBuddyAPI\obj\Debug\net8.0\StudyBuddyAPI.csproj.CoreCompileInputs.cache
+C:\Users\aleja\Documents\GitHub\dndrepo\StudyBuddyAPI\obj\Debug\net8.0\StudyBuddyAPI.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\aleja\Documents\GitHub\dndrepo\StudyBuddyAPI\obj\Debug\net8.0\StudyBuddyAPI.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\aleja\Documents\GitHub\dndrepo\StudyBuddyAPI\obj\Debug\net8.0\StudyBuddyAPI.sourcelink.json
+C:\Users\aleja\Documents\GitHub\dndrepo\StudyBuddyAPI\obj\Debug\net8.0\StudyBuddyAPI.dll
+C:\Users\aleja\Documents\GitHub\dndrepo\StudyBuddyAPI\obj\Debug\net8.0\refint\StudyBuddyAPI.dll
+C:\Users\aleja\Documents\GitHub\dndrepo\StudyBuddyAPI\obj\Debug\net8.0\StudyBuddyAPI.pdb
+C:\Users\aleja\Documents\GitHub\dndrepo\StudyBuddyAPI\bin\Debug\net8.0\appsettings.Development.json
+C:\Users\aleja\Documents\GitHub\dndrepo\StudyBuddyAPI\bin\Debug\net8.0\appsettings.json
+C:\Users\aleja\Documents\GitHub\dndrepo\StudyBuddyAPI\bin\Debug\net8.0\StudyBuddyAPI.exe
+C:\Users\aleja\Documents\GitHub\dndrepo\StudyBuddyAPI\bin\Debug\net8.0\StudyBuddyAPI.deps.json
+C:\Users\aleja\Documents\GitHub\dndrepo\StudyBuddyAPI\bin\Debug\net8.0\StudyBuddyAPI.runtimeconfig.json
+C:\Users\aleja\Documents\GitHub\dndrepo\StudyBuddyAPI\bin\Debug\net8.0\StudyBuddyAPI.dll
+C:\Users\aleja\Documents\GitHub\dndrepo\StudyBuddyAPI\bin\Debug\net8.0\StudyBuddyAPI.pdb
+C:\Users\aleja\Documents\GitHub\dndrepo\StudyBuddyAPI\bin\Debug\net8.0\Microsoft.AspNetCore.OpenApi.dll
+C:\Users\aleja\Documents\GitHub\dndrepo\StudyBuddyAPI\bin\Debug\net8.0\Microsoft.OpenApi.dll
+C:\Users\aleja\Documents\GitHub\dndrepo\StudyBuddyAPI\bin\Debug\net8.0\Swashbuckle.AspNetCore.Swagger.dll
+C:\Users\aleja\Documents\GitHub\dndrepo\StudyBuddyAPI\bin\Debug\net8.0\Swashbuckle.AspNetCore.SwaggerGen.dll
+C:\Users\aleja\Documents\GitHub\dndrepo\StudyBuddyAPI\bin\Debug\net8.0\Swashbuckle.AspNetCore.SwaggerUI.dll
+C:\Users\aleja\Documents\GitHub\dndrepo\StudyBuddyAPI\obj\Debug\net8.0\staticwebassets.build.json
+C:\Users\aleja\Documents\GitHub\dndrepo\StudyBuddyAPI\obj\Debug\net8.0\staticwebassets.development.json
+C:\Users\aleja\Documents\GitHub\dndrepo\StudyBuddyAPI\obj\Debug\net8.0\staticwebassets\msbuild.StudyBuddyAPI.Microsoft.AspNetCore.StaticWebAssets.props
+C:\Users\aleja\Documents\GitHub\dndrepo\StudyBuddyAPI\obj\Debug\net8.0\staticwebassets\msbuild.build.StudyBuddyAPI.props
+C:\Users\aleja\Documents\GitHub\dndrepo\StudyBuddyAPI\obj\Debug\net8.0\staticwebassets\msbuild.buildMultiTargeting.StudyBuddyAPI.props
+C:\Users\aleja\Documents\GitHub\dndrepo\StudyBuddyAPI\obj\Debug\net8.0\staticwebassets\msbuild.buildTransitive.StudyBuddyAPI.props
+C:\Users\aleja\Documents\GitHub\dndrepo\StudyBuddyAPI\obj\Debug\net8.0\staticwebassets.pack.json
+C:\Users\aleja\Documents\GitHub\dndrepo\StudyBuddyAPI\obj\Debug\net8.0\scopedcss\bundle\StudyBuddyAPI.styles.css
+C:\Users\aleja\Documents\GitHub\dndrepo\StudyBuddyAPI\obj\Debug\net8.0\StudyBud.7E21F1BE.Up2Date
+C:\Users\aleja\Documents\GitHub\dndrepo\StudyBuddyAPI\obj\Debug\net8.0\StudyBuddyAPI.genruntimeconfig.cache
+C:\Users\aleja\Documents\GitHub\dndrepo\StudyBuddyAPI\obj\Debug\net8.0\ref\StudyBuddyAPI.dll

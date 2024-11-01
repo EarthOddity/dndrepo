@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
-using StudyBuddyAPI.models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,7 +8,16 @@ builder.Services.AddControllers();
 builder.Services.AddSingleton<StudentService>();
 builder.Services.AddSingleton<ModeratorService>();
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSingleton<SubjectService>();
+
 builder.Services.AddSwaggerGen();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowBlazorClient", builder =>
+        builder.WithOrigins("http://localhost:5044") // Blazor app URL
+               .AllowAnyMethod()
+               .AllowAnyHeader());
+});
 
 
 var app = builder.Build();
@@ -29,7 +37,7 @@ var summaries = new[]
 
 app.MapGet("/weatherforecast", () =>
 {
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
+    var forecast = Enumerable.Range(1, 5).Select(index =>
         new WeatherForecast
         (
             DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
@@ -42,7 +50,7 @@ app.MapGet("/weatherforecast", () =>
 .WithName("GetWeatherForecast")
 .WithOpenApi();
 app.UseHttpsRedirection();
-
+app.UseCors("AllowBlazorClient"); // Apply CORS policy
 app.UseAuthorization();
 
 app.MapControllers();
