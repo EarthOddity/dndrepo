@@ -1,4 +1,3 @@
-namespace StudyBuddyAPI.Services
 {
     public class TeachingMaterialService
     {
