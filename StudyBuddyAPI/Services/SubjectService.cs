@@ -1,4 +1,3 @@
-namespace StudyBuddyAPI.models;
 
 public class SubjectService
 {

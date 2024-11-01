@@ -1,5 +1,3 @@
-namespace StudyBuddyAPI.models;
-using StudyBuddyAPI.Models;
 
 public class ModeratorService{
     private static List<Moderator> moderatorsList = new List<Moderator>();

@@ -1,9 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
-using StudyBuddyAPI.models;
 using System.Collections.Generic;
 using StudyBuddyAPI.Models;
 
-namespace StudyBuddyAPI;
 [Route("api/[controller]")]
 [ApiController]
 public class ModeratorController: ControllerBase{
