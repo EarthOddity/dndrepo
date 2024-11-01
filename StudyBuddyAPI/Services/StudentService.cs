@@ -1,14 +1,15 @@
 public class StudentService{
     private static List<Student> studentsList = new List<Student>();
 
-    static StudentService(){
+    static StudentService()
+    {
     }
-      public Task<IEnumerable<Student>> GetAllStudents()
+    public Task<IEnumerable<Student>> GetAllStudents()
     {
         return Task.FromResult(studentsList.AsEnumerable());
     }
 
-     public Task<Student> GetStudentById(int id)
+    public Task<Student> GetStudentById(int id)
     {
         var student = studentsList.FirstOrDefault(s => s.id == id);
         return Task.FromResult(student);
@@ -22,7 +23,8 @@ public class StudentService{
     public Task UpdateStudent(int id, Student student)
     {
         var studentToUpdate = studentsList.FirstOrDefault(s => s.id == id);
-        if(studentToUpdate != null){
+        if (studentToUpdate != null)
+        {
             studentToUpdate.name = student.name;
             studentToUpdate.surname = student.surname;
             studentToUpdate.email = student.email;
@@ -30,7 +32,7 @@ public class StudentService{
             studentToUpdate.isTutor = student.isTutor;
             studentToUpdate.language = student.language;
         }
-       
+
         return Task.CompletedTask;
     }
 

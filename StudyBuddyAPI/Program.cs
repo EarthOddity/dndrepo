@@ -7,6 +7,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddSingleton<StudentService>();
 builder.Services.AddSingleton<ModeratorService>();
+builder.Services.AddSingleton<BachelorService>();
+builder.Services.AddSingleton<CalendarService>();
+builder.Services.AddSingleton<EventService>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSingleton<SubjectService>();
 

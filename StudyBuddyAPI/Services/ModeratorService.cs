@@ -4,9 +4,10 @@ public class ModeratorService{
     private static List<Review> reviews = new List<Review>();
 
 
-    static ModeratorService(){
+    static ModeratorService()
+    {
     }
-      public Task<IEnumerable<Moderator>> GetAllModerators()
+    public Task<IEnumerable<Moderator>> GetAllModerators()
     {
         return Task.FromResult(moderatorsList.AsEnumerable());
     }
@@ -28,22 +29,26 @@ public class ModeratorService{
         return Task.CompletedTask;
     }*/
 
-    public Task AssignSection(int id, string section){
+    public Task AssignSection(int id, string section)
+    {
         var moderator = moderatorsList.FirstOrDefault(m => m.id == id);
-        if(moderator != null && !moderator.assignedSections.Contains(section)){
+        if (moderator != null && !moderator.assignedSections.Contains(section))
+        {
             moderator.assignedSections.Add(section);
         }
         return Task.CompletedTask;
     }
 
-     public Task<Moderator> GetModeratorById(int id){
+    public Task<Moderator> GetModeratorById(int id)
+    {
         var moderator = moderatorsList.FirstOrDefault(m => m.id == id);
         return Task.FromResult(moderator);
-     }
+    }
 
-     public Task deleteModerator(int id){
+    public Task deleteModerator(int id)
+    {
         var moderator = moderatorsList.FirstOrDefault(m => m.id == id);
         moderatorsList.Remove(moderator);
         return Task.CompletedTask;
-     }
+    }
 }
