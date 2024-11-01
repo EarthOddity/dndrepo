@@ -1,7 +1,6 @@
 public class BachelorService
 {
     private static List<Bachelor> _bachelorsList = new List<Bachelor>();
-
     public Task<IEnumerable<Bachelor>> GetAllBachelors()
     {
         return Task.FromResult(_bachelorsList.AsEnumerable());
