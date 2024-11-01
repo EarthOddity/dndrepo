@@ -1,5 +1,4 @@
-namespace StudyBuddyAPI.Services
-{
+
     public class ReviewService
     {
         private readonly List<Review> reviews = new List<Review>();
@@ -47,4 +46,4 @@ namespace StudyBuddyAPI.Services
             return true;
         }
     }
-}
+
