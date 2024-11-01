@@ -28,10 +28,9 @@ namespace StudyBuddyAPI.Services
 {
     return materials.Find(m =>
         m.Author != null &&
-        m.Author.IsTutor == author.IsTutor &&
-        m.Author.Language.Equals(author.Language, StringComparison.OrdinalIgnoreCase) &&
-        m.Author.Semester == author.Semester &&
-        m.Author.Bachelor == author.Bachelor
+        m.Author.isTutor == author.isTutor &&
+        m.Author.language.Equals(author.language, StringComparison.OrdinalIgnoreCase) &&
+        m.Author.bachelor == author.bachelor
     );
 }
 
