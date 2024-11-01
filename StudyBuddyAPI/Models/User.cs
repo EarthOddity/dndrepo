@@ -5,6 +5,7 @@ public abstract class User {
     public string email{ get; set; }
     public int phoneNumber { get; set; }
 
+    
     public User(int id, string name, string surname, string email, int phoneNumber){
         this.id = id;
         this.name = name;
