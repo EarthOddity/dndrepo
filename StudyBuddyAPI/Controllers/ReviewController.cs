@@ -32,7 +32,7 @@ namespace StudyBuddyAPI.Controllers
         [HttpGet("Author/{authorId}")]
         public ActionResult<List<Review>> GetReviewsByAuthor(int authorId)
         {
-            var reviews = _reviewService.GetReviewsByAuthor(new Student { Id = authorId });
+            var reviews = _reviewService.GetReviewsByAuthor(new Student { id = authorId });
             return Ok(reviews);
         }
 
