@@ -1,17 +1,18 @@
-public class Calendar{
+public class Calendar
+{
 
-    public int id;
+    public int id { get; set; }
 
-    public int userId;
+    public Student user { get; set; }
 
-    public List<Event> events;
+    public List<Event> events { get; set; }
 
-    public Calendar(int id, int userId) {
-        id = id;
-        userId = userId;
+    public Calendar(int id, Student user)
+    {
+        this.id = id;
+        this.user = user;
+        this.events = new List<Event>(); // initialize to avoid null errors hiuhi
     }
-
-
 
 
 }
