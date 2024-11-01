@@ -11,6 +11,8 @@ builder.Services.AddSingleton<BachelorService>();
 builder.Services.AddSingleton<CalendarService>();
 builder.Services.AddSingleton<EventService>();
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSingleton<SubjectService>();
+
 builder.Services.AddSwaggerGen();
 builder.Services.AddCors(options =>
 {

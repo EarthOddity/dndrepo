@@ -1,5 +1,4 @@
-public class StudentService
-{
+public class StudentService{
     private static List<Student> studentsList = new List<Student>();
 
     static StudentService()

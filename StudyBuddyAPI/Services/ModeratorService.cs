@@ -1,5 +1,5 @@
-public class ModeratorService
-{
+
+public class ModeratorService{
     private static List<Moderator> moderatorsList = new List<Moderator>();
     private static List<Review> reviews = new List<Review>();
 
