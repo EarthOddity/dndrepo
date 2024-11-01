@@ -12,6 +12,13 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSingleton<SubjectService>();
 
 builder.Services.AddSwaggerGen();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowBlazorClient", builder =>
+        builder.WithOrigins("http://localhost:5044") // Blazor app URL
+               .AllowAnyMethod()
+               .AllowAnyHeader());
+});
 
 
 var app = builder.Build();
@@ -44,7 +51,7 @@ app.MapGet("/weatherforecast", () =>
 .WithName("GetWeatherForecast")
 .WithOpenApi();
 app.UseHttpsRedirection();
-
+app.UseCors("AllowBlazorClient"); // Apply CORS policy
 app.UseAuthorization();
 
 app.MapControllers();

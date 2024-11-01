@@ -1,2 +1,6 @@
 StudyBuddyAPI/obj/Debug/net8.0/
 StudyBuddyAPI/bin/Debug/net8.0/
+StudyBuddyWebApp/bin/Debug/net8.0/
+StudyBuddyWebApp/obj/Debug/net8.0/
+StudyBuddyAPI/bin/Debug/net8.0/StudyBuddyAPI.dll
+StudyBuddyAPI/bin/Debug/net8.0/StudyBuddyAPI.exe
