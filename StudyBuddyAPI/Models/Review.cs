@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 public class Review
 {
 
@@ -12,6 +11,3 @@ public class Review
         Author = author;
     }
 }
-=======
-public class Review{}
->>>>>>> Sergio
