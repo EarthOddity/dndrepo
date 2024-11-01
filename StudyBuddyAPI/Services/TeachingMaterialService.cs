@@ -1,5 +1,4 @@
-namespace StudyBuddyAPI.Services
-{
+
     public class TeachingMaterialService
     {
         private readonly List<TeachingMaterial> materials = new List<TeachingMaterial>();
@@ -59,4 +58,3 @@ namespace StudyBuddyAPI.Services
             return true;
         }
     }
-}
