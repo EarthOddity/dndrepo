@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
