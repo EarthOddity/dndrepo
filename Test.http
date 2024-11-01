@@ -3,15 +3,11 @@ GET http://localhost:5044/api/Student
 Accept: application/json
 
 ### Get student by id
-<<<<<<< HEAD
-GET http://localhost:5044/api/Student/2
-=======
 GET http://localhost:5044/api/Student/1
 Accept: application/json
 
 ###Get student by name
 GET http://localhost:5044/api/Student/Name/Pepe
->>>>>>> Sergio
 Accept: application/json
 
 ###Post Student
@@ -26,7 +22,7 @@ Content-Type: application/json
   "email": "string",
   "phoneNumber": 0,
   "isTutor": false,
-  "language": "string"
+  "language": "string",
 }
 
 ###Put Student
@@ -42,13 +38,10 @@ Content-Type: application/json
     "email": "string",
     "phoneNumber": 0
 }
-<<<<<<< HEAD
-=======
 
 ###Delete Student
 DELETE http://localhost:5044/api/Student/1
 Accept: application/json
->>>>>>> Sergio
 ###Get all moderators
 GET http://localhost:5044/api/Moderator
 Accept: application/json
@@ -76,11 +69,98 @@ PUT http://localhost:5044/api/Moderator/1/assignSection
 Content-Type: application/json
 
 "Materials"
-<<<<<<< HEAD
-###
-=======
 ###Delete Moderator
 DELETE http://localhost:5044/api/Moderator/1
 Accept: application/json
 
->>>>>>> Sergio
+"Bachelor"
+###Get Bachelor
+GET http://localhost:5044/api/Bachelor
+Accept: application/json
+
+###Get Bachelor by id
+GET http://localhost:5044/api/Bachelor/1
+Accept: application/json
+
+###Post Bachelor
+POST http://localhost:5044/api/Bachelor
+Content-Type: application/json
+
+{
+    "id": 1,
+    "programName": "Computer Science",
+    "assignedSubjects": 
+}
+
+"Calendar"
+###Get Calendar
+GET http://localhost:5044/api/Calendar
+Accept: application/json
+
+###Get Calendar by id
+GET http://localhost:5044/api/Calendar/1
+Accept: application/json
+
+###Post Calendar
+POST http://localhost:5044/api/Calendar
+Content-Type: application/json
+
+{
+  "id": 1,
+  "user": {
+        "id": 1,
+        "name": "Alice",
+        "surname": "Smith",
+        "email": "alice.smith@example.com",
+        "phoneNumber": 1234567890,
+        "isTutor": true,
+        "language": "English",
+        "bachelor": {
+            "id": 1,
+            "programName": "Computer Science",
+            "associatedSubjects": []
+        }
+    }
+}
+
+
+###Delete Calendar by id
+DELETE http://localhost:5044/api/Calendar/1
+Accept: application/json
+
+
+###Get Event
+GET http://localhost:5044/api/Event
+Accept: application/json
+
+###Post Event
+POST http://localhost:5044/api/Event
+Content-Type: application/json
+
+{
+    "id": 1,
+    "owner": {
+        "id": 101,
+        "name": "Alice",
+        "surname": "Smith",
+        "email": "alice.smith@example.com",
+        "phoneNumber": 1234567890,
+        "isTutor": true,
+        "language": "English",
+        "bachelor": {
+            "id": 1,
+            "programName": "Computer Science",
+            "associatedSubjects": []
+        }
+    },
+    "title": "Study Group Meeting",
+    "description": "A meeting to discuss study materials for the upcoming exam.",
+    "participants": [],
+    "materials": [],
+    "StartTime": "2024-11-05T10:00:00Z",
+    "EndTime": "2024-11-05T12:00:00Z"
+}
+
+### Delete Event by id
+DELETE http://localhost:5044/api/Event/1
+Accept: application/json

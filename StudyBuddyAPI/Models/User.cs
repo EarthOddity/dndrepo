@@ -1,11 +1,14 @@
-public abstract class User {
-    public  int id { get; set; }
+public abstract class User
+{
+    public int id { get; set; }
     public string name { get; set; }
     public string surname { get; set; }
-    public string email{ get; set; }
+    public string email { get; set; }
     public int phoneNumber { get; set; }
 
-    public User(int id, string name, string surname, string email, int phoneNumber){
+    public User() { }
+    public User(int id, string name, string surname, string email, int phoneNumber)
+    {
         this.id = id;
         this.name = name;
         this.surname = surname;
