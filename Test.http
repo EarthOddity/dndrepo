@@ -22,7 +22,7 @@ Content-Type: application/json
   "email": "string",
   "phoneNumber": 0,
   "isTutor": false,
-  "language": "string"
+  "language": "string",
 }
 
 ###Put Student
@@ -72,4 +72,3 @@ Content-Type: application/json
 ###Delete Moderator
 DELETE http://localhost:5044/api/Moderator/1
 Accept: application/json
-
