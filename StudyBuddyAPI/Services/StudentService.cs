@@ -1,28 +1,30 @@
-public class StudentService{
-    private static List<Student> studentsList = new List<Student>();
-
+public class StudentService (FileContext context){
+    //private static List<Student> studentsList = new List<Student>();
+    private readonly FileContext context = context;
     static StudentService()
     {
     }
     public Task<IEnumerable<Student>> GetAllStudents()
     {
-        return Task.FromResult(studentsList.AsEnumerable());
+        
+        return Task.FromResult(context.Students.AsEnumerable());
     }
 
     public Task<Student> GetStudentById(int id)
     {
-        var student = studentsList.FirstOrDefault(s => s.id == id);
+        var student = context.Students.FirstOrDefault(s => s.id == id);
         return Task.FromResult(student);
     }
 
-    public Task<Student> RegisterStudent(Student student)
+    public async Task<Student> RegisterStudent(Student student)
     {
-        studentsList.Add(student);
-        return Task.FromResult(student);
+        context.Students.Add(student);
+        await context.SaveChangesAsync();
+        return student;
     }
-    public Task UpdateStudent(int id, Student student)
+    public async Task UpdateStudent(int id, Student student)
     {
-        var studentToUpdate = studentsList.FirstOrDefault(s => s.id == id);
+        var studentToUpdate = context.Students.FirstOrDefault(s => s.id == id);
         if (studentToUpdate != null)
         {
             studentToUpdate.name = student.name;
@@ -31,21 +33,25 @@ public class StudentService{
             studentToUpdate.phoneNumber = student.phoneNumber;
             studentToUpdate.isTutor = student.isTutor;
             studentToUpdate.language = student.language;
+            await context.SaveChangesAsync();
         }
 
-        return Task.CompletedTask;
     }
 
-    public Task DeleteStudent(int id)
+    public async Task DeleteStudent(int id)
     {
-        var student = studentsList.FirstOrDefault(s => s.id == id);
-        studentsList.Remove(student);
-        return Task.CompletedTask;
+        var student = context.Students.FirstOrDefault(s => s.id == id);
+        if (student == null)
+        {
+           context.Students.Remove(student);
+           await context.SaveChangesAsync();
+        }
+        
     }
 
     public Task<IEnumerable<Student>> GetStudentsByName(string name)
     {
-        var students = studentsList.Where(s => s.name == name);
+        var students = context.Students.Where(s => s.name == name);
         return Task.FromResult(students);
     }
 }

@@ -13,6 +13,7 @@ builder.Services.AddSingleton<BachelorService>();
 builder.Services.AddSingleton<CalendarService>();
 builder.Services.AddSingleton<EventService>();
 builder.Services.AddSingleton<SubjectService>();
+builder.Services.AddSingleton<FileContext>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddCors(options =>

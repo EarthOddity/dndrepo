@@ -16,13 +16,13 @@ POST http://localhost:5044/api/Student
 Content-Type: application/json
 
 {
-  "id": 1,
-  "name": "Pepe",
-  "surname": "string",
-  "email": "string",
-  "phoneNumber": 0,
-  "isTutor": false,
-  "language": "string",
+    "id": 1,
+    "name": "Pepe",
+    "surname": "string",
+    "email": "string",
+    "phoneNumber": 0,
+    "isTutor": false,
+    "language": "string"
 }
 
 ###Put Student
