@@ -7,7 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllers();
-builder.Services.AddSingleton<StudentService>();
+builder.Services.AddScoped<IStudentService, StudentService>();
 builder.Services.AddSingleton<ModeratorService>();
 builder.Services.AddSingleton<BachelorService>();
 builder.Services.AddSingleton<CalendarService>();

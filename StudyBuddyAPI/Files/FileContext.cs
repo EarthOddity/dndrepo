@@ -3,16 +3,29 @@ using System.Text.Json;
 public class FileContext
 {
    private const string filepath = "data.json";
-   private DataContainer dataContainer = new();
-   public List<Student> Students {get {LoadData(); return dataContainer.Students;}}
+   public DataContainer dataContainer = new();
+   private bool isDataLoaded = false;
+
+    public List<Student> Students 
+   {
+       get 
+       {
+           if (!isDataLoaded)
+           {
+               LoadData();
+               isDataLoaded = true;
+           }
+           return dataContainer.Students;
+       }
+   }
 
    public async Task SaveChangesAsync()
    {
-        JsonSerializerOptions option = new()
+        JsonSerializerOptions options = new()
         {
             WriteIndented = true
         };
-        var data = JsonSerializer.Serialize(dataContainer, option);
+        var data = JsonSerializer.Serialize(dataContainer, options);
         await File.WriteAllTextAsync(filepath, data);
    }
 

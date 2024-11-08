@@ -1,4 +1,4 @@
-public class StudentService (FileContext context){
+public class StudentService (FileContext context) : IStudentService{
     //private static List<Student> studentsList = new List<Student>();
     private readonly FileContext context = context;
     static StudentService()
@@ -6,8 +6,9 @@ public class StudentService (FileContext context){
     }
     public Task<IEnumerable<Student>> GetAllStudents()
     {
-        
+        Console.WriteLine("Student removed");
         return Task.FromResult(context.Students.AsEnumerable());
+        
     }
 
     public Task<Student> GetStudentById(int id)
@@ -39,15 +40,24 @@ public class StudentService (FileContext context){
     }
 
     public async Task DeleteStudent(int id)
+{
+    var student = context.Students.FirstOrDefault(student => student.id == id);
+    
+    if (student != null)
     {
-        var student = context.Students.FirstOrDefault(s => s.id == id);
-        if (student == null)
-        {
-           context.Students.Remove(student);
-           await context.SaveChangesAsync();
-        }
+        Console.WriteLine(student.name + " found");
+        context.Students.Remove(student);
+        Console.WriteLine(student.name + " removed");
+        Console.WriteLine("Total students after removal: " + context.Students.Count);
         
+        await context.SaveChangesAsync();
+        Console.WriteLine("Changes saved to file");
+    }   
+    else
+    {
+        Console.WriteLine("Student with id " + id + " not found.");
     }
+}
 
     public Task<IEnumerable<Student>> GetStudentsByName(string name)
     {
