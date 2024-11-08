@@ -72,3 +72,39 @@ Content-Type: application/json
 ###Delete Moderator
 DELETE http://localhost:5044/api/Moderator/1
 Accept: application/json
+
+### Add a new subject
+POST http://localhost:5044/api/Subject
+Content-Type: application/json
+
+{
+    "id": 2,
+    "name": "Maths",
+    "description": "Study of numbers"
+}
+
+### Get all subjects
+GET http://localhost:5044/api/Subject
+Accept: application/json
+
+### Get subject by id
+GET http://localhost:5044/api/Subject/1
+Accept: application/json
+
+### Get subject by name
+GET http://localhost:5044/api/Subject/name/Maths
+Accept: application/json
+
+### Update a subject
+PUT http://localhost:5044/api/Subject/1
+Content-Type: application/json
+
+{
+    "id": 1,
+    "name": "Advanced Physics",
+    "description": "In-depth study of matter and energy"
+}
+
+### Delete a subject
+DELETE http://localhost:5044/api/Subject/2
+Accept: application/json

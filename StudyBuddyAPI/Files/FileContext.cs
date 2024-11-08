@@ -30,6 +30,18 @@ public class FileContext
            return dataContainer.Moderators;
        }
    }
+        public List<Subject> Subjects 
+    {
+        get 
+        {
+            if (!isDataLoaded)
+            {
+                LoadData();
+                isDataLoaded = true;
+            }
+            return dataContainer.Subjects;
+        }
+    }
    public async Task SaveChangesAsync()
    {
         JsonSerializerOptions options = new()
@@ -47,7 +59,8 @@ public class FileContext
           dataContainer = new()
           {
             Students = [],
-            Moderators = []
+            Moderators = [],
+            Subjects = []
 
           };
           return; 
