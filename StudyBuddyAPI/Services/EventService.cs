@@ -26,8 +26,8 @@ public class EventService
         {
             eventToUpdate.title = updatedEvent.title;
             eventToUpdate.description = updatedEvent.description;
-            eventToUpdate.StartTime = updatedEvent.StartTime;
-            eventToUpdate.EndTime = updatedEvent.EndTime;
+            eventToUpdate.startTime = updatedEvent.startTime;
+            eventToUpdate.endTime = updatedEvent.endTime;
             return Task.FromResult(true);
 
         }
@@ -47,7 +47,7 @@ public class EventService
 
     public Task<IEnumerable<Event>> GetEventsInRange(DateTime start, DateTime end)
     {
-        var eventsInRange = _eventsList.Where(e => e.StartTime >= start && e.EndTime <= end);
+        var eventsInRange = _eventsList.Where(e => e.startTime >= start && e.endTime <= end);
         return Task.FromResult(eventsInRange.AsEnumerable());
     }
 

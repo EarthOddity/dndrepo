@@ -7,8 +7,8 @@ public class Event
     public List<Student> participants { get; set; }
     public List<TeachingMaterial> materials { get; set; }
 
-    public DateTime StartTime { get; set; }
-    public DateTime EndTime { get; set; }
+    public DateTime startTime { get; set; }
+    public DateTime endTime { get; set; }
 
     public Event()
     {
@@ -23,8 +23,8 @@ public class Event
         this.description = description ?? throw new ArgumentNullException(nameof(description));
         this.participants = participants ?? new List<Student>();
         this.materials = materials ?? new List<TeachingMaterial>();
-        this.StartTime = startTime;
-        this.EndTime = endTime;
+        this.startTime = startTime;
+        this.endTime = endTime;
     }
 
 }
