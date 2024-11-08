@@ -7,7 +7,7 @@ GET http://localhost:5044/api/Student/1
 Accept: application/json
 
 ###Get student by name
-GET http://localhost:5044/api/Student/Name/Pepe
+GET http://localhost:5044/api/Student/Name/Paco
 Accept: application/json
 
 ###Post Student
@@ -16,13 +16,13 @@ POST http://localhost:5044/api/Student
 Content-Type: application/json
 
 {
-  "id": 1,
-  "name": "Pepe",
-  "surname": "string",
-  "email": "string",
-  "phoneNumber": 0,
-  "isTutor": false,
-  "language": "string",
+    "id": 1 ,
+    "name": "Pepe",
+    "surname": "string",
+    "email": "string",
+    "phoneNumber": 0,
+    "isTutor": false,
+    "language": "string"
 }
 
 ###Put Student
@@ -30,13 +30,13 @@ PUT http://localhost:5044/api/Student/1
 Content-Type: application/json
 
 {
-    "isTutor": true,
-    "language": "string",
-    "id": 1,
-    "name": "Pepe",
+    "id": 4,
+    "name": "José",
     "surname": "string",
     "email": "string",
-    "phoneNumber": 0
+    "phoneNumber": 0,
+    "isTutor": true,
+    "language": "string"
 }
 
 ###Delete Student

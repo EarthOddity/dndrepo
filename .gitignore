@@ -1,5 +1,5 @@
 *.swp
-.~
+*.*~
 project.lock.json
 .DS_Store
 *.pyc
@@ -41,3 +41,6 @@ bld/
 msbuild.log
 msbuild.err
 msbuild.wrn
+
+#Ignore data.json file 
+data.json

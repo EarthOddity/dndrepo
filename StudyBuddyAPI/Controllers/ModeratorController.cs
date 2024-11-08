@@ -3,15 +3,9 @@ using System.Collections.Generic;
 
 [Route("api/[controller]")]
 [ApiController]
-public class ModeratorController : ControllerBase
+public class ModeratorController (IModeratorService _moderatorService) : ControllerBase
 {
 
-    private readonly ModeratorService _moderatorService;
-
-    public ModeratorController(ModeratorService moderatorService)
-    {
-        _moderatorService = moderatorService;
-    }
 
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Moderator>>> GetModerators()
@@ -54,7 +48,7 @@ public class ModeratorController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<ActionResult> DeleteModerator(int id)
     {
-        await _moderatorService.deleteModerator(id);
+        await _moderatorService.DeleteModerator(id);
         return NoContent();
     }
 

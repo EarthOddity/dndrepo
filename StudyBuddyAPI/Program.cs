@@ -7,12 +7,13 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllers();
-builder.Services.AddSingleton<StudentService>();
-builder.Services.AddSingleton<ModeratorService>();
+builder.Services.AddScoped<IStudentService, StudentService>();
+builder.Services.AddSingleton<IModeratorService, ModeratorService>();
 builder.Services.AddSingleton<BachelorService>();
 builder.Services.AddSingleton<CalendarService>();
 builder.Services.AddSingleton<EventService>();
 builder.Services.AddSingleton<SubjectService>();
+builder.Services.AddSingleton<FileContext>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddCors(options =>
