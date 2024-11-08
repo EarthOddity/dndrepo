@@ -18,7 +18,18 @@ public class FileContext
            return dataContainer.Students;
        }
    }
-
+     public List<Moderator> Moderators 
+   {
+       get 
+       {
+           if (!isDataLoaded)
+           {
+               LoadData();
+               isDataLoaded = true;
+           }
+           return dataContainer.Moderators;
+       }
+   }
    public async Task SaveChangesAsync()
    {
         JsonSerializerOptions options = new()
