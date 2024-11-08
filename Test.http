@@ -7,7 +7,7 @@ GET http://localhost:5044/api/Student/1
 Accept: application/json
 
 ###Get student by name
-GET http://localhost:5044/api/Student/Name/Pepe
+GET http://localhost:5044/api/Student/Name/Paco
 Accept: application/json
 
 ###Post Student
@@ -16,13 +16,13 @@ POST http://localhost:5044/api/Student
 Content-Type: application/json
 
 {
-  "id": 1,
-  "name": "Pepe",
-  "surname": "string",
-  "email": "string",
-  "phoneNumber": 0,
-  "isTutor": false,
-  "language": "string"
+    "id": 1 ,
+    "name": "Pepe",
+    "surname": "string",
+    "email": "string",
+    "phoneNumber": 0,
+    "isTutor": false,
+    "language": "string"
 }
 
 ###Put Student
@@ -30,13 +30,13 @@ PUT http://localhost:5044/api/Student/1
 Content-Type: application/json
 
 {
-    "isTutor": true,
-    "language": "string",
-    "id": 1,
-    "name": "Pepe",
+    "id": 4,
+    "name": "José",
     "surname": "string",
     "email": "string",
-    "phoneNumber": 0
+    "phoneNumber": 0,
+    "isTutor": true,
+    "language": "string"
 }
 
 ###Delete Student
@@ -71,42 +71,4 @@ Content-Type: application/json
 "Materials"
 ###Delete Moderator
 DELETE http://localhost:5044/api/Moderator/1
-Accept: application/json
-
-###Post Subject
-POST http://localhost:5044/api/Subject
-Content-Type: application/json
-
-{
-    "id": 1,
-    "name": "Mathematics",
-    "description": "Study of numbers and shapes"
-    
-}
-
-### Update Subject
-PUT http://localhost:5044/api/Subject/Mathematics
-Content-Type: application/json
-
-{
-    "id": 1,
-    "name": "Advanced_Mathematics",
-    "description": "In-depth study of numbers and shapes"
-}
-
-### Get by name
-GET http://localhost:5044/api/Subject/name/Mathematics
-Accept: application/json
-
-### Get by id
-GET http://localhost:5044/api/Subject/1
-Accept: application/json
-
-### Get all
-GET http://localhost:5044/api/Subject
-Accept: application/json
-
-
-### Delete
-DELETE http://localhost:5044/api/Subject/1
 Accept: application/json

@@ -6,14 +6,14 @@ using System.Collections.Generic;
 [ApiController]
 [Route("api/[controller]")]
 
-public class StudentController : ControllerBase
+public class StudentController(IStudentService _studentService ) : ControllerBase
 {
-    private readonly StudentService _studentService;
+    //private readonly IStudentService _studentService;
 
-    public StudentController(StudentService studentService)
+   /*  public StudentController(IStudentService studentService)
     {
         _studentService = studentService;
-    }
+    } */
 
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Student>>> GetStudents()
@@ -55,7 +55,7 @@ public class StudentController : ControllerBase
         return NoContent();
     }
 
-    [HttpDelete("{id}")]
+    [HttpDelete ("{id}")]
     public async Task<ActionResult> DeleteStudent(int id)
     {
         await _studentService.DeleteStudent(id);
