@@ -1,45 +1,56 @@
 
-public class SubjectService
+public class SubjectService (FileContext context) : ISubjectService
 {
-    private static List<Subject> subjects = new List<Subject>();
-    public void AddSubject(Subject subject)
+    //private static List<Subject> subjects = new List<Subject>();
+
+    private readonly FileContext context = context;
+    static SubjectService()
     {
-        subjects.Add(subject);
+    }
+    public async Task<Subject> AddSubject(Subject subject)
+    {
+        context.Subjects.Add(subject);
+        await context.SaveChangesAsync();
+        return subject;
     }
 
-    public Subject GetSubjectById(int id)
+    public  Task<Subject> GetSubjectById(int id)
     {
-        return subjects.FirstOrDefault(s => s.Id == id);
+        var subject = context.Subjects.FirstOrDefault(s => s.id == id);
+        return Task.FromResult(subject);
     }
-    public Subject GetSubjectByName(string name)
+    public Task<Subject> GetSubjectByName(string name)
     {
-        return subjects.FirstOrDefault(s => s.Name == name);
+        var subject = context.Subjects.FirstOrDefault(s => s.name == name);
+        return Task.FromResult(subject);
     }
 
-    public IEnumerable<Subject> GetAllSubjects()
+    public Task<IEnumerable<Subject>> GetAllSubjects()
     {
-        return subjects;
+        return Task.FromResult(context.Subjects.AsEnumerable());
     }
-    public void UpdateSubject(Subject updatedSubject)
+    public async Task UpdateSubject(Subject updatedSubject)
     {
-        var subject = GetSubjectById(updatedSubject.Id);
-        if (subject != null)
+        var subjectToUpdate = context.Subjects.FirstOrDefault(s => s.id == updatedSubject.id);
+        if (subjectToUpdate != null)
         {
-            subject.Name = updatedSubject.Name;
-            subject.Description = updatedSubject.Description;
+            subjectToUpdate.name = updatedSubject.name;
+            subjectToUpdate.description = updatedSubject.description;
+            await context.SaveChangesAsync();
         }
     }
-    public bool DeleteSubject(int Id)
+    
+    public async Task<bool> DeleteSubject(int id)
     {
-        var subject = GetSubjectById(Id);
+        var subject = context.Subjects.FirstOrDefault(subject => subject.id == id);
         if (subject != null)
         {
-            subjects.Remove(subject);
+            context.Subjects.Remove(subject);
+            await context.SaveChangesAsync();
             return true;
         }
         return false;
     }
-
 
 }
 
