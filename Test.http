@@ -30,9 +30,8 @@ PUT http://localhost:5044/api/Student/1
 Content-Type: application/json
 
 {
-    "id": 4,
     "name": "José",
-    "surname": "string",
+    "surname": "Papa",
     "email": "string",
     "phoneNumber": 0,
     "isTutor": true,

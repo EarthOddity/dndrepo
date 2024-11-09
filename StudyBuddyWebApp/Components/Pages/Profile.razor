@@ -1,0 +1,62 @@
+@page "/user-profile"
+@inject IProfileService ProfileService
+<h3>Student Profile</h3>
+
+@if (student == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <EditForm Model="student" OnValidSubmit="SaveChanges" FormName="StudentProfileForm">
+        <DataAnnotationsValidator />
+
+        <div>
+            <label>First Name:</label>
+            <InputText @bind-Value="student.name" class="form-control" />
+        </div>
+
+        <div>
+            <label>Surname:</label>
+            <InputText @bind-Value="student.surname" class="form-control" />
+        </div>
+
+        <div>
+            <label>Email:</label>
+            <InputText @bind-Value="student.email" class="form-control" />
+        </div>
+
+        <div>
+            <label>Phone Number:</label>
+            <InputNumber @bind-Value="student.phoneNumber" class="form-control" />
+        </div>
+
+        <div>
+            <label>Is Tutor:</label>
+            <InputCheckbox @bind-Value="student.isTutor" class="form-check-input" />
+        </div>
+
+        <div>
+            <label>Language:</label>
+            <InputText @bind-Value="student.language" class="form-control" />
+        </div>
+
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+    </EditForm>
+}
+
+@code {
+   private Student student { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        student = await ProfileService.GetStudentProfile(1);
+    }
+
+    private async Task SaveChanges()
+    {
+        await ProfileService.UpdateStudentProfile(1, student);
+        student = await ProfileService.GetStudentProfile(1); // Reload the updated data
+
+    }
+}
