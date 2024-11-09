@@ -1,5 +1,5 @@
 
-public class SubjectService (FileContext context) : ISubjectService
+public class SubjectService(FileContext context) : ISubjectService
 {
     //private static List<Subject> subjects = new List<Subject>();
 
@@ -14,7 +14,7 @@ public class SubjectService (FileContext context) : ISubjectService
         return subject;
     }
 
-    public  Task<Subject> GetSubjectById(int id)
+    public Task<Subject> GetSubjectById(int id)
     {
         var subject = context.Subjects.FirstOrDefault(s => s.id == id);
         return Task.FromResult(subject);
@@ -39,7 +39,7 @@ public class SubjectService (FileContext context) : ISubjectService
             await context.SaveChangesAsync();
         }
     }
-    
+
     public async Task<bool> DeleteSubject(int id)
     {
         var subject = context.Subjects.FirstOrDefault(subject => subject.id == id);
@@ -50,6 +50,19 @@ public class SubjectService (FileContext context) : ISubjectService
             return true;
         }
         return false;
+    }
+
+    public async Task<IEnumerable<string>> SearchSubjectsByName(string searchTerm)
+    {
+        var result = await Task.Run(() =>
+ {
+     return context.Subjects
+         .Where(s => s.name.Contains(searchTerm))
+         .Select(s => s.name)
+         .ToList();
+ });
+
+        return result;
     }
 
 }

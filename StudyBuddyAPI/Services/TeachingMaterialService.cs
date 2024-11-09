@@ -58,4 +58,17 @@ public class TeachingMaterialService
         Console.WriteLine($"Deleted: {title}");
         return true;
     }
+
+/*     public async Task<IEnumerable<string>> SearchTeachingMaterials(string searchTerm)
+    {
+        var result = await Task.Run(() =>
+        {
+            return context.TeachingMaterials
+                .Where(tm => tm.Name.Contains(searchTerm))
+                .Select(tm => tm.Name)
+                .ToList();
+        });
+
+        return result;
+    }*/
 }

@@ -88,7 +88,7 @@ GET http://localhost:5044/api/Subject
 Accept: application/json
 
 ### Get subject by id
-GET http://localhost:5044/api/Subject/1
+GET http://localhost:5044/api/Subject/2
 Accept: application/json
 
 ### Get subject by name
