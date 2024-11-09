@@ -1,5 +1,7 @@
 @page "/user-profile"
 @inject IProfileService ProfileService
+@rendermode InteractiveServer
+
 <h3>Student Profile</h3>
 
 @if (student == null)
@@ -42,6 +44,8 @@ else
         </div>
 
         <button type="submit" class="btn btn-primary">Save Changes</button>
+        <button type="button" @onclick="DeleteProfile" class="btn btn-danger">Delete Profile</button>
+
     </EditForm>
 }
 
@@ -58,5 +62,10 @@ else
         await ProfileService.UpdateStudentProfile(1, student);
         student = await ProfileService.GetStudentProfile(1); // Reload the updated data
 
+    }
+    private async Task DeleteProfile()
+    {
+        await ProfileService.DeleteStudentProfile(1);
+        student = null;
     }
 }
