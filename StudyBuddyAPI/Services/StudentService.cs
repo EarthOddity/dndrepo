@@ -1,49 +1,67 @@
-public class StudentService{
-    private static List<Student> studentsList = new List<Student>();
-
-    static StudentService(){
-    }
-      public Task<IEnumerable<Student>> GetAllStudents()
+public class StudentService (FileContext context) : IStudentService{
+    //private static List<Student> studentsList = new List<Student>();
+    private readonly FileContext context = context;
+    static StudentService()
     {
-        return Task.FromResult(studentsList.AsEnumerable());
+    }
+    public Task<IEnumerable<Student>> GetAllStudents()
+    {
+        Console.WriteLine("Student removed");
+        return Task.FromResult(context.Students.AsEnumerable());
+        
     }
 
-     public Task<Student> GetStudentById(int id)
+    public Task<Student> GetStudentById(int id)
     {
-        var student = studentsList.FirstOrDefault(s => s.id == id);
+        var student = context.Students.FirstOrDefault(s => s.id == id);
         return Task.FromResult(student);
     }
 
-    public Task<Student> RegisterStudent(Student student)
+    public async Task<Student> RegisterStudent(Student student)
     {
-        studentsList.Add(student);
-        return Task.FromResult(student);
+        context.Students.Add(student);
+        await context.SaveChangesAsync();
+        return student;
     }
-    public Task UpdateStudent(int id, Student student)
+    public async Task UpdateStudent(int id, Student student)
     {
-        var studentToUpdate = studentsList.FirstOrDefault(s => s.id == id);
-        if(studentToUpdate != null){
+        var studentToUpdate = context.Students.FirstOrDefault(s => s.id == id);
+        if (studentToUpdate != null)
+        {
             studentToUpdate.name = student.name;
             studentToUpdate.surname = student.surname;
             studentToUpdate.email = student.email;
             studentToUpdate.phoneNumber = student.phoneNumber;
             studentToUpdate.isTutor = student.isTutor;
             studentToUpdate.language = student.language;
+            await context.SaveChangesAsync();
         }
-       
-        return Task.CompletedTask;
+
     }
 
-    public Task DeleteStudent(int id)
+    public async Task DeleteStudent(int id)
+{
+    var student = context.Students.FirstOrDefault(student => student.id == id);
+    
+    if (student != null)
     {
-        var student = studentsList.FirstOrDefault(s => s.id == id);
-        studentsList.Remove(student);
-        return Task.CompletedTask;
+        Console.WriteLine(student.name + " found");
+        context.Students.Remove(student);
+        Console.WriteLine(student.name + " removed");
+        Console.WriteLine("Total students after removal: " + context.Students.Count);
+        
+        await context.SaveChangesAsync();
+        Console.WriteLine("Changes saved to file");
+    }   
+    else
+    {
+        Console.WriteLine("Student with id " + id + " not found.");
     }
+}
 
     public Task<IEnumerable<Student>> GetStudentsByName(string name)
     {
-        var students = studentsList.Where(s => s.name == name);
+        var students = context.Students.Where(s => s.name == name);
         return Task.FromResult(students);
     }
 }

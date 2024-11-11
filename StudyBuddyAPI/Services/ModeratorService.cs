@@ -1,20 +1,37 @@
 
-public class ModeratorService{
-    private static List<Moderator> moderatorsList = new List<Moderator>();
+public class ModeratorService(FileContext context): IModeratorService{
+    //private static List<Moderator> moderatorsList = new List<Moderator>();
     private static List<Review> reviews = new List<Review>();
 
-
-    static ModeratorService(){
-    }
-      public Task<IEnumerable<Moderator>> GetAllModerators()
+    private readonly FileContext context = context;
+    static ModeratorService()
     {
-        return Task.FromResult(moderatorsList.AsEnumerable());
+    }
+    public Task<IEnumerable<Moderator>> GetAllModerators()
+    {
+        return Task.FromResult(context.Moderators.AsEnumerable());
     }
 
-    public Task AddModerator(Moderator moderator)
+    public async Task<Moderator> AddModerator(Moderator moderator)
     {
-        moderatorsList.Add(moderator);
-        return Task.CompletedTask;
+        context.Moderators.Add(moderator);
+        await context.SaveChangesAsync();
+        return moderator;
+    }
+
+    public async Task UpdateModerator(int id, Moderator updatedModerator)
+    {
+        var moderator = context.Moderators.FirstOrDefault(m => m.id == id);
+        if (moderator != null)
+        {
+            moderator.name = updatedModerator.name;
+            moderator.surname = updatedModerator.surname;
+            moderator.email = updatedModerator.email;
+            moderator.phoneNumber = updatedModerator.phoneNumber;
+            moderator.assignedSections = updatedModerator.assignedSections;
+            await context.SaveChangesAsync();
+        }
+        
     }
 
     /*public Task BanReview(int id, Review review){
@@ -28,22 +45,26 @@ public class ModeratorService{
         return Task.CompletedTask;
     }*/
 
-    public Task AssignSection(int id, string section){
-        var moderator = moderatorsList.FirstOrDefault(m => m.id == id);
-        if(moderator != null && !moderator.assignedSections.Contains(section)){
+    public async Task AssignSection(int id, string section)
+    {
+        var moderator = context.Moderators.FirstOrDefault(m => m.id == id);
+        if (moderator != null && !moderator.assignedSections.Contains(section))
+        {
             moderator.assignedSections.Add(section);
+            await context.SaveChangesAsync();
         }
-        return Task.CompletedTask;
     }
 
-     public Task<Moderator> GetModeratorById(int id){
-        var moderator = moderatorsList.FirstOrDefault(m => m.id == id);
+    public Task<Moderator> GetModeratorById(int id)
+    {
+        var moderator = context.Moderators.FirstOrDefault(m => m.id == id);
         return Task.FromResult(moderator);
-     }
+    }
 
-     public Task deleteModerator(int id){
-        var moderator = moderatorsList.FirstOrDefault(m => m.id == id);
-        moderatorsList.Remove(moderator);
-        return Task.CompletedTask;
-     }
+    public async Task DeleteModerator(int id)
+    {
+        var moderator = context.Moderators.FirstOrDefault(m => m.id == id);
+        context.Moderators.Remove(moderator);
+        await context.SaveChangesAsync();
+    }
 }
