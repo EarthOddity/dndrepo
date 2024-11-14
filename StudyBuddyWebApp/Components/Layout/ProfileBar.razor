@@ -1,0 +1,53 @@
+@inject NavigationManager NavigationManager
+@inject IProfileService ProfileService
+@rendermode InteractiveServer
+
+<div class="user-icon-dropdown">
+    <button class="user-icon" @onclick="ToggleDropdown">
+        <img src="images/profilepic.jpg" alt="" class="user-avatar">
+    </button>
+    @if (student != null && !string.IsNullOrEmpty(student.name))
+        {
+            <span>Hello, @student.name</span>
+        }
+
+
+        <div class="dropdown-menu @(isDropdownOpen ? "show" : "")">
+            <a class="dropdown-item" @onclick="GoToProfile">Profile</a>
+            <a class="dropdown-item" @onclick="GoToSettings">Settings</a>
+            <a class="dropdown-item" @onclick="Logout">Log Out</a>
+        </div>
+
+</div>
+
+@code {
+    private Student student { get; set; }
+    private bool isDropdownOpen = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        student = await ProfileService.GetStudentProfile(1);
+    }
+
+
+    private void ToggleDropdown()
+    {
+        isDropdownOpen = !isDropdownOpen;
+    }
+
+    private void GoToProfile()
+    {
+        isDropdownOpen = false;
+        NavigationManager.NavigateTo("/user-profile");
+    }
+
+    private void GoToSettings()
+    {
+        isDropdownOpen = false;
+        NavigationManager.NavigateTo("/settings"); // Example settings page
+    }
+
+    private async Task Logout()
+    {
+    }
+}
