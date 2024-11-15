@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-public class AuthService    : IAuthService
+public class AuthService    : IAuthServiceAPI
 {
     private readonly FileContext _context;
 

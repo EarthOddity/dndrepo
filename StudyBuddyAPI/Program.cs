@@ -18,6 +18,7 @@ builder.Services.AddSingleton<CalendarService>();
 builder.Services.AddSingleton<EventService>();
 builder.Services.AddSingleton<SubjectService>();
 builder.Services.AddSingleton<FileContext>();
+builder.Services.AddSingleton<IAuthServiceAPI, AuthService>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -36,6 +37,7 @@ builder.Services.AddAuthentication().AddJwtBearer(JwtBearerDefaults.Authenticati
         ClockSkew = TimeSpan.Zero,
     };
 });
+AuthorizationPolicies.AddPolicies(builder.Services);
 
 builder.Services.AddCors(options =>
 {

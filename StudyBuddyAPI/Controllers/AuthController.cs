@@ -6,7 +6,7 @@ using Microsoft.IdentityModel.Tokens;
 
 [ApiController]
 [Route("[controller]")]
-public class AuthController(IConfiguration config, IAuthService authService) : ControllerBase
+public class AuthController(IConfiguration config, IAuthServiceAPI authService) : ControllerBase
 {
 
     [HttpPost("login")]

@@ -2,10 +2,12 @@
 @inject IProfileService ProfileService
 @rendermode InteractiveServer
 
+
 <div class="user-icon-dropdown">
     <button class="user-icon" @onclick="ToggleDropdown">
         <img src="images/profilepic.jpg" alt="" class="user-avatar">
     </button>
+
     @if (student != null && !string.IsNullOrEmpty(student.name))
         {
             <span>Hello, @student.name</span>
