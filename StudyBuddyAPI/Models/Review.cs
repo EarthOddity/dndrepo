@@ -6,7 +6,7 @@ public class Review
     public Student author { get; set; } 
     public bool isApproved { get; set; }
 
-    public Review(int id, string reviewText, Student author, bool isApproved)
+    public Review(int id, string reviewText, Student author, bool isApproved, int authorId)
     {
         this.id = id;
         this.reviewText = reviewText;
