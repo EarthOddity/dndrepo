@@ -130,8 +130,8 @@ public class FileContext
                 Bachelors = [],
                 Calendars = [],
                 Events = [],
-                Reviews = []
-                TeachingMaterials = [],
+                Reviews = [],
+                TeachingMaterials = []
 
             };
             return;
