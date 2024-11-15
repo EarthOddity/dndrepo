@@ -99,7 +99,10 @@ public class FileContext
             {
                 Students = [],
                 Moderators = [],
-                Subjects = []
+                Subjects = [],
+                Bachelors = [],
+                Calendars = [],
+                Events = [],
 
             };
             return;
