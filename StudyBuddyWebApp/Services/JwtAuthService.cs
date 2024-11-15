@@ -50,9 +50,7 @@ public class JwtAuthService(HttpClient client, IJSRuntime jsRuntime) : IAuthServ
             client.DefaultRequestHeaders.Add("Authorization", "Bearer " + Jwt);
 
         IEnumerable<Claim> claims = ParseClaimsFromJwt(Jwt);
-
         ClaimsIdentity identity = new(claims, "jwt");
-
         ClaimsPrincipal principal = new(identity);
         return principal;
     }

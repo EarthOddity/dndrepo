@@ -30,9 +30,11 @@ public class AuthController(IConfiguration config, IAuthServiceAPI authService) 
         var tokenHandler = new JwtSecurityTokenHandler();
         var key = Encoding.ASCII.GetBytes(config["Jwt:Key"] ?? "");
 
+        List<Claim> claims = GenerateClaims(user);
 
         var tokenDescriptor = new SecurityTokenDescriptor
         {
+            Subject = new ClaimsIdentity(claims),
             Expires = DateTime.UtcNow.AddHours(1),
             SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature),
             Issuer = config["Jwt:Issuer"],
@@ -41,6 +43,21 @@ public class AuthController(IConfiguration config, IAuthServiceAPI authService) 
 
         var token = tokenHandler.CreateToken(tokenDescriptor);
         return tokenHandler.WriteToken(token);
+    }
+    private List<Claim> GenerateClaims(User user)
+    {
+        var claims = new[]
+        {
+            new Claim(JwtRegisteredClaimNames.Sub, config["Jwt:Subject"] ?? ""),
+            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+            new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString()),
+            new Claim("id", user.id.ToString()),
+            new Claim("name", user.name),                                // First name
+            new Claim("surname", user.surname),                          // Last name
+            new Claim("email", user.email),        // Email
+            new Claim("phoneNumber", user.phoneNumber.ToString())        // Phone number
+        };
+        return [.. claims];
     }
 
 

@@ -1,5 +1,7 @@
+
 @inject NavigationManager NavigationManager
 @inject IProfileService ProfileService
+@inject IAuthService authService
 @rendermode InteractiveServer
 
 
@@ -12,13 +14,24 @@
         {
             <span>Hello, @student.name</span>
         }
+    else
+        {
+            <span>Hello, User</span>
+        }
 
-
-        <div class="dropdown-menu @(isDropdownOpen ? "show" : "")">
-            <a class="dropdown-item" @onclick="GoToProfile">Profile</a>
-            <a class="dropdown-item" @onclick="GoToSettings">Settings</a>
-            <a class="dropdown-item" @onclick="Logout">Log Out</a>
-        </div>
+    <div class="dropdown-menu @(isDropdownOpen ? "show" : "")">
+        <AuthorizeView>
+            <NotAuthorized>
+                <a class="dropdown-item" @onclick="GoToLogin">Login</a>
+            </NotAuthorized>
+            <Authorized>
+                <a class="dropdown-item" @onclick="GoToProfile">Profile</a>
+                <a class="dropdown-item" @onclick="GoToSettings">Settings</a>
+                <a class="dropdown-item" @onclick="Logout">Log Out</a>
+            </Authorized>
+        </AuthorizeView>
+    </div>
+        
 
 </div>
 
@@ -51,5 +64,13 @@
 
     private async Task Logout()
     {
+        isDropdownOpen = false;
+        await authService.LogoutAsync();
+        NavigationManager.NavigateTo("/login");
+    }
+    private void GoToLogin()
+    {
+        isDropdownOpen = false;
+        NavigationManager.NavigateTo("/login");
     }
 }
