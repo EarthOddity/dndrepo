@@ -1,47 +1,51 @@
-public class BachelorService
+public class BachelorService(FileContext context) : IBachelorService
 {
-    private static List<Bachelor> _bachelorsList = new List<Bachelor>();
+    private readonly FileContext _context = context;
+
     public Task<IEnumerable<Bachelor>> GetAllBachelors()
     {
-        return Task.FromResult(_bachelorsList.AsEnumerable());
+        return Task.FromResult(_context.Bachelors.AsEnumerable());
     }
 
-    public Task<Bachelor> GetBachelorById(int id)
+    public async Task<Bachelor> GetBachelorById(int id)
     {
-        var bachelor = _bachelorsList.FirstOrDefault(b => b.id == id);
-        return Task.FromResult(bachelor);
+        var bachelor = _context.Bachelors.FirstOrDefault(b => b.id == id);
+        return await Task.FromResult(bachelor);
     }
 
-    public Task<Bachelor> CreateBachelor(Bachelor bachelor)
+    public async Task<Bachelor> CreateBachelor(Bachelor bachelor)
     {
-        _bachelorsList.Add(bachelor);
-        return Task.FromResult(bachelor);
+        _context.Bachelors.Add(bachelor);
+        await _context.SaveChangesAsync();
+        return bachelor;
     }
 
-    public Task UpdateBachelor(int id, Bachelor updatedBachelor)
+    public async Task UpdateBachelor(int id, Bachelor updatedBachelor)
     {
-        var index = _bachelorsList.FindIndex(b => b.id == id);
+        var index = _context.Bachelors.FindIndex(b => b.id == id);
         if (index != -1)
         {
-            _bachelorsList[index] = updatedBachelor;
+            _context.Bachelors[index] = updatedBachelor;
+            await _context.SaveChangesAsync();
+
         }
-        return Task.CompletedTask;
     }
 
-    public Task<bool> DeleteBachelor(int id)
+    public async Task<bool> DeleteBachelor(int id)
     {
-        var bachelor = _bachelorsList.FirstOrDefault(b => b.id == id);
+        var bachelor = _context.Bachelors.FirstOrDefault(b => b.id == id);
         if (bachelor != null)
         {
-            _bachelorsList.Remove(bachelor);
-            return Task.FromResult(true);
+            _context.Bachelors.Remove(bachelor);
+            await _context.SaveChangesAsync();
+            return true;
         }
-        return Task.FromResult(false);
+        return false;
     }
 
     public Task<bool> AddSubjectToBachelor(int bachelorId, Subject subject)
     {
-        var bachelor = _bachelorsList.FirstOrDefault(b => b.id == bachelorId);
+        var bachelor = _context.Bachelors.FirstOrDefault(b => b.id == bachelorId);
         if (bachelor != null)
         {
             bachelor.associatedSubjects.Add(subject);
@@ -50,14 +54,14 @@ public class BachelorService
         return Task.FromResult(false);
     }
 
-    public Task<List<Subject>> GetSubjectsByBachelorId(int bachelorId)
+    public async Task<List<Subject>> GetSubjectsByBachelorId(int bachelorId)
     {
-        var bachelor = _bachelorsList.FirstOrDefault(b => b.id == bachelorId);
+        var bachelor = _context.Bachelors.FirstOrDefault(b => b.id == bachelorId);
         if (bachelor != null)
         {
-            return Task.FromResult(bachelor.associatedSubjects);
+            return await Task.FromResult(bachelor.associatedSubjects);
         }
-        return Task.FromResult(new List<Subject>());
+        return await Task.FromResult(new List<Subject>());
     }
 
 }
