@@ -1,34 +1,37 @@
 using Microsoft.AspNetCore.Mvc;
 [ApiController]
 [Route("api/[controller]")]
-public class TeachingMaterialController : ControllerBase
+public class TeachingMaterialController(ITeachingMaterialService _teachingMaterialService) : ControllerBase
 {
-    private readonly TeachingMaterialService _teachingMaterialService;
+    /* private readonly TeachingMaterialService _teachingMaterialService;
 
     public TeachingMaterialController(TeachingMaterialService teachingMaterialService)
     {
         _teachingMaterialService = teachingMaterialService;
     }
+    */
 
     [HttpGet]
-    public ActionResult<List<TeachingMaterial>> GetAllMaterials()
+    public async Task<ActionResult<List<TeachingMaterial>>> GetAllMaterials()
     {
-        return Ok(_teachingMaterialService.GetAllMaterials());
+        return Ok( await _teachingMaterialService.GetAllMaterials());
     }
     [HttpGet("title/{title}")]
-    public ActionResult<List<TeachingMaterial>> GetMaterialByTitle(string title)
+    public async Task<ActionResult<List<TeachingMaterial>>> GetMaterialByTitle(string title)
     {
-        var material = _teachingMaterialService.GetMaterialByTitle(title);
+        var material = await _teachingMaterialService.GetMaterialByTitle(title);
         return Ok(material);
     }
 
     [HttpGet("{id}")]
-    public ActionResult<TeachingMaterial> GetMaterialById(int id)
+    public async Task<ActionResult<TeachingMaterial>> GetMaterialById(int id)
     {
-        var material = _teachingMaterialService.GetMaterialById(id);
+        var material = await _teachingMaterialService.GetMaterialById(id);
         if (material == null)
             return NotFound();
 
+        return Ok(material);
+    }
         return Ok(material);
     }
 
@@ -39,31 +42,36 @@ public class TeachingMaterialController : ControllerBase
         {
             return BadRequest("Teaching material data is required.");
         }
-        await _teachingMaterialService.CreateMaterial(material);
+        await _teachingMaterialService.CreateTeachingMaterial(material);
         return CreatedAtAction(nameof(GetMaterialById), new { id = material.id }, material);
     }
 
-    // [HttpPut("{title}")]
-    // public ActionResult UpdateMaterial(int id, [FromBody] TeachingMaterial updatedMaterial)
-    // {
-    //     var success = _teachingMaterialService.UpdateMaterial(id, updatedMaterial.description, updatedMaterial.isApproved, updatedMaterial.author);
-    //     if (!success)
-    //         return NotFound();
-
-    //     return NoContent();
-    // }
-
-    [HttpDelete("{title}")]
-    public ActionResult DeleteMaterial(int id)
+    [HttpPut("{title}")]
+    public async Task<IActionResult> UpdateMaterial(int id, TeachingMaterial updatedMaterial)
     {
-        var success = _teachingMaterialService.DeleteMaterial(id);
+        var success = await _teachingMaterialService.UpdateMaterial(id, updatedMaterial.description, updatedMaterial.isApproved, updatedMaterial.author);
         if (!success)
             return NotFound();
 
         return NoContent();
     }
 
+    [HttpDelete("{title}")]
+    public async Task<IActionResult> DeleteMaterial(int id)
+    {
+        var success = await _teachingMaterialService.DeleteMaterial(id);
+        if (!success)
+            return NotFound();
 
+        return NoContent();
+    }
+
+    /*[HttpGet("search/{searchTerm}")]
+     public async Task<ActionResult<IEnumerable<string>>> SearchTeachingMaterials(string searchTerm)
+     {
+         var materials = await _teachingMaterialService.SearchTeachingMaterials(searchTerm);
+         return Ok(materials);
+     }*/
 }
 
 
