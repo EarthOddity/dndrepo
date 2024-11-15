@@ -32,8 +32,7 @@ public class TeachingMaterialController(ITeachingMaterialService _teachingMateri
 
         return Ok(material);
     }
-        return Ok(material);
-    }
+
 
     [HttpPost]
     public async Task<ActionResult<TeachingMaterial>> CreateMaterial(TeachingMaterial material)
