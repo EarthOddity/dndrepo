@@ -1,14 +1,13 @@
-namespace StudyBuddyAPI.Services
-{
+
     public class ReviewService
     {
         private readonly List<Review> reviews = new List<Review>();
 
         public void AddReview(Review review)
         {
-            review.Id = reviews.Count > 0 ? reviews.Max(r => r.Id) + 1 : 1;
+            review.id = reviews.Count > 0 ? reviews.Max(r => r.id) + 1 : 1;
             reviews.Add(review);
-            Console.WriteLine($"Added review with ID {review.Id}: {review.ReviewText}");
+            Console.WriteLine($"Added review with ID {review.id}: {review.reviewText}");
         }
 
         public List<Review> GetAllReviews()
@@ -18,12 +17,12 @@ namespace StudyBuddyAPI.Services
 
         public Review GetReviewById(int id)
         {
-            return reviews.FirstOrDefault(r => r.Id == id);
+            return reviews.FirstOrDefault(r => r.id == id);
         }
 
         public List<Review> GetReviewsByAuthor(Student author)
         {
-            return reviews.Where(r => r.Author != null && r.Author.Equals(author)).ToList();
+            return reviews.Where(r => r.author != null && r.author.Equals(author)).ToList();
         }
 
         public bool UpdateReview(int id, string newReviewText, bool newIsApproved)
@@ -31,8 +30,8 @@ namespace StudyBuddyAPI.Services
             var review = GetReviewById(id);
             if (review == null) return false;
 
-            review.ReviewText = newReviewText;
-            review.IsApproved = newIsApproved;
+            review.reviewText = newReviewText;
+            review.isApproved = newIsApproved;
             Console.WriteLine($"Updated review with ID {id}");
             return true;
         }
@@ -47,4 +46,4 @@ namespace StudyBuddyAPI.Services
             return true;
         }
     }
-}
+
