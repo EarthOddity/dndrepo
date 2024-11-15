@@ -1,7 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-
-namespace StudyBuddyAPI.Controllers
-{
     [ApiController]
     [Route("api/[controller]")]
     public class TeachingMaterialController : ControllerBase
@@ -10,7 +7,7 @@ namespace StudyBuddyAPI.Controllers
 
         public TeachingMaterialController(TeachingMaterialService teachingMaterialService)
         {
-            _teachingMaterialService = teachingMaterialService;
+         _teachingMaterialService = teachingMaterialService;
         }
 
         [HttpGet]
@@ -18,42 +15,52 @@ namespace StudyBuddyAPI.Controllers
         {
             return Ok(_teachingMaterialService.GetAllMaterials());
         }
-
-        [HttpGet("{title}")]
-        public ActionResult<TeachingMaterial> GetMaterialByTitle(string title)
-        {
+        [HttpGet("title/{title}")]
+        public ActionResult<List<TeachingMaterial>> GetMaterialByTitle(string title){
             var material = _teachingMaterialService.GetMaterialByTitle(title);
+            return Ok(material);
+        }
+
+        [HttpGet("{id}")]
+        public ActionResult<TeachingMaterial> GetMaterialById(int id)
+        {
+            var material = _teachingMaterialService.GetMaterialById(id);
             if (material == null)
                 return NotFound();
 
             return Ok(material);
         }
 
-        [HttpPost]
-        public ActionResult<TeachingMaterial> AddMaterial([FromBody] TeachingMaterial material)
+      [HttpPost]
+        public async Task<ActionResult<TeachingMaterial>> CreateMaterial(TeachingMaterial material)
         {
-            _teachingMaterialService.AddMaterial(material);
-            return CreatedAtAction(nameof(GetMaterialByTitle), new { title = material.Title }, material);
+            if (material == null)
+            {
+                return BadRequest("Teaching material data is required.");
+            }
+            await _teachingMaterialService.CreateMaterial(material);
+            return CreatedAtAction(nameof(GetMaterialById), new { id = material.id }, material);
         }
 
-        [HttpPut("{title}")]
-        public ActionResult UpdateMaterial(string title, [FromBody] TeachingMaterial updatedMaterial)
-        {
-            var success = _teachingMaterialService.UpdateMaterial(title, updatedMaterial.Description, updatedMaterial.IsApproved, updatedMaterial.Author);
-            if (!success)
-                return NotFound();
+        // [HttpPut("{title}")]
+        // public ActionResult UpdateMaterial(int id, [FromBody] TeachingMaterial updatedMaterial)
+        // {
+        //     var success = _teachingMaterialService.UpdateMaterial(id, updatedMaterial.description, updatedMaterial.isApproved, updatedMaterial.author);
+        //     if (!success)
+        //         return NotFound();
 
-            return NoContent();
-        }
+        //     return NoContent();
+        // }
 
         [HttpDelete("{title}")]
-        public ActionResult DeleteMaterial(string title)
+        public ActionResult DeleteMaterial(int id)
         {
-            var success = _teachingMaterialService.DeleteMaterial(title);
+            var success = _teachingMaterialService.DeleteMaterial(id);
             if (!success)
                 return NotFound();
 
             return NoContent();
         }
     }
-}
+
+
