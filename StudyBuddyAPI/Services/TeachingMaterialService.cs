@@ -1,53 +1,65 @@
-public class TeachingMaterialService
+public class TeachingMaterialService(FileContext context) : ITeachingMaterialService
+{
+    //private static List<Student> studentsList = new List<Student>();
+    private readonly FileContext context = context;
+    static TeachingMaterialService()
     {
-        private static List<TeachingMaterial> _materials = new List<TeachingMaterial>();
-
-        public Task<TeachingMaterial> CreateMaterial(TeachingMaterial material)
-        {
-            _materials.Add(material);
-            return Task.FromResult(material);
-        }
-
-        public List<TeachingMaterial> GetAllMaterials()
-        {
-            return _materials;
-        }
-
-        public TeachingMaterial GetMaterialById(int id)
-        {
-            return _materials.FirstOrDefault(m => m.id == id);
-        }
-
-        public TeachingMaterial GetMaterialByAuthor(Student author)
-        {
-            return _materials.Find(m => 
-                m.author != null &&
-                m.author.Equals(author)
-            );
-        }
-        public IEnumerable<TeachingMaterial> GetMaterialByTitle(string title){
-            var material = _materials.Where(m => m.title == title);
-            return material;
-        }
-        public bool UpdateMaterial(int id, string newDescription, bool newIsApproved, Student newAuthor)
-        {
-            var material = GetMaterialById(id);
-            if (material == null) return false;
-
-            material.description = newDescription;
-            material.isApproved = newIsApproved;
-            material.author = newAuthor;
-            Console.WriteLine($"Updated: {id}");
-            return true;
-        }
-
-        public bool DeleteMaterial(int id)
-        {
-            var material = GetMaterialById(id);
-            if (material == null) return false;
-
-            _materials.Remove(material);
-            Console.WriteLine($"Deleted: {id}");
-            return true;
-        }
     }
+
+    public async Task<TeachingMaterial> CreateTeachingMaterial(TeachingMaterial material)
+    {
+        context.TeachingMaterials.Add(material);
+        return await Task.FromResult(material);
+    }
+
+    public async Task<IEnumerable<TeachingMaterial>> GetAllMaterials()
+    {
+        return await Task.FromResult(context.TeachingMaterials.AsEnumerable());
+    }
+
+    public Task<TeachingMaterial> GetMaterialById(int id)
+    {
+        return Task.FromResult(context.TeachingMaterials.FirstOrDefault(m => m.id == id));
+    }
+
+    public Task<TeachingMaterial> GetMaterialByAuthor(Student author)
+    {
+        var material = context.TeachingMaterials.Find(m =>
+            m.author != null &&
+            m.author.Equals(author)
+        );
+        return Task.FromResult(material);
+    }
+    public Task<IEnumerable<TeachingMaterial>> GetMaterialByTitle(string title)
+    {
+        var material = context.TeachingMaterials.Where(m => m.title == title);
+        return Task.FromResult(material);
+    }
+    public async Task<bool> UpdateMaterial(int id, string description, bool isApproved, Student author)
+    {
+        var material = context.TeachingMaterials.FirstOrDefault(r => r.id == id);
+        if (material != null)
+        {
+            material.description = description;
+            material.isApproved = isApproved;
+            material.author = author;
+            await context.SaveChangesAsync();
+            return true;
+        }
+        return false;
+    }
+
+    public async Task<bool> DeleteMaterial(int id)
+    {
+        var material = context.TeachingMaterials.FirstOrDefault(r => r.id == id);
+        if (material == null) 
+        {
+            context.TeachingMaterials.Remove(material);
+            await context.SaveChangesAsync();
+            return true;
+        }
+        return false;
+
+        
+    }
+}
