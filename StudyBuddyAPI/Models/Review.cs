@@ -1,13 +1,19 @@
 public class Review
 {
+    public int id { get; set; }
+    public string reviewText { get; set; }
+    public Student author { get; set; }
 
-    public string ReviewText { get; set; }
-    public Student Author { get; set; }
+    public bool isApproved { get; set; }
 
-
-    public Review(string reviewText, Student author)
+    
+    public Review(int id, string reviewText, Student author, bool isApproved)
     {
-        ReviewText = reviewText;
-        Author = author;
+        this.id = id;
+        this.reviewText = reviewText;
+        this.author = author;
+        this.isApproved = isApproved;
     }
+
+    
 }
