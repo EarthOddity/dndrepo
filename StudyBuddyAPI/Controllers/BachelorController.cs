@@ -71,4 +71,11 @@ public class BachelorController : ControllerBase
         var subjects = await _bachelorService.GetSubjectsByBachelorId(bachelorId);
         return Ok(subjects);
     }
+
+   /*  [HttpGet("search/{searchTerm}")]
+    public async Task<ActionResult<IEnumerable<string>>> SearchBachelors(string searchTerm)
+    {
+        var bachelors = await _bachelorService.SearchBachelors(searchTerm);
+        return Ok(bachelors);
+    } */
 }

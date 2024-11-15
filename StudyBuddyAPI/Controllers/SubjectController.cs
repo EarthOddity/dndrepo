@@ -66,4 +66,11 @@ public class SubjectController(ISubjectService _subjectService) : ControllerBase
         }
         return NoContent();
     }
+    
+    [HttpGet("search/{searchTerm}")]
+    public async Task<ActionResult<IEnumerable<string>>> SearchSubjectsByName(string searchTerm)
+    {
+        var subjects = await _subjectService.SearchSubjectsByName(searchTerm);
+        return Ok(subjects);
+    }
 }

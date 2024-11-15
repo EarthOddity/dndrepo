@@ -1,47 +1,59 @@
-public class ReviewService
+public class ReviewService(FileContext context) : IReviewService
 {
-    private readonly List<Review> reviews = new List<Review>();
+    // private readonly List<Review> reviews = new List<Review>();
 
-    public void AddReview(Review review)
+    private readonly FileContext context = context;
+    static ReviewService()
     {
-        review.id = reviews.Count > 0 ? reviews.Max(r => r.id) + 1 : 1;
-        reviews.Add(review);
-        Console.WriteLine($"Added review with ID {review.id}: {review.reviewText}");
+    }
+    public async Task<Review> AddReview(Review review)
+    {
+        context.Reviews.Add(review);
+        await context.SaveChangesAsync();
+        return review;
     }
 
-    public List<Review> GetAllReviews()
+    public Task<IEnumerable<Review>> GetAllReviews()
     {
-        return reviews;
+        return Task.FromResult(context.Reviews.AsEnumerable());
     }
 
-    public Review GetReviewById(int id)
+    public Task<Review> GetReviewById(int id)
     {
-        return reviews.FirstOrDefault(r => r.id == id);
+        var review = context.Reviews.FirstOrDefault(r => r.id == id);
+        return Task.FromResult(review);
     }
 
-    public List<Review> GetReviewsByAuthor(int authorId) // Simplified
+    public  Task<List<Review>> GetReviewsByAuthor(int authorId) // Simplified
     {
-        return reviews.Where(r => r.authorId == authorId).ToList();
+        var reviews =  context.Reviews;
+        var filteredReviews = reviews.Where(r => r.authorId == authorId).ToList();
+        return Task.FromResult(filteredReviews);
     }
 
-    public bool UpdateReview(int id, string newReviewText, bool newIsApproved)
+    public async Task<bool> UpdateReview(int id, string reviewText, bool isApproved)
     {
-        var review = GetReviewById(id);
-        if (review == null) return false;
-
-        review.reviewText = newReviewText;
-        review.isApproved = newIsApproved;
-        Console.WriteLine($"Updated review with ID {id}");
-        return true;
+        var reviewToUpdate = context.Reviews.FirstOrDefault(r => r.id == id);
+        if (reviewToUpdate != null)
+        {
+            reviewToUpdate.reviewText = reviewText;
+            reviewToUpdate.isApproved = isApproved;
+            await context.SaveChangesAsync();
+            return true;
+        }
+        return false;
     }
 
-    public bool DeleteReview(int id)
+    public async Task<bool> DeleteReview(int id)
     {
-        var review = GetReviewById(id);
-        if (review == null) return false;
-
-        reviews.Remove(review);
-        Console.WriteLine($"Deleted review with ID {id}");
-        return true;
+        var review = context.Reviews.FirstOrDefault(review => review.id == id);
+        if (review != null)
+        {
+            context.Reviews.Remove(review);
+            await context.SaveChangesAsync();
+            return true;
+        }
+        return false;
     }
+
 }

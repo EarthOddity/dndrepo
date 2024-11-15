@@ -1,0 +1,48 @@
+<div>
+    <input @bind="searchTerm" @bind:event="oninput" placeholder="Search..." />
+    <button @onclick="Search">Search</button>
+    <button @onclick="Clear">Clear</button>
+</div>
+
+@if (results != null && results.Any())
+{
+    <ul>
+        @foreach (var result in results)
+        {
+            <li>@result</li>
+        }
+    </ul>
+}
+
+@code {
+    private string searchTerm;
+    private List<string> results;
+
+    [Inject]
+    private HttpClient Http { get; set; }
+
+    private async Task Search()
+    {
+        if (string.IsNullOrWhiteSpace(searchTerm))
+        {
+            results = new List<string>();
+            return;
+        }
+
+        var subjects = await Http.GetFromJsonAsync<List<string>>($"api/Subject/search/{searchTerm}");
+        //var bachelors = await Http.GetFromJsonAsync<List<string>>($"api/Bachelor/search/{searchTerm}");
+        //var materials = await Http.GetFromJsonAsync<List<string>>($"api/TeachingMaterial/search/{searchTerm}");
+
+        results = new List<string>();
+        if (subjects != null) results.AddRange(subjects);
+        //if (bachelors != null) results.AddRange(bachelors);
+        //if (materials != null) results.AddRange(materials);
+    }
+
+    private void Clear()
+    {
+        searchTerm = string.Empty;
+        results = new List<string>();
+    }
+}
+
