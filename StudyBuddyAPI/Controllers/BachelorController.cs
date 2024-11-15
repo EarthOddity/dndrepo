@@ -72,10 +72,10 @@ public class BachelorController : ControllerBase
         return Ok(subjects);
     }
 
-   /*  [HttpGet("search/{searchTerm}")]
+    [HttpGet("search/{searchTerm}")]
     public async Task<ActionResult<IEnumerable<string>>> SearchBachelors(string searchTerm)
     {
         var bachelors = await _bachelorService.SearchBachelors(searchTerm);
         return Ok(bachelors);
-    } */
+    }
 }

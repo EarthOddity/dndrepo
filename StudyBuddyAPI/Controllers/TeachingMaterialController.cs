@@ -65,12 +65,12 @@ public class TeachingMaterialController(ITeachingMaterialService _teachingMateri
         return NoContent();
     }
 
-    /*[HttpGet("search/{searchTerm}")]
+    [HttpGet("search/{searchTerm}")]
      public async Task<ActionResult<IEnumerable<string>>> SearchTeachingMaterials(string searchTerm)
      {
          var materials = await _teachingMaterialService.SearchTeachingMaterials(searchTerm);
          return Ok(materials);
-     }*/
+     }
 }
 
 

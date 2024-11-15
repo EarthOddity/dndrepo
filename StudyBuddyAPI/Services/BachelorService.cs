@@ -64,16 +64,9 @@ public class BachelorService(FileContext context) : IBachelorService
         return await Task.FromResult(new List<Subject>());
     }
 
-/*  public async Task<IEnumerable<string>> SearchBachelors(string searchTerm)
+    public async Task<IEnumerable<Bachelor>> SearchBachelors(string searchTerm)
     {
-        var result = await Task.Run(() =>
-        {
-            return context.Bachelors
-                .Where(b => b.Name.Contains(searchTerm))
-                .Select(b => b.Name)
-                .ToList();
-        });
-
-        return result;
-    }*/
+        var bachelors = _context.Bachelors.Where(b => b.name.Contains(searchTerm));
+        return await Task.FromResult(bachelors);
+    }
 }

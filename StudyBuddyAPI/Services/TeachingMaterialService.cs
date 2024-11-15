@@ -52,7 +52,7 @@ public class TeachingMaterialService(FileContext context) : ITeachingMaterialSer
     public async Task<bool> DeleteMaterial(int id)
     {
         var material = context.TeachingMaterials.FirstOrDefault(r => r.id == id);
-        if (material == null) 
+        if (material == null)
         {
             context.TeachingMaterials.Remove(material);
             await context.SaveChangesAsync();
@@ -60,6 +60,12 @@ public class TeachingMaterialService(FileContext context) : ITeachingMaterialSer
         }
         return false;
 
-        
+
+    }
+
+    public Task<IEnumerable<TeachingMaterial>> SearchTeachingMaterials(string searchTerm)
+    {
+        var materials = context.TeachingMaterials.Where(m => m.title.Contains(searchTerm) || m.description.Contains(searchTerm));
+        return Task.FromResult(materials);
     }
 }

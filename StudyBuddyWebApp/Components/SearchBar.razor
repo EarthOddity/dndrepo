@@ -30,13 +30,13 @@
         }
 
         var subjects = await Http.GetFromJsonAsync<List<string>>($"api/Subject/search/{searchTerm}");
-        //var bachelors = await Http.GetFromJsonAsync<List<string>>($"api/Bachelor/search/{searchTerm}");
-        //var materials = await Http.GetFromJsonAsync<List<string>>($"api/TeachingMaterial/search/{searchTerm}");
+        var bachelors = await Http.GetFromJsonAsync<List<string>>($"api/Bachelor/search/{searchTerm}");
+        var materials = await Http.GetFromJsonAsync<List<string>>($"api/TeachingMaterial/search/{searchTerm}");
 
         results = new List<string>();
         if (subjects != null) results.AddRange(subjects);
-        //if (bachelors != null) results.AddRange(bachelors);
-        //if (materials != null) results.AddRange(materials);
+        if (bachelors != null) results.AddRange(bachelors);
+        if (materials != null) results.AddRange(materials);
     }
 
     private void Clear()
