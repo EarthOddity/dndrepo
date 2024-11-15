@@ -22,7 +22,6 @@
 
         public List<Review> GetReviewsByAuthor(Student author)
         {
-            
             return reviews.Where(r => r.author != null && r.author.Equals(author)).ToList();
         }
 
@@ -47,4 +46,5 @@
             return true;
         }
     }
+
 
