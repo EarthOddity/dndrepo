@@ -1,15 +1,20 @@
 public class TeachingMaterial
 {
-    public string Title { get; set; }
-    public string Description { get; set; }
-    public Student Author { get; set; }
-    public bool IsApproved { get; set; }
+    public int id {get; set;}
+    public string title { get; set; }
+    public string description { get; set; }
 
-    public TeachingMaterial(string title, string description, Student author, bool isApproved)
+    public Student author { get; set; }
+
+    public bool isApproved { get; set; }
+
+
+    public TeachingMaterial(int id, string title, string description, Student author, bool isApproved)
     {
-        Title = title;
-        Description = description;
-        Author = author;
-        IsApproved = isApproved;
+        this.id = id;
+        this.title = title;
+        this.description = description;
+        this.author = author;
+        this.isApproved = isApproved;
     }
 }

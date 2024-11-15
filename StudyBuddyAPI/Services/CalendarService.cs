@@ -1,64 +1,70 @@
-public class CalendarService
+public class CalendarService(FileContext context) : ICalendarService
 {
-    private static List<Calendar> _calendarsList = new List<Calendar>();
+    private readonly FileContext _context = context;
 
     public Task<IEnumerable<Calendar>> GetAllCalendars()
     {
-        return Task.FromResult(_calendarsList.AsEnumerable());
+        return Task.FromResult(_context.Calendars.AsEnumerable());
     }
 
-    public Task<Calendar> GetCalendarById(int id)
+    public async Task<Calendar> GetCalendarById(int id)
     {
-        var calendar = _calendarsList.FirstOrDefault(c => c.id == id);
-        return Task.FromResult(calendar);
+        var calendar = _context.Calendars.FirstOrDefault(c => c.id == id);
+        return await Task.FromResult(calendar);
     }
 
-    public Task<Calendar> CreateCalendar(Calendar calendar)
+    public async Task<Calendar> CreateCalendar(Calendar calendar)
     {
-        _calendarsList.Add(calendar);
-        return Task.FromResult(calendar);
+        _context.Calendars.Add(calendar);
+        await _context.SaveChangesAsync();
+        return calendar;
     }
 
-    public Task<bool> DeleteCalendar(int id)
+    public async Task<bool> DeleteCalendar(int id)
     {
-        var calendar = _calendarsList.FirstOrDefault(c => c.id == id);
+        var calendar = _context.Calendars.FirstOrDefault(c => c.id == id);
         if (calendar != null)
         {
-            _calendarsList.Remove(calendar);
-            return Task.FromResult(true);
+            _context.Calendars.Remove(calendar);
+            await _context.SaveChangesAsync();
+            return true;
         }
-        return Task.FromResult(false);
+        return false;
     }
 
-    public Task<IEnumerable<Event>> GetEventsByCalendarId(int calendarId)
+    public async Task<IEnumerable<Event>> GetEventsByCalendarId(int calendarId)
     {
-        var calendar = _calendarsList.FirstOrDefault(c => c.id == calendarId);
-        return Task.FromResult(calendar?.events.AsEnumerable() ?? Enumerable.Empty<Event>());
+        var calendar = _context.Calendars.FirstOrDefault(c => c.id == calendarId);
+        return await Task.FromResult(calendar?.events.AsEnumerable() ?? Enumerable.Empty<Event>());
     }
 
 
-    public Task<Calendar> AddEventToCalendar(int calendarId, Event eventToAdd)
+    public async Task<Calendar> AddEventToCalendar(int calendarId, Event eventToAdd)
     {
-        var calendar = _calendarsList.FirstOrDefault(c => c.id == calendarId);
+        var calendar = _context.Calendars.FirstOrDefault(c => c.id == calendarId);
         if (calendar != null && calendar.events != null)
         {
             calendar.events.Add(eventToAdd);
+            await _context.SaveChangesAsync();
+
         }
-        return Task.FromResult(calendar);
+        return await Task.FromResult(calendar);
     }
 
-    public Task<Calendar> DeleteEventFromCalendar(int calendarId, int eventId)
+    public async Task<Calendar> DeleteEventFromCalendar(int calendarId, int eventId)
     {
-        var calendar = _calendarsList.FirstOrDefault(c => c.id == calendarId);
+        var calendar = _context.Calendars.FirstOrDefault(c => c.id == calendarId);
         if (calendar != null && calendar.events != null)
         {
             var eventToRemove = calendar.events.FirstOrDefault(e => e.id == eventId);
             if (eventToRemove != null)
             {
                 calendar.events.Remove(eventToRemove);
+                await _context.SaveChangesAsync();
+
             }
         }
-        return Task.FromResult(calendar);
+        return await Task.FromResult(calendar);
     }
 
 }
