@@ -1,64 +1,68 @@
 using Microsoft.AspNetCore.Mvc;
-using StudyBuddyAPI.Services;
+using System.Collections.Generic;
 
-namespace StudyBuddyAPI.Controllers
+
+[Route("api/[controller]")]
+[ApiController]
+public class ReviewController(IReviewService _reviewService) : ControllerBase
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class ReviewController : ControllerBase
+    // private readonly ReviewService _reviewService;
+
+    // public ReviewController(ReviewService reviewService)
+    // {
+    //     _reviewService = reviewService;
+    // }
+
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<Review>>> GetAllReviews()
     {
-        private readonly ReviewService _reviewService;
+        return Ok(await _reviewService.GetAllReviews());
+    }
 
-        public ReviewController(ReviewService reviewService)
-        {
-            _reviewService = reviewService;
-        }
+    [HttpGet("{id}")]
+    public async Task<ActionResult<Review>> GetReviewById(int id)
+    {
+        var review = await _reviewService.GetReviewById(id);
+        if (review == null) return NotFound();
 
-        [HttpGet]
-        public ActionResult<List<Review>> GetAllReviews()
-        {
-            return Ok(_reviewService.GetAllReviews());
-        }
+        return Ok(review);
+    }
 
-        [HttpGet("{id}")]
-        public ActionResult<Review> GetReviewById(int id)
-        {
-            var review = _reviewService.GetReviewById(id);
-            if (review == null) return NotFound();
+    [HttpGet("author/{authorId}")]
+    public async Task<ActionResult<Review>> GetReviewsByAuthor(int authorId)
+    {
+        var reviews = await _reviewService.GetReviewsByAuthor(authorId);
+        if (reviews == null) return NotFound();
 
-            return Ok(review);
-        }
+        return Ok(reviews);
+    }
 
-        [HttpGet("Author/{authorId}")]
-        public ActionResult<List<Review>> GetReviewsByAuthor(int authorId)
-        {
-            var reviews = _reviewService.GetReviewsByAuthor(new Student { Id = authorId });
-            return Ok(reviews);
-        }
 
-        [HttpPost]
-        public ActionResult<Review> AddReview(Review review)
-        {
-            _reviewService.AddReview(review);
-            return CreatedAtAction(nameof(GetReviewById), new { id = review.Id }, review);
-        }
+    [HttpPost]
+    public async Task<ActionResult<Review>> AddReview(Review review)
+    {
+        await _reviewService.AddReview(review);
+        return CreatedAtAction(nameof(GetReviewById), new { id = review.id }, review);
+    }
 
-        [HttpPut("{id}")]
-        public IActionResult UpdateReview(int id, [FromBody] Review updatedReview)
-        {
-            var success = _reviewService.UpdateReview(id, updatedReview.ReviewText, updatedReview.IsApproved);
-            if (!success) return NotFound();
+    [HttpPut("{id}")]
 
-            return NoContent();
-        }
+    public async Task<ActionResult> UpdateReview(int id, Review updatedReview)
+    {
+        var success = await _reviewService.UpdateReview(id, updatedReview.reviewText, updatedReview.isApproved);
+        if (!success) return NotFound();
 
-        [HttpDelete("{id}")]
-        public IActionResult DeleteReview(int id)
-        {
-            var success = _reviewService.DeleteReview(id);
-            if (!success) return NotFound();
+        return NoContent();
+    }
 
-            return NoContent();
-        }
+    [HttpDelete("{id}")]
+
+
+    public async Task<IActionResult> DeleteReview(int id)
+    {
+        var success = await _reviewService.DeleteReview(id);
+        if (!success) return NotFound();
+
+        return NoContent();
     }
 }
