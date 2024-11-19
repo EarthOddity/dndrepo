@@ -10,6 +10,7 @@ builder.Services.AddRazorComponents()
 builder.Services.AddScoped<IProfileService, ProfileService>();
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("http://localhost:5044") });
 
+
 builder.Services.AddAuthentication().AddCookie(options =>
 {
     options.LoginPath = "/login";
