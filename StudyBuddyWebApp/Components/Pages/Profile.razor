@@ -1,0 +1,157 @@
+@page "/user-profile"
+@inject IProfileService ProfileService
+@using System.Security.Claims
+@using StudyBuddyWebApp.Components.Layout
+@inject AuthenticationStateProvider AuthStateProvider
+@rendermode InteractiveServer
+
+
+<h3>Student Profile</h3>
+
+@if (student == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+     <EditForm Model="student" OnValidSubmit="SaveChanges" FormName="StudentProfileForm">
+        <DataAnnotationsValidator />
+
+        <!-- Read-only and Editable Fields -->
+        <div>
+            <label>First Name:</label>
+            @if (isEditing)
+            {
+                <InputText @bind-Value="student.name" class="form-control" />
+            }
+            else
+            {
+                <span>@student.name</span>
+            }
+        </div>
+
+        <div>
+            <label>Surname:</label>
+            @if (isEditing)
+            {
+                <InputText @bind-Value="student.surname" class="form-control" />
+            }
+            else
+            {
+                <span>@student.surname</span>
+            }
+        </div>
+
+        <div>
+            <label>Email:</label>
+            @if (isEditing)
+            {
+                <InputText @bind-Value="student.email" class="form-control" />
+            }
+            else
+            {
+                <span>@student.email</span>
+            }
+        </div>
+
+        <div>
+            <label>Phone Number:</label>
+            @if (isEditing)
+            {
+                <InputNumber @bind-Value="student.phoneNumber" class="form-control" />
+            }
+            else
+            {
+                <span>@student.phoneNumber</span>
+            }
+        </div>
+
+        <div>
+            <label>Is Tutor:</label>
+            @if (isEditing)
+            {
+                <InputCheckbox @bind-Value="student.isTutor" class="form-check-input" />
+            }
+            else
+            {
+                <span>@(student.isTutor ? "Yes" : "No")</span>
+            }
+        </div>
+
+        <div>
+            <label>Language:</label>
+            @if (isEditing)
+            {
+                <InputText @bind-Value="student.language" class="form-control" />
+            }
+            else
+            {
+                <span>@student.language</span>
+            }
+        </div>
+
+        <!-- Buttons -->
+        @if (isEditing)
+        {
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+            <button type="button" @onclick="CancelEdit" class="btn btn-secondary">Cancel</button>
+        }
+        else
+        {
+            <button type="button" @onclick="EnableEditMode" class="btn btn-warning">Edit</button>
+            <button type="button" @onclick="DeleteProfile" class="btn btn-danger">Delete Profile</button>
+        }
+    </EditForm>
+}
+
+@code {
+    private Student? student = null;
+     private bool isEditing = false ;
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthState { get; set; } = null!;
+
+    private int id;
+    private IEnumerable<Claim>? userClaims;
+    private bool isLoggedIn;
+
+    @* protected override async Task OnInitializedAsync()
+    {
+        student = await ProfileService.GetStudentProfile(1);
+    } *@
+    protected override async Task OnInitializedAsync()
+    {
+        AuthenticationState authState = await AuthState;
+        ClaimsPrincipal user = authState.User;
+        isLoggedIn = user.Identity != null;
+
+        if (!isLoggedIn) return;
+        userClaims = user.Claims;
+        id  = int.Parse(user.Claims.First(claim => claim.Type.Equals("id")).Value);
+        Console.WriteLine("Id is : " + id);
+
+        student = await ProfileService.GetStudentProfile(id);
+
+
+    }
+
+    private void EnableEditMode()
+    {
+        isEditing = true;
+    }
+
+    private async Task SaveChanges()
+    {
+        await ProfileService.UpdateStudentProfile(1, student);
+        student = await ProfileService.GetStudentProfile(1); // Reload the updated data
+        isEditing = false;
+    }
+     private void CancelEdit()
+    {
+        isEditing = false; // Exit edit mode without saving
+    }
+    private async Task DeleteProfile()
+    {
+        await ProfileService.DeleteStudentProfile(1);
+        student = null;
+    }
+}

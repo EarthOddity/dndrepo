@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Mvc;
+
 public class StudentService (FileContext context) : IStudentService{
     //private static List<Student> studentsList = new List<Student>();
     private readonly FileContext context = context;
@@ -23,7 +25,7 @@ public class StudentService (FileContext context) : IStudentService{
         await context.SaveChangesAsync();
         return student;
     }
-    public async Task UpdateStudent(int id, Student student)
+    public async Task UpdateStudent(int id, [FromBody]Student student)
     {
         var studentToUpdate = context.Students.FirstOrDefault(s => s.id == id);
         if (studentToUpdate != null)
