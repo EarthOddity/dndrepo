@@ -3,6 +3,9 @@
 @inject IProfileService ProfileService
 @inject IAuthService authService
 @rendermode InteractiveServer
+@using System.Security.Claims
+@using StudyBuddyWebApp.Components.Layout
+@inject AuthenticationStateProvider AuthStateProvider
 
 
 <div class="user-icon-dropdown">
@@ -38,10 +41,24 @@
 @code {
     private Student student { get; set; }
     private bool isDropdownOpen = false;
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthState { get; set; } = null!;
+
+    private int id;
+    private IEnumerable<Claim>? userClaims;
+    private bool isLoggedIn;
 
     protected override async Task OnInitializedAsync()
-    {
-        student = await ProfileService.GetStudentProfile(1);
+    {   
+        AuthenticationState authState = await AuthState;
+        ClaimsPrincipal user = authState.User;
+        isLoggedIn = user.Identity != null;
+
+        if (!isLoggedIn) return;
+        userClaims = user.Claims;
+        id  = int.Parse(user.Claims.First(claim => claim.Type.Equals("id")).Value);
+        Console.WriteLine("Id is : " + id);
+        student = await ProfileService.GetStudentProfile(id);
     }
 
 
@@ -73,4 +90,5 @@
         isDropdownOpen = false;
         NavigationManager.NavigateTo("/login");
     }
+    
 }
