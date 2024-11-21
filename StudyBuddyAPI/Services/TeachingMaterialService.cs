@@ -1,9 +1,12 @@
-public class TeachingMaterialService(FileContext context) : ITeachingMaterialService
+
+public class TeachingMaterialService : ITeachingMaterialService
 {
     //private static List<Student> studentsList = new List<Student>();
-    private readonly FileContext context = context;
-    static TeachingMaterialService()
+    private readonly FileContext context;
+
+    public TeachingMaterialService(FileContext context)
     {
+        this.context = context;
     }
 
     public async Task<TeachingMaterial> CreateTeachingMaterial(TeachingMaterial material)

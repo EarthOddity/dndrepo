@@ -7,6 +7,10 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("http://localhost:5044/") });
 
+// Register the app's services
+builder.Services.AddScoped<ITeachingMaterialService, TeachingMaterialService>();
+builder.Services.AddScoped<ISubjectService, SubjectService>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

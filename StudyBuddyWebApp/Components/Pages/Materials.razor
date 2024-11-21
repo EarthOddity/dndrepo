@@ -1,0 +1,73 @@
+@page "/materials"
+
+
+@inject ITeachingMaterialService TeachingMaterialService
+@inject IBachelorService BachelorService
+
+
+
+<h3>Available Teaching Materials</h3>
+
+<div class="materials-container">
+    <div class="materials-list">
+        @if (teachingMaterials == null)
+        {
+            <p>Loading materials...</p>
+        }
+        else
+        {
+            @foreach (var material in teachingMaterials)
+            {
+                <div class="material-item">
+                    <h4>@material.Title</h4>
+                    <p>@material.Description</p>
+                </div>
+            }
+        }
+    </div>
+    <div class="bachelors-list">
+        <h3>Available Bachelors</h3>
+        @if (bachelors == null)
+        {
+            <p>Loading bachelors...</p>
+        }
+        else
+        {
+            @foreach (var bachelor in bachelors)
+            {
+                <div class="bachelor-item" @onclick="() => LoadSubjects(bachelor.Id)">
+                    <h4>@bachelor.Name</h4>
+                </div>
+            }
+        }
+        <div class="subjects-list">
+            @if (selectedSubjects != null)
+            {
+                <h4>Subjects</h4>
+                @foreach (var subject in selectedSubjects)
+                {
+                    <p>@subject.Name</p>
+                }
+            }
+        </div>
+    </div>
+</div>
+
+
+@code {
+     private List<TeachingMaterial> teachingMaterials;
+    private List<Bachelor> bachelors;
+    private List<Subject> selectedSubjects;
+
+    protected override async Task OnInitializedAsync()
+    {
+        teachingMaterials = await TeachingMaterialService.GetTeachingMaterials();
+        bachelors = await BachelorService.GetBachelors();
+    }
+
+    private async Task LoadSubjects(int bachelorId)
+    {
+        selectedSubjects = await BachelorService.GetSubjects(bachelorId);
+    }
+}
+   
