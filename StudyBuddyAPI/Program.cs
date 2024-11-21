@@ -1,11 +1,7 @@
 using Microsoft.AspNetCore.Builder;
-using System.IdentityModel.Tokens.Jwt;
-using System.Text;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.JsonWebTokens;
-using Microsoft.IdentityModel.Tokens;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,27 +14,8 @@ builder.Services.AddSingleton<BachelorService>();
 builder.Services.AddSingleton<CalendarService>();
 builder.Services.AddSingleton<EventService>();
 builder.Services.AddSingleton<FileContext>();
-builder.Services.AddSingleton<IAuthServiceAPI, AuthService>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
-builder.Services.AddAuthentication().AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
-{
-    options.MapInboundClaims = false;
-    options.TokenValidationParameters = new TokenValidationParameters()
-    {
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        ValidateLifetime = true,
-        ValidateIssuerSigningKey = true,
-        ValidAudience = builder.Configuration["Jwt:Audience"],
-        ValidIssuer = builder.Configuration["Jwt:Issuer"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"] ?? "")),
-        ClockSkew = TimeSpan.Zero,
-    };
-});
-AuthorizationPolicies.AddPolicies(builder.Services);
-
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowBlazorClient", builder =>
@@ -57,13 +34,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.UseCors(x => x
-    .AllowAnyMethod()
-    .AllowAnyHeader()
-    .SetIsOriginAllowed(origin => true) // allow any origin
-    .AllowCredentials());
-
-app.UseHttpsRedirection();
+app.UseCors("AllowBlazorClient"); // Apply CORS policy
 app.UseAuthorization();
+
 app.MapControllers();
 app.Run();
