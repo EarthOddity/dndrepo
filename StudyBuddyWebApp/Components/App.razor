@@ -1,22 +1,20 @@
-﻿@page "/"
-@namespace StudyBuddyWebApp
-@using Microsoft.AspNetCore.Mvc.TagHelpers
-@using Microsoft.AspNetCore.Components.Routing
-@using Microsoft.AspNetCore.Components
-@using Microsoft.AspNetCore.Components.Web
+﻿<!DOCTYPE html>
+<html lang="en">
 
-<Router AppAssembly="@typeof(App).Assembly">
-    <Found Context="routeData">
-        <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
-        <FocusOnNavigate RouteData="@routeData" Selector="h1" />
-    </Found>
-    <NotFound>
-        <LayoutView Layout="@typeof(MainLayout)">
-            <p>Sorry, there's nothing at this address.</p>
-        </LayoutView>
-    </NotFound>
-</Router>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <base href="/" />
+    <link rel="stylesheet" href="bootstrap/bootstrap.min.css" />
+    <link rel="stylesheet" href="app.css" />
+    <link rel="stylesheet" href="StudyBuddyWebApp.styles.css" />
+    <link rel="icon" type="image/png" href="favicon.png" />
+    <HeadOutlet @rendermode="new InteractiveServerRenderMode(prerender: false)" />
+</head>
 
-@code {
-    // Any additional code for App.razor can go here
-}
+<body>
+    <Routes @rendermode="new InteractiveServerRenderMode(prerender: false)" />
+    <script src="_framework/blazor.web.js"></script>
+</body>
+
+</html>
