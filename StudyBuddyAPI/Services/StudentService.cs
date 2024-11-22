@@ -1,3 +1,6 @@
+using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
+
 public class StudentService (FileContext context) : IStudentService{
     //private static List<Student> studentsList = new List<Student>();
     private readonly FileContext context = context;
@@ -19,11 +22,40 @@ public class StudentService (FileContext context) : IStudentService{
 
     public async Task<Student> RegisterStudent(Student student)
     {
+        if (string.IsNullOrEmpty(student.name))
+        {
+            throw new ValidationException("Name cannot be null");
+        }
+
+        if (string.IsNullOrEmpty(student.password))
+        {
+            throw new ValidationException("Password cannot be null");
+        }
+        if (student.id == 0)
+        {
+            throw new ValidationException("Id cannot be 0");
+        }
+        if (string.IsNullOrEmpty(student.email))
+        {
+            throw new ValidationException("Email is required");
+        }
+        if (string.IsNullOrEmpty(student.surname))
+        {
+            throw new ValidationException("Surname is required");
+        }
+        if (student.phoneNumber == 0)
+        {
+            throw new ValidationException("Phone number is required");
+        }
+        if (string.IsNullOrEmpty(student.language))
+        {
+            throw new ValidationException("Language is required");
+        }
         context.Students.Add(student);
         await context.SaveChangesAsync();
         return student;
     }
-    public async Task UpdateStudent(int id, Student student)
+    public async Task UpdateStudent(int id, [FromBody]Student student)
     {
         var studentToUpdate = context.Students.FirstOrDefault(s => s.id == id);
         if (studentToUpdate != null)
