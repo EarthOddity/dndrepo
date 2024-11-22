@@ -65,11 +65,23 @@ h1:focus {
     border-left: 1px solid #ccc;
 }
 
-.material-item, .bachelor-item {
+.bachelor-item {
     margin-bottom: 10px;
     cursor: pointer;
 }
 
 .subjects-list {
     margin-top: 20px;
+}
+
+.material-item {
+    cursor: pointer;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.material-item:hover {
+    background-color: #f5f5f5;
 }

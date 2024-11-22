@@ -1,9 +1,7 @@
 @page "/materials"
-
-
 @inject ITeachingMaterialService TeachingMaterialService
 @inject IBachelorService BachelorService
-
+@inject NavigationManager NavigationManager
 
 
 <h3>Available Teaching Materials</h3>
@@ -18,7 +16,7 @@
         {
             @foreach (var material in teachingMaterials)
             {
-                <div class="material-item">
+                <div class="material-item" @onclick="() => NavigateToMaterial(material.id)">
                     <h4>@material.title</h4>
                     <p>@material.description</p>
                 </div>
@@ -55,7 +53,7 @@
 
 
 @code {
-     private List<TeachingMaterial> teachingMaterials;
+    private List<TeachingMaterial> teachingMaterials;
     private List<Bachelor> bachelors;
     private List<Subject> selectedSubjects;
 
@@ -69,5 +67,9 @@
     {
         selectedSubjects = (await BachelorService.GetSubjectsByBachelorId(bachelorId)).ToList();
     }
+
+    private void NavigateToMaterial(int materialId)
+    {
+        NavigationManager.NavigateTo($"/material/{materialId}");
+    }
 }
-   
