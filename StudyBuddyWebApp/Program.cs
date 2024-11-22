@@ -11,6 +11,7 @@ builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("http://
 builder.Services.AddScoped<ITeachingMaterialService, TeachingMaterialService>();
 builder.Services.AddScoped<IBachelorService, BachelorService>();
 builder.Services.AddScoped<ISubjectService, SubjectService>();
+builder.Services.AddScoped<IReviewService, ReviewService>();
 builder.Services.AddScoped<FileContext>(); 
 
 var app = builder.Build();

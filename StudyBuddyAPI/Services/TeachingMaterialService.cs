@@ -71,4 +71,5 @@ public class TeachingMaterialService : ITeachingMaterialService
         var materials = context.TeachingMaterials.Where(m => m.title.Contains(searchTerm) || m.description.Contains(searchTerm));
         return Task.FromResult(materials);
     }
+
 }

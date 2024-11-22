@@ -1,0 +1,67 @@
+@page "/material/{id:int}"
+@inject ITeachingMaterialService TeachingMaterialService
+@inject ISubjectService SubjectService
+@inject IReviewService ReviewService
+
+<h3>Teaching Material Details</h3>
+
+@if (teachingMaterial == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <div>
+        <h4>@teachingMaterial.title</h4>
+        <p>@teachingMaterial.description</p>
+        <p><strong>Author:</strong> @teachingMaterial.author.name</p>
+        <p><strong>Approved:</strong> @(teachingMaterial.isApproved ? "Yes" : "No")</p>
+    </div>
+
+    @if (subject != null)
+    {
+        <div>
+            <h4>Subject</h4>
+            <p>@subject.name</p>
+        </div>
+    }
+
+    @if (reviews != null && reviews.Count > 0)
+    {
+        <div>
+            <h4>Reviews</h4>
+            @foreach (var review in reviews)
+            {
+                <div>
+                    <p><strong>@review.author.name:</strong> @review.reviewText</p>
+                    <p><strong>Approved:</strong> @(review.isApproved ? "Yes" : "No")</p>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <p>No reviews available.</p>
+    }
+}
+
+@code {
+    [Parameter]
+    public int id { get; set; }
+
+    private TeachingMaterial teachingMaterial;
+    private Subject subject;
+    private List<Review> reviews;
+
+    protected override async Task OnInitializedAsync()
+    {
+        teachingMaterial = await TeachingMaterialService.GetMaterialById(id);
+        if (teachingMaterial != null)
+        {
+            subject = await SubjectService.GetSubjectById(teachingMaterial.id);
+            reviews = (await ReviewService.GetReviewsByMaterialId(teachingMaterial.id)).ToList();
+
+        }
+
+    }
+}
