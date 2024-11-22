@@ -1,8 +1,10 @@
 using System.Reflection.Metadata;
 using System.Security.Claims;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 using System.Text.Json;
 using Microsoft.JSInterop;
+
 
 public class JwtAuthService(HttpClient client, IJSRuntime jsRuntime) : IAuthService
 {
@@ -63,18 +65,19 @@ public class JwtAuthService(HttpClient client, IJSRuntime jsRuntime) : IAuthServ
         OnAuthStateChanged.Invoke(principal);
     }
 
-   /*  public async Task RegisterAsync(User user)
+   public async Task RegisterStudentAsync(Student student)
     {
-        string userAsJson = JsonSerializer.Serialize(user);
+        
+        string userAsJson = JsonSerializer.Serialize(student);
         StringContent content = new(userAsJson, Encoding.UTF8, "application/json");
-        HttpResponseMessage response = await client.PostAsync("http://localhost:5124/auth/register", content);
+        HttpResponseMessage response = await client.PostAsync("api/student", content);
         string responseContent = await response.Content.ReadAsStringAsync();
 
         if (!response.IsSuccessStatusCode)
         {
             throw new Exception(responseContent);
         }
-    } */
+    }
 
     public async Task<ClaimsPrincipal> GetAuthAsync()
     {

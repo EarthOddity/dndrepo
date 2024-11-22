@@ -19,23 +19,13 @@ public class AuthService    : IAuthServiceAPI
         return Task.FromResult(existingStudent);
 
     }
-    /*  public async Task RegisterStudent(Student student)
+    public async Task RegisterStudentAsync(Student student)
     {
-        if (string.IsNullOrEmpty(student.name))
-        {
-            throw new ValidationException("Name cannot be null");
-        }
+        
 
-        if (string.IsNullOrEmpty(student.password))
-        {
-            throw new ValidationException("Password cannot be null");
-        }
-        // Do more student info validation here
-
-        // save to persistence instead of list
         _context.Students.Add(student);
         await _context.SaveChangesAsync();
-    } */
+    }
 
 
 }

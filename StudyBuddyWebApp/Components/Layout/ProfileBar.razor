@@ -26,6 +26,7 @@
         <AuthorizeView>
             <NotAuthorized>
                 <a class="dropdown-item" @onclick="GoToLogin">Login</a>
+                <a class="dropdown-item" @onclick="GoToRegister">Register</a>
             </NotAuthorized>
             <Authorized>
                 <a class="dropdown-item" @onclick="GoToProfile">Profile</a>
@@ -89,6 +90,11 @@
     {
         isDropdownOpen = false;
         NavigationManager.NavigateTo("/login");
+    }
+    private void GoToRegister()
+    {
+        isDropdownOpen = false;
+        NavigationManager.NavigateTo("/register");
     }
     
 }
