@@ -76,6 +76,27 @@ public class TeachingMaterialController(ITeachingMaterialService _teachingMateri
         return Ok(materials);
     }
 
+    [HttpPost("save")]
+    public async Task<IActionResult> SaveMaterialForUser(int userId, int materialId)
+    {
+        var success = await _teachingMaterialService.SaveMaterialForUser(userId, materialId);
+        if (!success)
+        {
+            return BadRequest("Failed to save material.");
+        }
+        return Ok();
+    }
+
+    [HttpDelete("unsave")]
+    public async Task<IActionResult> UnsaveMaterialForUser(int userId, int materialId)
+    {
+        var success = await _teachingMaterialService.UnsaveMaterialForUser(userId, materialId);
+        if (!success)
+        {
+            return BadRequest("Failed to unsave material.");
+        }
+        return Ok();
+    }
 
     [HttpGet("search/{searchTerm}")]
     public async Task<ActionResult<IEnumerable<string>>> SearchTeachingMaterials(string searchTerm)

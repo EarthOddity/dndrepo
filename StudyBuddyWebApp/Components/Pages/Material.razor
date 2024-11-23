@@ -11,11 +11,16 @@
 }
 else
 {
-    <div>
-        <h4>@teachingMaterial.title</h4>
-        <p>@teachingMaterial.description</p>
-        <p><strong>Author:</strong> @teachingMaterial.author.name</p>
-        <p><strong>Approved:</strong> @(teachingMaterial.isApproved ? "Yes" : "No")</p>
+    <div class="material-header">
+        <div class="material-info">
+            <h4>@teachingMaterial.title</h4>
+            <p>@teachingMaterial.description</p>
+            <p><strong>Author:</strong> @teachingMaterial.author.name</p>
+            <p><strong>Approved:</strong> @(teachingMaterial.isApproved ? "Yes" : "No")</p>
+        </div>
+        <button class="heart-button @(isSaved ? "saved" : "")" @onclick="ToggleSave">
+            <i class="fas fa-heart"></i>
+        </button>
     </div>
 
     @if (subject != null)
@@ -51,7 +56,10 @@ else
 
     private TeachingMaterial teachingMaterial;
     private Subject subject;
-    private  IEnumerable<global::Review> reviews;
+    private IEnumerable<global::Review> reviews;
+    private readonly int currentUserId = 1; // For future: Get actual user ID
+    private bool isSaved;
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -60,8 +68,59 @@ else
         {
             subject = await SubjectService.GetSubjectById(teachingMaterial.id);
             reviews = await ReviewService.GetReviewsByMaterialId(teachingMaterial.id);
-
+            var savedMaterials = await TeachingMaterialService.GetSavedMaterialsByUserId(currentUserId);
+            isSaved = savedMaterials.Any(m => m.id == id);
         }
 
     }
+    private async Task ToggleSave()
+    {
+        if (isSaved)
+        {
+            var success = await TeachingMaterialService.UnsaveMaterialForUser(currentUserId, id);
+            if (success)
+            {
+                isSaved = false;
+            }
+        }
+        else
+        {
+            var success = await TeachingMaterialService.SaveMaterialForUser(currentUserId, id);
+            if (success)
+            {
+                isSaved = true;
+            }
+        }
+        StateHasChanged();
+    }
 }
+
+<style>
+    .material-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 2rem;
+    }
+
+    .material-info {
+        flex-grow: 1;
+    }
+
+    .heart-button {
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 8px;
+        color: #888;
+        transition: color 0.3s ease;
+    }
+
+    .heart-button.saved {
+        color: #ff4444;
+    }
+
+    .heart-button:hover {
+        transform: scale(1.1);
+    }
+</style>
