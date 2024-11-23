@@ -1,0 +1,86 @@
+@page "/register"
+@inject IAuthService authService
+@inject NavigationManager navMgr
+@rendermode InteractiveServer
+
+<h3>Register</h3>
+<h5>Please introduce the requiered information</h5>
+
+<EditForm Model="newStudent" OnValidSubmit="RegisterStudent">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="form-group">
+        <label for="id">ID</label>
+        <InputNumber id="id" @bind-Value="newStudent.id" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label for="name">First Name</label>
+        <InputText id="name" @bind-Value="newStudent.name" class="form-control" />
+        <ValidationMessage For="@(() => newStudent.name)" />
+    </div>
+
+    <div class="form-group">
+        <label for="surname">Last Name</label>
+        <InputText id="surname" @bind-Value="newStudent.surname" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label for="email">Email</label>
+        <InputText id="email" @bind-Value="newStudent.email" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label for="phoneNumber">Phone Number</label>
+        <InputNumber id="phoneNumber" @bind-Value="newStudent.phoneNumber" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label for="language">Language</label>
+        <InputText id="language" @bind-Value="newStudent.language" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label for="password">Password</label>
+        <InputText id="password" @bind-Value="newStudent.password" class="form-control" type="password" />
+    </div>
+
+    <div class="form-group">
+        <label for="isTutor">Are you a tutor?</label>
+        <InputCheckbox id="isTutor" @bind-Value="newStudent.isTutor" class="form-check-input" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Register</button>
+    <button type="button" class="btn btn-secondary" @onclick="GoToLogin">Already have an account?</button>
+</EditForm>
+
+      @if (!string.IsNullOrEmpty(errorMessage))
+{
+    <div class="alert alert-danger">@errorMessage</div>
+}  
+
+@code {
+    private Student newStudent = new Student();
+    private string? errorMessage;
+
+    private async Task RegisterStudent()
+    {
+        try
+        {
+            
+            await authService.RegisterStudentAsync(newStudent);
+
+            // Redirect to login page after successful registration
+            navMgr.NavigateTo("/login");
+        }
+        catch (Exception ex)
+        {
+            // Display the error message
+            errorMessage = ex.Message;
+        }
+    }
+
+    private void GoToLogin()
+    {
+        navMgr.NavigateTo("/login");
+    }
+    }

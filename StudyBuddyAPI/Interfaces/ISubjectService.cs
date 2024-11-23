@@ -6,4 +6,6 @@ public interface ISubjectService
     Task<Subject> AddSubject(Subject subject);
     Task UpdateSubject(Subject updatedSubject);
     Task<bool> DeleteSubject(int id);
+    Task<IEnumerable<string>> SearchSubjectsByName(string searchTerm);
+
 }

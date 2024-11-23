@@ -11,5 +11,9 @@ public class Student : User
         this.language = language;
         this.bachelor = bachelor;
     }
+     public Student() : base()
+    {   this.isTutor = false;
+        this.language = string.Empty;
+    }
 
 }

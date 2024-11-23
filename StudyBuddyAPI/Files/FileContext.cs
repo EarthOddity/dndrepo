@@ -81,6 +81,33 @@ public class FileContext
             return dataContainer.Events;
         }
     }
+
+    public List<Review> Reviews
+    {
+        get
+        {
+            if (!isDataLoaded)
+            {
+                LoadData();
+                isDataLoaded = true;
+            }
+            return dataContainer.Reviews;
+        }
+    }
+
+    public List<TeachingMaterial> TeachingMaterials
+    {
+        get
+        {
+            if (!isDataLoaded)
+            {
+                LoadData();
+                isDataLoaded = true;
+            }
+            return dataContainer.TeachingMaterials;
+        }
+    }
+
     public async Task SaveChangesAsync()
     {
         JsonSerializerOptions options = new()
@@ -103,6 +130,8 @@ public class FileContext
                 Bachelors = [],
                 Calendars = [],
                 Events = [],
+                Reviews = [],
+                TeachingMaterials = []
 
             };
             return;

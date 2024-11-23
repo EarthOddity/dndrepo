@@ -44,3 +44,5 @@ msbuild.wrn
 
 #Ignore data.json file 
 data.json
+StudyBuddyAPI/obj/Debug/net8.0/StudyBuddyAPI.AssemblyInfoInputs.cache
+StudyBuddyAPI/obj/Debug/net8.0/StudyBuddyAPI.AssemblyInfo.cs

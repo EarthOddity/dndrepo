@@ -1,0 +1,100 @@
+
+@inject NavigationManager NavigationManager
+@inject IProfileService ProfileService
+@inject IAuthService authService
+@rendermode InteractiveServer
+@using System.Security.Claims
+@using StudyBuddyWebApp.Components.Layout
+@inject AuthenticationStateProvider AuthStateProvider
+
+
+<div class="user-icon-dropdown">
+    <button class="user-icon" @onclick="ToggleDropdown">
+        <img src="images/profilepic.jpg" alt="" class="user-avatar">
+    </button>
+
+    @if (student != null && !string.IsNullOrEmpty(student.name))
+        {
+            <span>Hello, @student.name</span>
+        }
+    else
+        {
+            <span>Hello, User</span>
+        }
+
+    <div class="dropdown-menu @(isDropdownOpen ? "show" : "")">
+        <AuthorizeView>
+            <NotAuthorized>
+                <a class="dropdown-item" @onclick="GoToLogin">Login</a>
+                <a class="dropdown-item" @onclick="GoToRegister">Register</a>
+            </NotAuthorized>
+            <Authorized>
+                <a class="dropdown-item" @onclick="GoToProfile">Profile</a>
+                <a class="dropdown-item" @onclick="GoToSettings">Settings</a>
+                <a class="dropdown-item" @onclick="Logout">Log Out</a>
+            </Authorized>
+        </AuthorizeView>
+    </div>
+        
+
+</div>
+
+@code {
+    private Student student { get; set; }
+    private bool isDropdownOpen = false;
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthState { get; set; } = null!;
+
+    private int id;
+    private IEnumerable<Claim>? userClaims;
+    private bool isLoggedIn;
+
+    protected override async Task OnInitializedAsync()
+    {   
+        AuthenticationState authState = await AuthState;
+        ClaimsPrincipal user = authState.User;
+        isLoggedIn = user.Identity != null;
+
+        if (!isLoggedIn) return;
+        userClaims = user.Claims;
+        id  = int.Parse(user.Claims.First(claim => claim.Type.Equals("id")).Value);
+        Console.WriteLine("Id is : " + id);
+        student = await ProfileService.GetStudentProfile(id);
+    }
+
+
+    private void ToggleDropdown()
+    {
+        isDropdownOpen = !isDropdownOpen;
+    }
+
+    private void GoToProfile()
+    {
+        isDropdownOpen = false;
+        NavigationManager.NavigateTo("/user-profile");
+    }
+
+    private void GoToSettings()
+    {
+        isDropdownOpen = false;
+        NavigationManager.NavigateTo("/settings"); // Example settings page
+    }
+
+    private async Task Logout()
+    {
+        isDropdownOpen = false;
+        await authService.LogoutAsync();
+        NavigationManager.NavigateTo("/login");
+    }
+    private void GoToLogin()
+    {
+        isDropdownOpen = false;
+        NavigationManager.NavigateTo("/login");
+    }
+    private void GoToRegister()
+    {
+        isDropdownOpen = false;
+        NavigationManager.NavigateTo("/register");
+    }
+    
+}
