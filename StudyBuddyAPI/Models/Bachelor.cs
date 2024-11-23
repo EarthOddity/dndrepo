@@ -5,6 +5,11 @@ public class Bachelor
 
     public List<Subject> associatedSubjects { get; set; }
 
+    public Bachelor()
+    {
+
+    }
+
     public Bachelor(int id, string programName)
     {
         this.id = id;
