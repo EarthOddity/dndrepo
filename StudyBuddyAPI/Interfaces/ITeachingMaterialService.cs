@@ -7,5 +7,6 @@ public interface ITeachingMaterialService
     Task<bool> UpdateMaterial(int id, string description, bool isApproved, Student author);
     Task<bool> DeleteMaterial(int id);
     Task<IEnumerable<TeachingMaterial>> GetMaterialByTitle(string title);
+    Task<IEnumerable<TeachingMaterial>> GetSavedMaterialsByUserId(int userId);
     Task<IEnumerable<TeachingMaterial>> SearchTeachingMaterials(string searchTerm);
 }

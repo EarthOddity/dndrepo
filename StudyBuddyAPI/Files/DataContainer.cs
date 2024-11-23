@@ -8,5 +8,6 @@ public record DataContainer
     public List<Event> Events { get; set; } = [];
     public List<Review> Reviews { get; set; } = [];
     public List<TeachingMaterial> TeachingMaterials { get; set; } = [];
+    public List<SavedMaterial> SavedMaterials { get; set; } = [];
 
 }

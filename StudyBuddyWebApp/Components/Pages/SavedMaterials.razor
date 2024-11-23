@@ -1,0 +1,103 @@
+@page "/saved-materials"
+@inject ITeachingMaterialService TeachingMaterialService
+@inject IBachelorService BachelorService
+@inject ISubjectService SubjectService
+@inject NavigationManager NavigationManager
+
+<h3>My Saved Materials</h3>
+
+<div class="materials-container">
+    <div class="materials-list">
+        <h4>Saved Materials</h4>
+        @if (savedMaterials == null)
+        {
+            <p>Loading saved materials...</p>
+        }
+        else if (!savedMaterials.Any())
+        {
+            <p>No saved materials yet.</p>
+        }
+        else
+        {
+            @foreach (var material in savedMaterials)
+            {
+                <div class="material-item" @onclick="() => NavigateToMaterial(material.id)">
+                    <h4>@material.title</h4>
+                    <p>@material.description</p>
+                </div>
+            }
+        }
+    </div>
+
+    <div class="subjects-list">
+        <h4>My Subjects</h4>
+        @if (userSubjects == null)
+        {
+            <p>Loading subjects...</p>
+        }
+        else if (!userSubjects.Any())
+        {
+            <p>No subjects found for your bachelor program.</p>
+        }
+        else
+        {
+            @foreach (var subject in userSubjects)
+            {
+                <div class="subject-item" @onclick="() => NavigateToSubjectMaterials(subject.id)">
+                    <h4>@subject.name</h4>
+                </div>
+            }
+        }
+    </div>
+</div>
+
+@code {
+    private List<TeachingMaterial> savedMaterials;
+    private List<Subject> userSubjects;
+    // For future: Get actual user ID from authentication
+    private readonly int currentUserId = 1; 
+
+    protected override async Task OnInitializedAsync()
+    {
+        savedMaterials = (await TeachingMaterialService.GetSavedMaterialsByUserId(currentUserId)).ToList();
+        
+        var userBachelor = await BachelorService.GetBachelorByStudentId(currentUserId);
+        if (userBachelor != null)
+        {
+            userSubjects = (await BachelorService.GetSubjectsByBachelorId(userBachelor.id)).ToList();
+        }
+    }
+
+    private void NavigateToMaterial(int materialId)
+    {
+        NavigationManager.NavigateTo($"/material/{materialId}");
+    }
+
+    private void NavigateToSubjectMaterials(int subjectId)
+    {
+        NavigationManager.NavigateTo($"/subject-materials/{subjectId}");
+    }
+}
+
+<style>
+.materials-container {
+    display: flex;
+    gap: 2rem;
+}
+
+.materials-list, .subjects-list {
+    flex: 1;
+}
+
+.material-item, .subject-item {
+    cursor: pointer;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.material-item:hover, .subject-item:hover {
+    background-color: #f5f5f5;
+}
+</style>

@@ -62,9 +62,18 @@ public class TeachingMaterialService : ITeachingMaterialService
             return true;
         }
         return false;
-
-
     }
+
+    
+    public Task<IEnumerable<TeachingMaterial>> GetSavedMaterialsByUserId(int userId)
+    {
+        var savedMaterials = context.SavedMaterials
+            .Where(sm => sm.UserId == userId)
+            .Select(sm => sm.Material);
+            
+        return Task.FromResult(savedMaterials);
+    }
+
 
     public Task<IEnumerable<TeachingMaterial>> SearchTeachingMaterials(string searchTerm)
     {
