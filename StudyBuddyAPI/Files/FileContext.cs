@@ -108,6 +108,18 @@ public class FileContext
         }
     }
 
+    public List<SavedMaterial> SavedMaterials {
+      get
+        {
+            if (!isDataLoaded)
+            {
+                LoadData();
+                isDataLoaded = true;
+            }
+            return dataContainer.SavedMaterials;
+        }
+    }
+
     public async Task SaveChangesAsync()
     {
         JsonSerializerOptions options = new()
@@ -131,7 +143,8 @@ public class FileContext
                 Calendars = [],
                 Events = [],
                 Reviews = [],
-                TeachingMaterials = []
+                TeachingMaterials = [],
+                SavedMaterials = []
 
             };
             return;

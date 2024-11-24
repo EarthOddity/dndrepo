@@ -14,7 +14,7 @@ public class TeachingMaterialController(ITeachingMaterialService _teachingMateri
     [HttpGet]
     public async Task<ActionResult<List<TeachingMaterial>>> GetAllMaterials()
     {
-        return Ok( await _teachingMaterialService.GetAllMaterials());
+        return Ok(await _teachingMaterialService.GetAllMaterials());
     }
     [HttpGet("title/{title}")]
     public async Task<ActionResult<List<TeachingMaterial>>> GetMaterialByTitle(string title)
@@ -32,8 +32,7 @@ public class TeachingMaterialController(ITeachingMaterialService _teachingMateri
 
         return Ok(material);
     }
-        return Ok(material);
-    }
+
 
     [HttpPost]
     public async Task<ActionResult<TeachingMaterial>> CreateMaterial(TeachingMaterial material)
@@ -66,12 +65,46 @@ public class TeachingMaterialController(ITeachingMaterialService _teachingMateri
         return NoContent();
     }
 
-    /*[HttpGet("search/{searchTerm}")]
-     public async Task<ActionResult<IEnumerable<string>>> SearchTeachingMaterials(string searchTerm)
-     {
-         var materials = await _teachingMaterialService.SearchTeachingMaterials(searchTerm);
-         return Ok(materials);
-     }*/
+    [HttpGet("saved/{userId}")]
+    public async Task<ActionResult<IEnumerable<TeachingMaterial>>> GetSavedMaterialsByUserId(int userId)
+    {
+        var materials = await _teachingMaterialService.GetSavedMaterialsByUserId(userId);
+        if (materials == null)
+        {
+            return NotFound();
+        }
+        return Ok(materials);
+    }
+
+    [HttpPost("save")]
+    public async Task<IActionResult> SaveMaterialForUser(int userId, int materialId)
+    {
+        var success = await _teachingMaterialService.SaveMaterialForUser(userId, materialId);
+        if (!success)
+        {
+            return BadRequest("Failed to save material.");
+        }
+        return Ok();
+    }
+
+    [HttpDelete("unsave")]
+    public async Task<IActionResult> UnsaveMaterialForUser(int userId, int materialId)
+    {
+        var success = await _teachingMaterialService.UnsaveMaterialForUser(userId, materialId);
+        if (!success)
+        {
+            return BadRequest("Failed to unsave material.");
+        }
+        return Ok();
+    }
+
+    [HttpGet("search/{searchTerm}")]
+    public async Task<ActionResult<IEnumerable<string>>> SearchTeachingMaterials(string searchTerm)
+    {
+        var materials = await _teachingMaterialService.SearchTeachingMaterials(searchTerm);
+        return Ok(materials);
+    }
+
 }
 
 

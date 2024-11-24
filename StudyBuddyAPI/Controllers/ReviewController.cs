@@ -65,4 +65,11 @@ public class ReviewController(IReviewService _reviewService) : ControllerBase
 
         return NoContent();
     }
+
+    [HttpGet("reviews/{materialId}")]
+    public async Task<ActionResult<IEnumerable<Review>>> GetReviewsByMaterialId(int materialId)
+    {
+        var reviews = await _reviewService.GetReviewsByMaterialId(materialId);
+        return Ok(reviews);
+    }
 }

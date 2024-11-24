@@ -6,4 +6,6 @@ public interface IReviewService
     Task<Review> AddReview(Review review);
     Task<bool> UpdateReview(int id, string reviewText, bool isApproved);
     Task<bool> DeleteReview(int id);
+    Task<IEnumerable<Review>> GetReviewsByMaterialId(int materialId);
+
 }
