@@ -1,0 +1,63 @@
+@page "/review-material"
+@using System.ComponentModel.DataAnnotations
+
+<h3>Leave a Review</h3>
+
+@if (isSubmitted)
+{
+    <div class="alert alert-success">
+        Thank you for your review!
+    </div>
+}
+else
+{
+    <EditForm Model="@review" OnValidSubmit="HandleSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <div class="form-group">
+            <label for="materialName">Material Name</label>
+            <InputText class="form-control" id="materialName" @bind-Value="review.MaterialName" />
+        </div>
+
+        <div class="form-group">
+            <label for="comment">Your Review</label>
+            <InputTextArea class="form-control" id="comment" @bind-Value="review.Comment" />
+        </div>
+
+        <div class="form-group">
+            <label for="rating">Rating</label>
+            <InputNumber class="form-control" id="rating" @bind-Value="review.Rating" min="1" max="5" />
+        </div>
+
+        <button type="submit" class="btn btn-primary">Submit Review</button>
+    </EditForm>
+}
+
+@code {
+    private ReviewModel review = new ReviewModel();
+    private bool isSubmitted = false;
+
+    private void HandleSubmit()
+    {
+        // Here, you would typically send the review data to an API or database.
+        // For this example, we'll simulate a successful submission.
+        isSubmitted = true;
+
+        // Optionally, reset the form after submission:
+        review = new ReviewModel();
+    }
+
+    public class ReviewModel
+    {
+        [Required(ErrorMessage = "Material name is required")]
+        public string MaterialName { get; set; }
+
+        [Required(ErrorMessage = "Review cannot be empty")]
+        [StringLength(500, ErrorMessage = "Review is too long")]
+        public string Comment { get; set; }
+
+        [Range(1, 5, ErrorMessage = "Rating must be between 1 and 5")]
+        public int Rating { get; set; }
+    }
+}
