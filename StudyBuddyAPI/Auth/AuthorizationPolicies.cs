@@ -3,10 +3,10 @@ using Microsoft.Extensions.DependencyInjection;
 
 public static class AuthorizationPolicies{
     public static void AddPolicies(IServiceCollection services){
-        services.AddAuthorization(options =>
+        services.AddAuthorizationCore(options =>
         {
-            options.AddPolicy("MustBeTutor", policy => policy.RequireClaim(ClaimTypes.Role, "Tutor"));
-            options.AddPolicy("User", policy => policy.RequireClaim(ClaimTypes.Role, "User"));
+            options.AddPolicy("MustBeModerator",a => a.RequireAuthenticatedUser().RequireClaim(ClaimTypes.Role, "Moderator"));
+            options.AddPolicy("MustBeStudent", a => a.RequireAuthenticatedUser().RequireClaim(ClaimTypes.Role, "Student"));
         });
     }
 }

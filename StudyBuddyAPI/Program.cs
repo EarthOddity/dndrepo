@@ -37,6 +37,7 @@ builder.Services.AddAuthentication().AddJwtBearer(JwtBearerDefaults.Authenticati
         ClockSkew = TimeSpan.Zero,
     };
 });
+
 AuthorizationPolicies.AddPolicies(builder.Services);
 
 builder.Services.AddCors(options =>

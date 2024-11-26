@@ -9,7 +9,7 @@ using Microsoft.IdentityModel.Tokens;
 public class AuthController(IConfiguration config, IAuthServiceAPI authService) : ControllerBase
 {
 
-    [HttpPost("login")]
+    [HttpPost("login-student")]
     public async Task<ActionResult> Login([FromBody] Student student)
     {
         try
@@ -24,12 +24,28 @@ public class AuthController(IConfiguration config, IAuthServiceAPI authService) 
             return BadRequest(e.Message);
         }
     }
+    [HttpPost("login-moderator")]
+    public async Task<ActionResult> Login([FromBody] Moderator moderator)
+    {
+        try
+        {
+            Moderator moderatorLog = await authService.ValidateModerator(moderator.id, moderator.password);
+            string token = GenerateJwt(moderatorLog);
+
+            return Ok(token);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
 
     private string GenerateJwt(User user)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
         var key = Encoding.ASCII.GetBytes(config["Jwt:Key"] ?? "");
 
+        Console.WriteLine(user is Student ? "Student" : "Moderator");
         List<Claim> claims = GenerateClaims(user);
 
         var tokenDescriptor = new SecurityTokenDescriptor
@@ -51,11 +67,13 @@ public class AuthController(IConfiguration config, IAuthServiceAPI authService) 
             new Claim(JwtRegisteredClaimNames.Sub, config["Jwt:Subject"] ?? ""),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString()),
+            new Claim(ClaimTypes.Role, "Student"),
             new Claim("id", user.id.ToString()),
             new Claim("name", user.name),                                // First name
             new Claim("surname", user.surname),                          // Last name
             new Claim("email", user.email),        // Email
-            new Claim("phoneNumber", user.phoneNumber.ToString())        // Phone number
+            new Claim("phoneNumber", user.phoneNumber.ToString()),      // Phone number
+            //new Claim("role", user is Student ? "Student" : "Moderator" )
         };
         return [.. claims];
     }

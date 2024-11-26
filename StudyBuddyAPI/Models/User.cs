@@ -8,6 +8,11 @@ public abstract class User
     public string password { get; set; }
 
     public User() { }
+    public User(int id, string password)
+    {
+        this.id = id;
+        this.password = password;
+    }
     public User(int id, string name, string surname, string email, int phoneNumber, string password)
     {
         this.id = id;

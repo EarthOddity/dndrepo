@@ -7,6 +7,10 @@
 
 
 <h3>Student Profile</h3>
+<AuthorizeView Policy="MustBeStudent">
+    <p>You are authorized as a Student.</p>
+</AuthorizeView>
+
 
 @if (student == null)
 {
@@ -123,6 +127,9 @@ else
         AuthenticationState authState = await AuthState;
         ClaimsPrincipal user = authState.User;
         isLoggedIn = user.Identity != null;
+        
+        var role = user.Claims.FirstOrDefault(c => c.Type == "role")?.Value;
+        Console.WriteLine($"User is authenticated with role: {role}");
 
         if (!isLoggedIn) return;
         userClaims = user.Claims;

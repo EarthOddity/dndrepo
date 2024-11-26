@@ -13,13 +13,37 @@ public class JwtAuthService(HttpClient client, IJSRuntime jsRuntime) : IAuthServ
 
     public Action<ClaimsPrincipal> OnAuthStateChanged { get; set; } = null!;
 
-    public async Task LoginAsync(int id, string password)
+    public async Task LoginAsync(int id, string password, bool moderator)
     {
+        if (moderator)
+        {
+            string moderatorAsJson = JsonSerializer.Serialize(new Moderator(id, "firstName", "lastName", "email",123, "access",new List<string>(), new List<Review>(), password));
+            StringContent content = new(moderatorAsJson, Encoding.UTF8, "application/json");
 
+            HttpResponseMessage response = await client.PostAsync("/auth/login-moderator", content);
+            string responseContent = await response.Content.ReadAsStringAsync();
+
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception(responseContent);
+            }
+
+            string token = responseContent;
+            Jwt = token;
+
+            await CacheTokenAsync();
+
+            ClaimsPrincipal principal = await CreateClaimsPrincipal();
+
+            OnAuthStateChanged.Invoke(principal);
+            
+            return;
+        }
+        else{
         string studentAsJson = JsonSerializer.Serialize(new Student(id, "firstName", "lastName", "email", 0, false, "course", password));
         StringContent content = new(studentAsJson, Encoding.UTF8, "application/json");
 
-        HttpResponseMessage response = await client.PostAsync("/auth/login", content);
+        HttpResponseMessage response = await client.PostAsync("/auth/login-student", content);
         string responseContent = await response.Content.ReadAsStringAsync();
 
         if (!response.IsSuccessStatusCode)
@@ -35,7 +59,9 @@ public class JwtAuthService(HttpClient client, IJSRuntime jsRuntime) : IAuthServ
         ClaimsPrincipal principal = await CreateClaimsPrincipal();
 
         OnAuthStateChanged.Invoke(principal);
+        }
     }
+    
 
     private async Task<ClaimsPrincipal> CreateClaimsPrincipal()
     {
@@ -52,6 +78,7 @@ public class JwtAuthService(HttpClient client, IJSRuntime jsRuntime) : IAuthServ
             client.DefaultRequestHeaders.Add("Authorization", "Bearer " + Jwt);
 
         IEnumerable<Claim> claims = ParseClaimsFromJwt(Jwt);
+        
         ClaimsIdentity identity = new(claims, "jwt");
         ClaimsPrincipal principal = new(identity);
         return principal;
