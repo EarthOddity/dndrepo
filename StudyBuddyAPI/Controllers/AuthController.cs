@@ -67,13 +67,13 @@ public class AuthController(IConfiguration config, IAuthServiceAPI authService) 
             new Claim(JwtRegisteredClaimNames.Sub, config["Jwt:Subject"] ?? ""),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString()),
-            new Claim(ClaimTypes.Role, "Student"),
+            new Claim(ClaimTypes.Role, user is Student ? "Student" : "Moderator"),
             new Claim("id", user.id.ToString()),
             new Claim("name", user.name),                                // First name
             new Claim("surname", user.surname),                          // Last name
             new Claim("email", user.email),        // Email
             new Claim("phoneNumber", user.phoneNumber.ToString()),      // Phone number
-            //new Claim("role", user is Student ? "Student" : "Moderator" )
+            new Claim("Role", user is Student ? "Student" : "Moderator" )
         };
         return [.. claims];
     }
