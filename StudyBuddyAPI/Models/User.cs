@@ -6,7 +6,7 @@ public abstract class User
     public string email { get; set; }
     public int phoneNumber { get; set; }
     public string password { get; set; }
-
+//gnfxvcghjh,jkjh
     public User() { }
     public User(int id, string password)
     {
