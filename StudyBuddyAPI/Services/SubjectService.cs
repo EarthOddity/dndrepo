@@ -52,17 +52,11 @@ public class SubjectService(FileContext context) : ISubjectService
         return false;
     }
 
-    public async Task<IEnumerable<string>> SearchSubjectsByName(string searchTerm)
+    public async Task<IEnumerable<Subject>> SearchSubjectsByName(string searchTerm)
     {
-        var result = await Task.Run(() =>
- {
-     return context.Subjects
-         .Where(s => s.name.Contains(searchTerm))
-         .Select(s => s.name)
-         .ToList();
- });
-
-        return result;
+        var subjects = context.Subjects
+            .Where(s => s.name.ToLower().Contains(searchTerm.ToLower()));
+        return await Task.FromResult(subjects);
     }
 
 }
