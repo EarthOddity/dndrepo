@@ -37,7 +37,7 @@ public class JwtAuthService(HttpClient client, IJSRuntime jsRuntime) : IAuthServ
 
             OnAuthStateChanged.Invoke(principal);
             
-            return;
+        
         }
         else{
         string studentAsJson = JsonSerializer.Serialize(new Student(id, "firstName", "lastName", "email", 0, false, "course", password));
