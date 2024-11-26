@@ -5,54 +5,27 @@
 
 <h3>My Saved Materials</h3>
 
-<div class="materials-container">
-    <div class="materials-list">
-        <h4>Saved Materials</h4>
-        @if (savedMaterials == null)
-        {
-            <p>Loading saved materials...</p>
-        }
-        else if (!savedMaterials.Any())
-        {
-            <p>No saved materials yet.</p>
-        }
-        else
-        {
-            @foreach (var material in savedMaterials)
-            {
-                <div class="material-item">
-                    <div class="material-content" @onclick="() => NavigateToMaterial(material.id)">
-                        <h4>@material.title</h4>
-                        <p>@material.description</p>
-                    </div>
-                    <button class="heart-button saved" @onclick="() => UnsaveMaterial(material.id)">
-                        <i class="fas fa-heart"></i>
-                    </button>
-                </div>
-            }
-        }
-    </div>
+<OverviewMaterialsSaved Title="Saved Materials" Materials="@savedMaterials" SavingMethod="@ToggleSaveMaterial" />
 
-    <div class="subjects-list">
-        <h4>My Subjects</h4>
-        @if (userSubjects == null)
+<div class="subjects-list">
+    <h4>My Subjects</h4>
+    @if (userSubjects == null)
+    {
+        <p>Loading subjects...</p>
+    }
+    else if (!userSubjects.Any())
+    {
+        <p>No subjects found for your bachelor program.</p>
+    }
+    else
+    {
+        @foreach (var subject in userSubjects)
         {
-            <p>Loading subjects...</p>
+            <div class="subject-item" @onclick="() => NavigateToSubjectMaterials(subject.id)">
+                <h4>@subject.name</h4>
+            </div>
         }
-        else if (!userSubjects.Any())
-        {
-            <p>No subjects found for your bachelor program.</p>
-        }
-        else
-        {
-            @foreach (var subject in userSubjects)
-            {
-                <div class="subject-item" @onclick="() => NavigateToSubjectMaterials(subject.id)">
-                    <h4>@subject.name</h4>
-                </div>
-            }
-        }
-    </div>
+    }
 </div>
 
 @code {
@@ -63,7 +36,7 @@
     protected override async Task OnInitializedAsync()
     {
         await LoadSavedMaterials();
-        
+
         var userBachelor = await BachelorService.GetBachelorByStudentId(currentUserId);
         if (userBachelor != null)
         {
@@ -76,19 +49,14 @@
         savedMaterials = (await TeachingMaterialService.GetSavedMaterialsByUserId(currentUserId)).ToList();
     }
 
-    private async Task UnsaveMaterial(int materialId)
+    private async Task ToggleSaveMaterial(int materialId)
     {
-        var success = await TeachingMaterialService.UnsaveMaterialForUser(currentUserId, materialId);
+        var success = await TeachingMaterialService.ToggleSaveMaterial(currentUserId, materialId);
         if (success)
         {
             await LoadSavedMaterials();
             StateHasChanged();
         }
-    }
-
-    private void NavigateToMaterial(int materialId)
-    {
-        NavigationManager.NavigateTo($"/material/{materialId}");
     }
 
     private void NavigateToSubjectMaterials(int subjectId)
@@ -103,7 +71,8 @@
         gap: 2rem;
     }
 
-    .materials-list, .subjects-list {
+    .materials-list,
+    .subjects-list {
         flex: 1;
     }
 
