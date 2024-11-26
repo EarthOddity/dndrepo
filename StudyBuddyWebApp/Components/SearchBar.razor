@@ -1,49 +1,194 @@
 @rendermode InteractiveServer
-<div>
-    <input @bind="searchTerm" @bind:event="oninput" placeholder="Search..." />
-    <button @onclick="Search">Search</button>
-    <button @onclick="Clear">Clear</button>
+@inject NavigationManager NavigationManager
+
+<div class="search-container">
+    <div class="search-input">
+        <input @bind="searchTerm" 
+               @bind:event="oninput" 
+               @onkeyup="@HandleKeyPress"
+               placeholder="Search materials, subjects, or bachelors..." />
+        <button class="search-button" @onclick="Search">
+            <i class="fas fa-search"></i>
+        </button>
+        <button class="clear-button" @onclick="Clear">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+    
+    @if (isLoading)
+    {
+        <div class="loading">Searching...</div>
+    }
+
+    @if (results?.Any() == true)
+    {
+        <div class="results-container">
+            @if (materials?.Any() == true)
+            {
+                <div class="result-section">
+                    <h4>Teaching Materials</h4>
+                    @foreach (var material in materials)
+                    {
+                        <div class="result-item" @onclick="() => NavigateToMaterial(material.id)">
+                            <i class="fas fa-book"></i>
+                            <span>@material.title</span>
+                        </div>
+                    }
+                </div>
+            }
+
+            @if (subjects?.Any() == true)
+            {
+                <div class="result-section">
+                    <h4>Subjects</h4>
+                    @foreach (var subject in subjects)
+                    {
+                        <div class="result-item" @onclick="() => NavigateToSubject(subject.id)">
+                            <i class="fas fa-graduation-cap"></i>
+                            <span>@subject.name</span>
+                        </div>
+                    }
+                </div>
+            }
+
+            @if (bachelors?.Any() == true)
+            {
+                <div class="result-section">
+                    <h4>Bachelor Programs</h4>
+                    @foreach (var bachelor in bachelors)
+                    {
+                        <div class="result-item" @onclick="() => NavigateToBachelor(bachelor.id)">
+                            <i class="fas fa-university"></i>
+                            <span>@bachelor.programName</span>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+    }
 </div>
 
-@if (results != null && results.Any())
-{
-    <ul>
-        @foreach (var result in results)
-        {
-            <li>@result</li>
-        }
-    </ul>
-}
+<style>
+    .search-container {
+        width: 100%;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .search-input {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 1rem;
+    }
+
+    input {
+        flex: 1;
+        padding: 8px 12px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 1rem;
+    }
+
+    .search-button, .clear-button {
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 8px;
+        color: #666;
+        transition: color 0.3s;
+    }
+
+    .search-button:hover, .clear-button:hover {
+        color: #333;
+    }
+
+    .results-container {
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        padding: 1rem;
+    }
+
+    .result-section {
+        margin-bottom: 1rem;
+    }
+
+    .result-section h4 {
+        margin-bottom: 0.5rem;
+        color: #666;
+    }
+
+    .result-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    .result-item:hover {
+        background-color: #f5f5f5;
+    }
+
+    .loading {
+        text-align: center;
+        color: #666;
+        padding: 1rem;
+    }
+</style>
 
 @code {
     private string searchTerm;
-    private List<string> results;
+    private List<TeachingMaterial> materials;
+    private List<Subject> subjects;
+    private List<Bachelor> bachelors;
+    private bool isLoading;
 
     [Inject]
     private HttpClient Http { get; set; }
+
+    private async Task HandleKeyPress(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+            await Search();
+        }
+    }
 
     private async Task Search()
     {
         if (string.IsNullOrWhiteSpace(searchTerm))
         {
-            results = new List<string>();
+            Clear();
             return;
         }
 
-        var subjects = await Http.GetFromJsonAsync<List<string>>($"api/Subject/search/{searchTerm}");
-        var bachelors = await Http.GetFromJsonAsync<List<string>>($"api/Bachelor/search/{searchTerm}");
-        var materials = await Http.GetFromJsonAsync<List<string>>($"api/TeachingMaterial/search/{searchTerm}");
-
-        results = new List<string>();
-        if (subjects != null) results.AddRange(subjects);
-        if (bachelors != null) results.AddRange(bachelors);
-        if (materials != null) results.AddRange(materials);
+        isLoading = true;
+        try
+        {
+            materials = await Http.GetFromJsonAsync<List<TeachingMaterial>>($"api/TeachingMaterial/search/{searchTerm}");
+            subjects = await Http.GetFromJsonAsync<List<Subject>>($"api/Subject/search/{searchTerm}");
+            bachelors = await Http.GetFromJsonAsync<List<Bachelor>>($"api/Bachelor/search/{searchTerm}");
+        }
+        catch (Exception)
+        {
+            // Handle error
+        }
+        finally
+        {
+            isLoading = false;
+        }
     }
 
     private void Clear()
     {
         searchTerm = string.Empty;
-        results = new List<string>();
+        materials = null;
+        subjects = null;
+        bachelors = null;
     }
-}
 
+    private void NavigateToMaterial(int id) => NavigationManager.NavigateTo($"/material/{id}");
+    private void NavigateToSubject(int id) => NavigationManager.NavigateTo($"/subject/{id}");
+    private void NavigateToBachelor(int id) => NavigationManager.NavigateTo($"/bachelor/{id}");
+}
