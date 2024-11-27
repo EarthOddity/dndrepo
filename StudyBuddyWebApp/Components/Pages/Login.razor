@@ -28,8 +28,9 @@
                         </label>
                     </div>
                 }
-                <div class="d-grid">
+                <div class="d-grid gap-2">
                     <button class="btn btn-primary" @onclick="LoginAsync">Log in</button>
+                    <button class="btn btn-secondary" @onclick="GoToRegister"> Register</button>
                 </div>
             </div>
         </div>
@@ -75,6 +76,11 @@
     {
         await authService.LogoutAsync();
         navMgr.NavigateTo("/login");
+    }
+
+    private void GoToRegister()
+    {
+        navMgr.NavigateTo("/register");
     }
     
 }

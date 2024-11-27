@@ -77,7 +77,6 @@ else
                 <span>@(student.isTutor ? "Yes" : "No")</span>
             }
         </div>
-    using Microsoft.AspNetCore.Identity;
 
         <div>
             <label>Language:</label>
@@ -88,6 +87,18 @@ else
             else
             {
                 <span>@student.language</span>
+            }
+        </div>
+
+        <div>
+            <label>Bachelor:</label>
+            @if (isEditing)
+            {
+                <InputText @bind-Value="student.bachelor.programName" class="form-control" />
+            }
+            else
+            {
+                <span>@student.bachelor</span>
             }
         </div>
 
