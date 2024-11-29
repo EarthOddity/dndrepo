@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-public class AuthService    : IAuthServiceAPI
+public class AuthService
 {
     private readonly FileContext _context;
 
@@ -8,20 +8,20 @@ public class AuthService    : IAuthServiceAPI
     {
         _context = context;
     }
-    public Task<Student> ValidateStudent (int id, string password)
-    {
-        Student? existingStudent = _context.Students.FirstOrDefault(s => s.id == id) ?? throw new Exception("Student not found");
-        if (!existingStudent.password.Equals(password))
-        {
-            throw new Exception("Password mismatch");
-        }
+    // public Task<Student> ValidateStudent (int id, string password)
+    // {
+    //     Student? existingStudent = _context.Students.FirstOrDefault(s => s.id == id) ?? throw new Exception("Student not found");
+    //     if (!existingStudent.password.Equals(password))
+    //     {
+    //         throw new Exception("Password mismatch");
+    //     }
 
-        return Task.FromResult(existingStudent);
+    //     return Task.FromResult(existingStudent);
 
-    }
+    // }
     public async Task RegisterStudentAsync(Student student)
     {
-        
+
 
         _context.Students.Add(student);
         await _context.SaveChangesAsync();

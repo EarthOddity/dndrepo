@@ -1,0 +1,147 @@
+@page "/materials"
+@inject ITeachingMaterialService TeachingMaterialService
+@inject IBachelorService BachelorService
+@inject NavigationManager NavigationManager
+
+
+<h3>Available Teaching Materials</h3>
+
+<div class="materials-container">
+    <div class="materials-list">
+        @if (teachingMaterials == null)
+        {
+            <p>Loading materials...</p>
+        }
+        else
+        {
+            @foreach (var material in teachingMaterials)
+            {
+                <div class="material-item">
+                    <div class="material-content" @onclick="() => NavigateToMaterial(material.id)">
+                        <h4>@material.title</h4>
+                        <p>@material.description</p>
+                    </div>
+                    <button class="heart-button @(IsMaterialSaved(material.id) ? "saved" : "")"
+                        @onclick="() => ToggleSave(material.id)">
+                        <i class="fas fa-heart"></i>
+                    </button>
+                </div>
+            }
+        }
+    </div>
+    <div class="bachelors-list">
+        <h3>Available Bachelors</h3>
+        @if (bachelors == null)
+        {
+            <p>Loading bachelors...</p>
+        }
+        else
+        {
+            @foreach (var bachelor in bachelors)
+            {
+                <div class="bachelor-item" @onclick="() => LoadSubjects(bachelor.id)">
+                    <h4>@bachelor.programName</h4>
+                </div>
+            }
+        }
+        <div class="subjects-list">
+            @if (selectedSubjects != null)
+            {
+                <h4>Subjects</h4>
+                @foreach (var subject in selectedSubjects)
+                {
+                    <p>@subject.name</p>
+                }
+            }
+        </div>
+    </div>
+</div>
+
+
+@code {
+    private List<TeachingMaterial> teachingMaterials;
+    private List<Bachelor> bachelors;
+    private List<Subject> selectedSubjects;
+    private HashSet<int> savedMaterialIds = new();
+
+    private readonly int currentUserId = 1; // For future: Get actual user ID
+
+    protected override async Task OnInitializedAsync()
+    {
+        teachingMaterials = (await TeachingMaterialService.GetAllMaterials()).ToList();
+        bachelors = (await BachelorService.GetAllBachelors()).ToList();
+
+        var savedMaterials = await TeachingMaterialService.GetSavedMaterialsByUserId(currentUserId);
+        savedMaterialIds = new HashSet<int>(savedMaterials.Select(m => m.id));
+    }
+
+    private async Task LoadSubjects(int bachelorId)
+    {
+        selectedSubjects = (await BachelorService.GetSubjectsByBachelorId(bachelorId)).ToList();
+    }
+
+    private void NavigateToMaterial(int materialId)
+    {
+        NavigationManager.NavigateTo($"/material/{materialId}");
+    }
+
+    private bool IsMaterialSaved(int materialId)
+    {
+        return savedMaterialIds.Contains(materialId);
+    }
+
+    private async Task ToggleSave(int materialId)
+    {
+        if (IsMaterialSaved(materialId))
+        {
+            var success = await TeachingMaterialService.UnsaveMaterialForUser(currentUserId, materialId);
+            if (success)
+            {
+                savedMaterialIds.Remove(materialId);
+            }
+        }
+        else
+        {
+            var success = await TeachingMaterialService.SaveMaterialForUser(currentUserId, materialId);
+            if (success)
+            {
+                savedMaterialIds.Add(materialId);
+            }
+        }
+        StateHasChanged();
+    }
+}
+
+<style>
+    .material-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem;
+        margin-bottom: 1rem;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+
+    .material-content {
+        flex-grow: 1;
+        cursor: pointer;
+    }
+
+    .heart-button {
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 8px;
+        color: #888;
+        transition: color 0.3s ease;
+    }
+
+    .heart-button.saved {
+        color: #ff4444;
+    }
+
+    .heart-button:hover {
+        transform: scale(1.1);
+    }
+</style>

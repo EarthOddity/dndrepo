@@ -49,3 +49,39 @@ h1:focus {
 .darker-border-checkbox.form-check-input {
     border-color: #929292;
 }
+
+.materials-container {
+    display: flex;
+}
+
+.materials-list {
+    flex: 3;
+    padding: 10px;
+}
+
+.bachelors-list {
+    flex: 1;
+    padding: 10px;
+    border-left: 1px solid #ccc;
+}
+
+.bachelor-item {
+    margin-bottom: 10px;
+    cursor: pointer;
+}
+
+.subjects-list {
+    margin-top: 20px;
+}
+
+.material-item {
+    cursor: pointer;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.material-item:hover {
+    background-color: #f5f5f5;
+}

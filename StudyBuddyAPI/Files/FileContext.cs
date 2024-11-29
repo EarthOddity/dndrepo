@@ -56,7 +56,7 @@ public class FileContext
         }
     }
 
-    public List<Calendar> Calendars
+    public List<SBCalendar> Calendars
     {
         get
         {
@@ -69,7 +69,7 @@ public class FileContext
         }
     }
 
-    public List<Event> Events
+    public List<SBEvent> Events
     {
         get
         {
@@ -108,6 +108,19 @@ public class FileContext
         }
     }
 
+    public List<SavedMaterial> SavedMaterials
+    {
+        get
+        {
+            if (!isDataLoaded)
+            {
+                LoadData();
+                isDataLoaded = true;
+            }
+            return dataContainer.SavedMaterials;
+        }
+    }
+
     public async Task SaveChangesAsync()
     {
         JsonSerializerOptions options = new()
@@ -131,7 +144,8 @@ public class FileContext
                 Calendars = [],
                 Events = [],
                 Reviews = [],
-                TeachingMaterials = []
+                TeachingMaterials = [],
+                SavedMaterials = []
 
             };
             return;

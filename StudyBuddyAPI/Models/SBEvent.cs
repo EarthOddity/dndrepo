@@ -1,4 +1,4 @@
-public class Event
+public class SBEvent
 {
     public int id { get; set; }
     public int ownerId { get; set; }
@@ -10,11 +10,11 @@ public class Event
     public DateTime startTime { get; set; }
     public DateTime endTime { get; set; }
 
-    public Event()
+    public SBEvent()
     {
 
     }
-    public Event(int id, int ownerId, string title, string description, List<Student> participants, List<TeachingMaterial> materials, DateTime startTime, DateTime endTime)
+    public SBEvent(int id, int ownerId, string title, string description, List<Student> participants, List<TeachingMaterial> materials, DateTime startTime, DateTime endTime)
     {
         this.id = id;
         this.ownerId = ownerId;
