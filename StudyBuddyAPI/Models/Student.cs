@@ -2,8 +2,8 @@
 public class Student : User {
     public bool isTutor { get; set; }
     public string language { get; set; }
-    //public Bachelor bachelor { get; set; }
-    //public Calendar calendar { get; set; }
+    public Bachelor bachelor { get; set; }
+    public Calendar calendar { get; set; }
     public List<SavedMaterial> savedMaterials { get; set; }
     public List<Review> reviews { get; set; }
 
@@ -12,11 +12,12 @@ public class Student : User {
         this.language = language;
        
     }
-  /*   public Student(int id, string name, string surname, string email, int phoneNumber, bool isTutor, string language, Bachelor bachelor, string password): base(id, name, surname, email, phoneNumber, password){
+    public Student(int id, string name, string surname, string email, int phoneNumber, bool isTutor, string language, Bachelor bachelor, string password): base(id, name, surname, email, phoneNumber, password){
         this.isTutor = isTutor;
         this.language = language;
         this.bachelor = bachelor;
-    } */
+    }
+    
      public Student() : base()
     {   this.isTutor = false;
         this.language = string.Empty;

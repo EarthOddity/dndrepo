@@ -8,6 +8,9 @@ public class Review
     public int materialId { get; set; }
     public TeachingMaterial material { get; set; } 
 
+    public Review()
+    {
+    }
 
     public Review(int id, string reviewText, Student author, bool isApproved, int authorId, int materialId, TeachingMaterial material)
     {
