@@ -66,7 +66,7 @@ public class StudentService (FileContext context) : IStudentService{
             studentToUpdate.phoneNumber = student.phoneNumber;
             studentToUpdate.isTutor = student.isTutor;
             studentToUpdate.language = student.language;
-            studentToUpdate.bachelor = student.bachelor;
+            //studentToUpdate.bachelor = student.bachelor;
             await context.SaveChangesAsync();
         }
 
