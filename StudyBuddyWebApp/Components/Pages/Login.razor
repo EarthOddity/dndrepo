@@ -1,0 +1,80 @@
+@page "/login"
+@inject IAuthService authService
+@inject NavigationManager navMgr
+@rendermode InteractiveServer
+
+<AuthorizeView>
+    <NotAuthorized>
+        <div class="container d-flex justify-content-center align-items-center vh-100">
+            <div class="card p-4 shadow-sm" style="max-width: 400px; width: 100%;">
+                <h3 class="text-center mb-4">Please login</h3>
+                <div class="mb-3">
+                    <label for="id" class="form-label">Id:</label>
+                    <input type="number" id="id" @bind="id" class="form-control" />
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label">Password:</label>
+                    <input type="password" id="password" @bind="password" class="form-control" />
+                </div>
+                <div class="mb-3 form-check">
+                    <input type="checkbox" id="isModerator" @bind="isModerator" class="form-check-input" />
+                    <label for="isModerator" class="form-check-label">Are you a moderator?</label>
+                 </div>
+                @if (!string.IsNullOrEmpty(errorLabel))
+                {
+                    <div class="mb-3">
+                        <label class="text-danger">
+                            @errorLabel
+                        </label>
+                    </div>
+                }
+                <div class="d-grid">
+                    <button class="btn btn-primary" @onclick="LoginAsync">Log in</button>
+                </div>
+            </div>
+        </div>
+        
+    </NotAuthorized>
+    <Authorized>
+        <p>You are already logged in</p>
+        <button @onclick="Logout" class="loginbtn">
+            Log out
+        </button>
+    </Authorized>
+</AuthorizeView>
+
+@code {
+    private int id ;
+    private string email = "";
+    private string password = "";
+    private string errorLabel = "";
+    private bool isModerator = false;
+    private async Task LoginAsync()
+    {   
+        errorLabel = "";
+        try
+        {
+            Console.WriteLine(isModerator);
+            await authService.LoginAsync(id, password, isModerator);
+            
+
+            if(!isModerator)
+                navMgr.NavigateTo("/user-profile");
+            else
+                navMgr.NavigateTo("/moderator-profile");
+            
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            errorLabel = $"Error: {e.Message}";
+        }
+        
+    }
+    private async Task Logout()
+    {
+        await authService.LogoutAsync();
+        navMgr.NavigateTo("/login");
+    }
+    
+}
