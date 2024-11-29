@@ -24,9 +24,9 @@ public class ReviewService(FileContext context) : IReviewService
         return Task.FromResult(review);
     }
 
-    public  Task<List<Review>> GetReviewsByAuthor(int authorId) // Simplified
+    public Task<List<Review>> GetReviewsByAuthor(int authorId) // Simplified
     {
-        var reviews =  context.Reviews;
+        var reviews = context.Reviews;
         var filteredReviews = reviews.Where(r => r.authorId == authorId).ToList();
         return Task.FromResult(filteredReviews);
     }
@@ -54,6 +54,12 @@ public class ReviewService(FileContext context) : IReviewService
             return true;
         }
         return false;
+    }
+
+    public Task<IEnumerable<Review>> GetReviewsByMaterialId(int materialId)
+    {
+        var reviews = context.Reviews.Where(r => r.materialId == materialId);
+        return Task.FromResult(reviews);
     }
 
 }

@@ -14,7 +14,7 @@ public class TeachingMaterialController(ITeachingMaterialService _teachingMateri
     [HttpGet]
     public async Task<ActionResult<List<TeachingMaterial>>> GetAllMaterials()
     {
-        return Ok( await _teachingMaterialService.GetAllMaterials());
+        return Ok(await _teachingMaterialService.GetAllMaterials());
     }
     [HttpGet("title/{title}")]
     public async Task<ActionResult<List<TeachingMaterial>>> GetMaterialByTitle(string title)
@@ -65,12 +65,35 @@ public class TeachingMaterialController(ITeachingMaterialService _teachingMateri
         return NoContent();
     }
 
-    /*[HttpGet("search/{searchTerm}")]
-     public async Task<ActionResult<IEnumerable<string>>> SearchTeachingMaterials(string searchTerm)
-     {
-         var materials = await _teachingMaterialService.SearchTeachingMaterials(searchTerm);
-         return Ok(materials);
-     }*/
+    [HttpGet("saved/{userId}")]
+    public async Task<ActionResult<IEnumerable<TeachingMaterial>>> GetSavedMaterialsByUserId(int userId)
+    {
+        var materials = await _teachingMaterialService.GetSavedMaterialsByUserId(userId);
+        if (materials == null)
+        {
+            return NotFound();
+        }
+        return Ok(materials);
+    }
+
+    [HttpPost("toggle-save")]
+    public async Task<IActionResult> ToggleSaveMaterial(int userId, int materialId)
+    {
+        var success = await _teachingMaterialService.ToggleSaveMaterial(userId, materialId);
+        if (!success)
+        {
+            return BadRequest("Failed to toggle save state.");
+        }
+        return Ok();
+    }
+
+    [HttpGet("search/{searchTerm}")]
+    public async Task<ActionResult<IEnumerable<string>>> SearchTeachingMaterials(string searchTerm)
+    {
+        var materials = await _teachingMaterialService.SearchTeachingMaterials(searchTerm);
+        return Ok(materials);
+    }
+
 }
 
 
