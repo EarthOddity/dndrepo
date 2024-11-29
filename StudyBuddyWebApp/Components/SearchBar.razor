@@ -1,0 +1,166 @@
+@rendermode InteractiveServer
+@inject NavigationManager NavigationManager
+@inject ITeachingMaterialService TeachingMaterialService
+@inject ISubjectService SubjectService
+@inject IBachelorService BachelorService
+
+<div class="search-container">
+    <div class="search-input">
+        <input @bind="searchTerm" @bind:event="oninput" @onkeyup="@HandleKeyPress"
+            placeholder="Search materials, subjects, or bachelors..." />
+        <button class="search-button" @onclick="Search" title="Search">
+            <i class="fas fa-search"></i>
+            <span class="button-text">Search</span>
+        </button>
+        <button class="clear-button" @onclick="Clear" title="Clear">
+            <i class="fas fa-times"></i>
+            <span class="button-text">Clear</span>
+        </button>
+    </div>
+
+    @if (isLoading)
+    {
+        <div class="loading">Searching...</div>
+    }
+
+    @if ((materials?.Any() ?? false) || (subjects?.Any() ?? false) || (bachelors?.Any() ?? false))
+    {
+        <div class="results-container">
+            @if (materials?.Any() == true)
+            {
+                <div class="result-section">
+                    <h4>Teaching Materials</h4>
+                    @foreach (var material in materials)
+                    {
+                        <div class="result-item" @onclick="() => NavigateToMaterial(material.id)">
+                            <i class="fas fa-book"></i>
+                            <span>@material.title</span>
+                        </div>
+                    }
+                </div>
+            }
+
+            @if (subjects?.Any() == true)
+            {
+                <div class="result-section">
+                    <h4>Subjects</h4>
+                    @foreach (var subject in subjects)
+                    {
+                        <div class="result-item" @onclick="() => NavigateToSubject(subject.id)">
+                            <i class="fas fa-graduation-cap"></i>
+                            <span>@subject.name</span>
+                        </div>
+                    }
+                </div>
+            }
+
+            @if (bachelors?.Any() == true)
+            {
+                <div class="result-section">
+                    <h4>Bachelor Programs</h4>
+                    @foreach (var bachelor in bachelors)
+                    {
+                        <div class="result-item" @onclick="() => NavigateToBachelor(bachelor.id)">
+                            <i class="fas fa-university"></i>
+                            <span>@bachelor.programName</span>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@code {
+    private string searchTerm;
+    private bool isLoading;
+    private List<TeachingMaterial> materials;
+    private List<Subject> subjects;
+    private List<Bachelor> bachelors;
+
+    private async Task HandleKeyPress(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+            await Search();
+        }
+    }
+
+    private async Task Search()
+    {
+        if (string.IsNullOrWhiteSpace(searchTerm))
+        {
+            Clear();
+            return;
+        }
+
+        isLoading = true;
+        try
+        {
+            Console.WriteLine($"Searching for: {searchTerm}");
+
+            materials = (await TeachingMaterialService.SearchTeachingMaterials(searchTerm))?.ToList();
+            subjects = (await SubjectService.SearchSubjectsByName(searchTerm))?.ToList();
+            bachelors = (await BachelorService.SearchBachelors(searchTerm))?.ToList();
+
+            Console.WriteLine($"Found subjects: {string.Join(", ", subjects?.Select(s => s.name) ?? Array.Empty<string>())}");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Search error: {ex.Message}");
+        }
+        finally
+        {
+            isLoading = false;
+            StateHasChanged();
+        }
+    }
+
+    private void Clear()
+    {
+        searchTerm = string.Empty;
+        materials = null;
+        subjects = null;
+        bachelors = null;
+    }
+
+    private void NavigateToMaterial(int id) => NavigationManager.NavigateTo($"/material/{id}");
+    private void NavigateToSubject(int id) => NavigationManager.NavigateTo($"/subject/{id}");
+    private void NavigateToBachelor(int id) => NavigationManager.NavigateTo($"/bachelor/{id}");
+}
+
+<style>
+    .search-button,
+    .clear-button {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 16px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    .search-button {
+        background-color: #007bff;
+        color: white;
+    }
+
+    .clear-button {
+        background-color: #6c757d;
+        color: white;
+    }
+
+    .search-button:hover {
+        background-color: #0056b3;
+    }
+
+    .clear-button:hover {
+        background-color: #5a6268;
+    }
+
+    .button-text {
+        font-size: 14px;
+    }
+</style>

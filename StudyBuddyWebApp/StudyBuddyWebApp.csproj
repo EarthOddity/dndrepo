@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
-  <ItemGroup>
+ <ItemGroup>
     <ProjectReference Include="..\StudyBuddyAPI\StudyBuddyAPI.csproj" />
   </ItemGroup>
 
@@ -9,5 +9,6 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
+
 
 </Project>

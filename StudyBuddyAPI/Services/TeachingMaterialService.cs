@@ -1,61 +1,112 @@
 
-public class TeachingMaterialService
+public class TeachingMaterialService : ITeachingMaterialService
 {
-    private readonly List<TeachingMaterial> materials = new List<TeachingMaterial>();
+    //private static List<Student> studentsList = new List<Student>();
+    private readonly FileContext context;
 
-    // Add a new TeachingMaterial
-    public void AddMaterial(TeachingMaterial material)
+    public TeachingMaterialService(FileContext context)
     {
-        materials.Add(material);
-        Console.WriteLine($"Added: {material.Title}");
+        this.context = context;
     }
 
-    // Retrieve all TeachingMaterials
-    public List<TeachingMaterial> GetAllMaterials()
+    public async Task<TeachingMaterial> CreateTeachingMaterial(TeachingMaterial material)
     {
-        return materials;
+        context.TeachingMaterials.Add(material);
+        return await Task.FromResult(material);
     }
 
-    // Retrieve a TeachingMaterial by Title
-    public TeachingMaterial GetMaterialByTitle(string title)
+    public async Task<IEnumerable<TeachingMaterial>> GetAllMaterials()
     {
-        return materials.Find(m => m.Title.Equals(title, StringComparison.OrdinalIgnoreCase));
+        return await Task.FromResult(context.TeachingMaterials.AsEnumerable());
     }
 
-    // Retrieve a TeachingMaterial by Author
-    // public TeachingMaterial GetMaterialByAuthor(Student author)
-    // {
-    //     return materials.Find(m =>
-    //         m.Author != null &&
-    //         m.Author.IsTutor == author.IsTutor &&
-    //         m.Author.Language.Equals(author.Language, StringComparison.OrdinalIgnoreCase) &&
-    //         m.Author.Semester == author.Semester &&
-    //         m.Author.Bachelor == author.Bachelor
-    //     );
-    // }
-
-
-    // Update an existing TeachingMaterial by Title
-    public bool UpdateMaterial(string title, string newDescription, bool newIsApproved, Student newAuthor)
+    public Task<TeachingMaterial> GetMaterialById(int id)
     {
-        var material = GetMaterialByTitle(title);
-        if (material == null) return false;
+        return Task.FromResult(context.TeachingMaterials.FirstOrDefault(m => m.id == id));
+    }
 
-        material.Description = newDescription;
-        material.IsApproved = newIsApproved;
-        material.Author = newAuthor;
-        Console.WriteLine($"Updated: {title}");
+    public Task<TeachingMaterial> GetMaterialByAuthor(Student author)
+    {
+        var material = context.TeachingMaterials.Find(m =>
+            m.author != null &&
+            m.author.Equals(author)
+        );
+        return Task.FromResult(material);
+    }
+    public Task<IEnumerable<TeachingMaterial>> GetMaterialByTitle(string title)
+    {
+        var material = context.TeachingMaterials.Where(m => m.title == title);
+        return Task.FromResult(material);
+    }
+    public async Task<bool> UpdateMaterial(int id, string description, bool isApproved, Student author)
+    {
+        var material = context.TeachingMaterials.FirstOrDefault(r => r.id == id);
+        if (material != null)
+        {
+            material.description = description;
+            material.isApproved = isApproved;
+            material.author = author;
+            await context.SaveChangesAsync();
+            return true;
+        }
+        return false;
+    }
+
+    public async Task<bool> DeleteMaterial(int id)
+    {
+        var material = context.TeachingMaterials.FirstOrDefault(r => r.id == id);
+        if (material == null)
+        {
+            context.TeachingMaterials.Remove(material);
+            await context.SaveChangesAsync();
+            return true;
+        }
+        return false;
+    }
+
+
+    public Task<IEnumerable<TeachingMaterial>> GetSavedMaterialsByUserId(int userId)
+    {
+        var savedMaterials = context.SavedMaterials
+            .Where(sm => sm.UserId == userId)
+            .Select(sm => sm.Material);
+
+        return Task.FromResult(savedMaterials);
+    }
+
+    public async Task<bool> ToggleSaveMaterial(int userId, int materialId)
+    {
+        var existingSave = context.SavedMaterials
+            .FirstOrDefault(sm => sm.UserId == userId && sm.MaterialId == materialId);
+
+        if (existingSave != null)
+        {
+            // Unsave if already saved
+            context.SavedMaterials.Remove(existingSave);
+        }
+        else
+        {
+            // Save if not already saved
+            var savedMaterial = new SavedMaterial
+            (
+                Id: context.SavedMaterials.Any() ? context.SavedMaterials.Max(sm => sm.Id) + 1 : 1,
+                UserId: userId,
+                MaterialId: materialId,
+                Material: context.TeachingMaterials.FirstOrDefault(m => m.id == materialId),
+                User: context.Students.FirstOrDefault(s => s.id == userId)
+            );
+            context.SavedMaterials.Add(savedMaterial);
+        }
+
+        await context.SaveChangesAsync();
         return true;
     }
 
-    // Delete a TeachingMaterial by Title
-    public bool DeleteMaterial(string title)
-    {
-        var material = GetMaterialByTitle(title);
-        if (material == null) return false;
 
-        materials.Remove(material);
-        Console.WriteLine($"Deleted: {title}");
-        return true;
+    public Task<IEnumerable<TeachingMaterial>> SearchTeachingMaterials(string searchTerm)
+    {
+        var materials = context.TeachingMaterials.Where(m => m.title.Contains(searchTerm) || m.description.Contains(searchTerm));
+        return Task.FromResult(materials);
     }
+
 }

@@ -1,54 +1,56 @@
-public class EventService
+public class EventService(FileContext context) : IEventService
 {
-    private static List<Event> _eventsList = new List<Event>();
+    private readonly FileContext _context = context;
 
     public Task<IEnumerable<Event>> GetAllEvents()
     {
-        return Task.FromResult(_eventsList.AsEnumerable());
+        return Task.FromResult(_context.Events.AsEnumerable());
     }
 
-    public Task<Event> GetEventById(int id)
+    public async Task<Event> GetEventById(int id)
     {
-        var @event = _eventsList.FirstOrDefault(e => e.id == id);
-        return Task.FromResult(@event);
+        var @event = _context.Events.FirstOrDefault(e => e.id == id);
+        return await Task.FromResult(@event);
     }
 
-    public Task<Event> CreateEvent(Event @event)
+    public async Task<Event> CreateEvent(Event @event)
     {
-        _eventsList.Add(@event);
-        return Task.FromResult(@event);
+        _context.Events.Add(@event);
+        await _context.SaveChangesAsync();
+        return @event;
     }
 
-    public Task<bool> UpdateEvent(int id, Event updatedEvent)
+    public async Task<bool> UpdateEvent(int id, Event updatedEvent)
     {
-        var eventToUpdate = _eventsList.FirstOrDefault(e => e.id == id);
+        var eventToUpdate = _context.Events.FirstOrDefault(e => e.id == id);
         if (eventToUpdate != null)
         {
             eventToUpdate.title = updatedEvent.title;
             eventToUpdate.description = updatedEvent.description;
             eventToUpdate.startTime = updatedEvent.startTime;
             eventToUpdate.endTime = updatedEvent.endTime;
-            return Task.FromResult(true);
-
+            await _context.SaveChangesAsync();
+            return true;
         }
-        return Task.FromResult(false);
+        return false;
     }
 
-    public Task<bool> DeleteEvent(int id)
+    public async Task<bool> DeleteEvent(int id)
     {
-        var @event = _eventsList.FirstOrDefault(b => b.id == id);
+        var @event = _context.Events.FirstOrDefault(b => b.id == id);
         if (@event != null)
         {
-            _eventsList.Remove(@event);
-            return Task.FromResult(true);
+            _context.Events.Remove(@event);
+            await _context.SaveChangesAsync();
+            return true;
         }
-        return Task.FromResult(false);
+        return false;
     }
 
-    public Task<IEnumerable<Event>> GetEventsInRange(DateTime start, DateTime end)
+    public async Task<IEnumerable<Event>> GetEventsInRange(DateTime start, DateTime end)
     {
-        var eventsInRange = _eventsList.Where(e => e.startTime >= start && e.endTime <= end);
-        return Task.FromResult(eventsInRange.AsEnumerable());
+        var eventsInRange = _context.Events.Where(e => e.startTime >= start && e.endTime <= end);
+        return await Task.FromResult(eventsInRange.AsEnumerable());
     }
 
 }

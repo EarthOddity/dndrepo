@@ -7,10 +7,15 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("http://localhost:5044/") });
+
+// Register the app's services
+builder.Services.AddScoped<ITeachingMaterialService, TeachingMaterialService>();
+builder.Services.AddScoped<IBachelorService, BachelorService>();
+builder.Services.AddScoped<ISubjectService, SubjectService>();
+builder.Services.AddScoped<IReviewService, ReviewService>();
 builder.Services.AddScoped<IProfileService, ProfileService>();
-builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("http://localhost:5044") });
-
-
+builder.Services.AddScoped<FileContext>(); 
 builder.Services.AddAuthentication().AddCookie(options =>
 {
     options.LoginPath = "/login";
