@@ -1,7 +1,9 @@
 @page "/user-profile"
 @inject IProfileService ProfileService
 @using System.Security.Claims
+@using Microsoft.AspNetCore.Components.Authorization
 @using StudyBuddyWebApp.Components.Layout
+@using Microsoft.AspNetCore.Authorization
 @inject AuthenticationStateProvider AuthStateProvider
 @rendermode InteractiveServer
 @attribute [Authorize("MustBeStudent")]
