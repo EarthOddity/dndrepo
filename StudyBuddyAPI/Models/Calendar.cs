@@ -7,12 +7,17 @@ public class Calendar
 
     public List<Event> events { get; set; }
 
+    public Calendar()
+    {}
+        
     public Calendar(int id, Student user)
     {
         this.id = id;
         this.user = user;
         this.events = new List<Event>(); // initialize to avoid null errors hiuhi
     }
+
+
 
 
 }

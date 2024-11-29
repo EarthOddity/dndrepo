@@ -22,11 +22,15 @@ Content-Type: application/json
     "email": "string",
     "phoneNumber": 0,
     "password": "string",
+    "calendar": {
+        
+    },
     "isTutor": false,
     "language": "string",
     "bachelor": {
         "id": 1,
         "programName": "Computer Science"
+        
     }
 }
 
