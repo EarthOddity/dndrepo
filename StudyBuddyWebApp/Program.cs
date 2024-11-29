@@ -1,4 +1,6 @@
 using StudyBuddyWebApp.Components;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Components.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,8 +14,18 @@ builder.Services.AddScoped<ITeachingMaterialService, TeachingMaterialService>();
 builder.Services.AddScoped<IBachelorService, BachelorService>();
 builder.Services.AddScoped<ISubjectService, SubjectService>();
 builder.Services.AddScoped<IReviewService, ReviewService>();
+builder.Services.AddScoped<IProfileService, ProfileService>();
 builder.Services.AddScoped<FileContext>(); 
+builder.Services.AddAuthentication().AddCookie(options =>
+{
+    options.LoginPath = "/login";
+});
 
+builder.Services.AddScoped<IAuthService, JwtAuthService>();
+
+builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthProvider>();
+
+AuthorizationPolicies.AddPolicies(builder.Services);
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -25,6 +37,7 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseAuthorization();
 
 app.UseStaticFiles();
 app.UseAntiforgery();

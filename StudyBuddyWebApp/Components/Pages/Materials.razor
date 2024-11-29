@@ -7,28 +7,12 @@
 <h3>Available Teaching Materials</h3>
 
 <div class="materials-container">
-    <div class="materials-list">
-        @if (teachingMaterials == null)
-        {
-            <p>Loading materials...</p>
-        }
-        else
-        {
-            @foreach (var material in teachingMaterials)
-            {
-                <div class="material-item">
-                    <div class="material-content" @onclick="() => NavigateToMaterial(material.id)">
-                        <h4>@material.title</h4>
-                        <p>@material.description</p>
-                    </div>
-                    <button class="heart-button @(IsMaterialSaved(material.id) ? "saved" : "")"
-                        @onclick="() => ToggleSave(material.id)">
-                        <i class="fas fa-heart"></i>
-                    </button>
-                </div>
-            }
-        }
-    </div>
+    <OverviewMaterialsSaved 
+        Title="Available Materials"
+        Materials="@teachingMaterials"
+        SavingMethod="@ToggleSave" />
+
+    
     <div class="bachelors-list">
         <h3>Available Bachelors</h3>
         @if (bachelors == null)
@@ -80,11 +64,6 @@
         selectedSubjects = (await BachelorService.GetSubjectsByBachelorId(bachelorId)).ToList();
     }
 
-    private void NavigateToMaterial(int materialId)
-    {
-        NavigationManager.NavigateTo($"/material/{materialId}");
-    }
-
     private bool IsMaterialSaved(int materialId)
     {
         return savedMaterialIds.Contains(materialId);
@@ -92,23 +71,19 @@
 
     private async Task ToggleSave(int materialId)
     {
-        if (IsMaterialSaved(materialId))
+        var success = await TeachingMaterialService.ToggleSaveMaterial(currentUserId, materialId);
+        if (success)
         {
-            var success = await TeachingMaterialService.UnsaveMaterialForUser(currentUserId, materialId);
-            if (success)
+            if (savedMaterialIds.Contains(materialId))
             {
                 savedMaterialIds.Remove(materialId);
             }
-        }
-        else
-        {
-            var success = await TeachingMaterialService.SaveMaterialForUser(currentUserId, materialId);
-            if (success)
+            else
             {
                 savedMaterialIds.Add(materialId);
             }
+            StateHasChanged();
         }
-        StateHasChanged();
     }
 }
 

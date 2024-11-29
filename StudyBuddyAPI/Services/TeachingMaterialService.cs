@@ -64,45 +64,44 @@ public class TeachingMaterialService : ITeachingMaterialService
         return false;
     }
 
-    
+
     public Task<IEnumerable<TeachingMaterial>> GetSavedMaterialsByUserId(int userId)
     {
         var savedMaterials = context.SavedMaterials
             .Where(sm => sm.UserId == userId)
             .Select(sm => sm.Material);
-            
+
         return Task.FromResult(savedMaterials);
     }
 
-    public async Task<bool> SaveMaterialForUser(int userId, int materialId)
+    public async Task<bool> ToggleSaveMaterial(int userId, int materialId)
     {
-        var savedMaterial = new SavedMaterial
-        (
-            Id: 0, // supposed to be auto-generated
-            UserId: userId,
-            MaterialId: materialId,
-            Material: context.TeachingMaterials.FirstOrDefault(m => m.id == materialId),
-            User: context.Students.FirstOrDefault(s => s.id == userId)
-        );
-        savedMaterial.Id = context.SavedMaterials.Max(sm => sm.Id) + 1;
-        context.SavedMaterials.Add(savedMaterial);
+        var existingSave = context.SavedMaterials
+            .FirstOrDefault(sm => sm.UserId == userId && sm.MaterialId == materialId);
+
+        if (existingSave != null)
+        {
+            // Unsave if already saved
+            context.SavedMaterials.Remove(existingSave);
+        }
+        else
+        {
+            // Save if not already saved
+            var savedMaterial = new SavedMaterial
+            (
+                Id: context.SavedMaterials.Any() ? context.SavedMaterials.Max(sm => sm.Id) + 1 : 1,
+                UserId: userId,
+                MaterialId: materialId,
+                Material: context.TeachingMaterials.FirstOrDefault(m => m.id == materialId),
+                User: context.Students.FirstOrDefault(s => s.id == userId)
+            );
+            context.SavedMaterials.Add(savedMaterial);
+        }
+
         await context.SaveChangesAsync();
         return true;
     }
 
-    public async Task<bool> UnsaveMaterialForUser(int userId, int materialId)
-    {
-        var savedMaterial = context.SavedMaterials
-            .FirstOrDefault(sm => sm.UserId == userId && sm.MaterialId == materialId);
-            
-        if (savedMaterial != null)
-        {
-            context.SavedMaterials.Remove(savedMaterial);
-            await context.SaveChangesAsync();
-            return true;
-        }
-        return false;
-    }
 
     public Task<IEnumerable<TeachingMaterial>> SearchTeachingMaterials(string searchTerm)
     {

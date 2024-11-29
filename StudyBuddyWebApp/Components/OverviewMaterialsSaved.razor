@@ -1,0 +1,105 @@
+@inject ITeachingMaterialService TeachingMaterialService
+@inject NavigationManager NavigationManager
+
+<div class="materials-container">
+    <div class="materials-list">
+        <h4>Title</h4>
+        @if (Materials == null)
+        {
+            <p>Loading materials...</p>
+        }
+        else if (!Materials.Any())
+        {
+            <p>No materials available.</p>
+        }
+        else
+        {
+            @foreach (var material in Materials)
+            {
+                <div class="material-item">
+                    <div class="material-content" @onclick="() => NavigateToMaterial(material.id)">
+                        <h4>@material.title</h4>
+                        <p>@material.description</p>
+                    </div>
+                    <button class="heart-button saved" @onclick="() => SavingMethod.InvokeAsync(material.id)">
+                        <i class="fas fa-heart"></i>
+                    </button>
+                </div>
+            }
+        }
+    </div>
+</div>
+
+@code {
+
+    [Parameter]
+    public string Title { get; set; }
+
+    [Parameter]
+    public List<TeachingMaterial> Materials { get; set; }
+
+    [Parameter]
+    public EventCallback<int> SavingMethod { get; set; }
+
+    private void NavigateToMaterial(int materialId)
+    {
+        NavigationManager.NavigateTo($"/material/{materialId}");
+    }
+
+}
+
+<style>
+    .materials-container {
+        display: flex;
+        gap: 2rem;
+    }
+
+    .materials-list,
+    .subjects-list {
+        flex: 1;
+    }
+
+    .material-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem;
+        margin-bottom: 1rem;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+
+    .material-content {
+        flex-grow: 1;
+        cursor: pointer;
+    }
+
+    .heart-button {
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 8px;
+        color: #888;
+        transition: color 0.3s ease;
+    }
+
+    .heart-button.saved {
+        color: #ff4444;
+    }
+
+    .heart-button:hover {
+        transform: scale(1.1);
+    }
+
+    .subject-item {
+        cursor: pointer;
+        padding: 1rem;
+        margin-bottom: 1rem;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+
+    .subject-item:hover {
+        background-color: #f5f5f5;
+    }
+</style>

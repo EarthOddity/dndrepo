@@ -76,24 +76,13 @@ public class TeachingMaterialController(ITeachingMaterialService _teachingMateri
         return Ok(materials);
     }
 
-    [HttpPost("save")]
-    public async Task<IActionResult> SaveMaterialForUser(int userId, int materialId)
+    [HttpPost("toggle-save")]
+    public async Task<IActionResult> ToggleSaveMaterial(int userId, int materialId)
     {
-        var success = await _teachingMaterialService.SaveMaterialForUser(userId, materialId);
+        var success = await _teachingMaterialService.ToggleSaveMaterial(userId, materialId);
         if (!success)
         {
-            return BadRequest("Failed to save material.");
-        }
-        return Ok();
-    }
-
-    [HttpDelete("unsave")]
-    public async Task<IActionResult> UnsaveMaterialForUser(int userId, int materialId)
-    {
-        var success = await _teachingMaterialService.UnsaveMaterialForUser(userId, materialId);
-        if (!success)
-        {
-            return BadRequest("Failed to unsave material.");
+            return BadRequest("Failed to toggle save state.");
         }
         return Ok();
     }

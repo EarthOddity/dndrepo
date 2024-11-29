@@ -1,0 +1,132 @@
+
+@inject NavigationManager NavigationManager
+@inject IProfileService ProfileService
+@inject IAuthService authService
+@rendermode InteractiveServer
+@using System.Security.Claims
+@using StudyBuddyWebApp.Components.Layout
+@inject AuthenticationStateProvider AuthStateProvider
+
+
+<div class="user-icon-dropdown">
+    <button class="user-icon" @onclick="ToggleDropdown">
+        <img src="images/profilepic.jpg" alt="" class="user-avatar">
+    </button>
+
+    @if (user1 != null && !string.IsNullOrEmpty(user1.name))
+        {
+            <span>Hello, @user1.name</span>
+        }
+    else
+        {
+            <span>Hello, User</span>
+        }
+
+    <div class="dropdown-menu @(isDropdownOpen ? "show" : "")">
+        <AuthorizeView>
+            <NotAuthorized>
+                <a class="dropdown-item" @onclick="GoToLogin">Login</a>
+                <a class="dropdown-item" @onclick="GoToRegister">Register</a>
+            </NotAuthorized>
+            <Authorized>
+                <a class="dropdown-item" @onclick="GoToProfile">Profile</a>
+                <a class="dropdown-item" @onclick="GoToSettings">Settings</a>
+                <a class="dropdown-item" @onclick="Logout">Log Out</a>
+            </Authorized>
+        </AuthorizeView>
+    </div>
+        
+
+</div>
+
+@code {
+    //private Student student { get; set; }
+    //private Moderator moderator { get; set; }
+    private User user1 { get; set; }
+    private bool isDropdownOpen = false;
+
+    private string? role;
+
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthState { get; set; } = null!;
+
+    private int id;
+    private IEnumerable<Claim>? userClaims;
+    private bool isLoggedIn;
+
+    protected override async Task OnInitializedAsync()
+    {   
+        AuthStateProvider.AuthenticationStateChanged += OnAuthenticationStateChanged;
+        await LoadUserInfo();
+ 
+    }
+    private async Task LoadUserInfo(){
+        AuthenticationState authState = await AuthState;
+        ClaimsPrincipal user = authState.User;
+        isLoggedIn = user.Identity != null;
+
+        if (!isLoggedIn) return;
+        userClaims = user.Claims;
+        id  = int.Parse(user.Claims.First(claim => claim.Type.Equals("id")).Value);
+        Console.WriteLine("Id is : " + id);
+        role = user.Claims.FirstOrDefault(c => c.Type == "Role")?.Value;
+        if(role == "Student"){
+            user1 = await ProfileService.GetStudentProfile(id);
+        }
+        else if(role == "Moderator"){
+            user1 = await ProfileService.GetModeratorProfile(id);
+            Console.WriteLine("User is authenticated with role: " + role);
+        }
+        Console.WriteLine("User is authenticated with role: " + role);
+        StateHasChanged(); // Trigger UI update
+
+    }
+
+    private void ToggleDropdown()
+    {
+        isDropdownOpen = !isDropdownOpen;
+    }
+
+    private void GoToProfile()
+    {
+        isDropdownOpen = false;
+        if(role == "Student")
+            NavigationManager.NavigateTo("/user-profile");
+        else if(role == "Moderator")
+            NavigationManager.NavigateTo("/moderator-profile");
+    }
+
+    private void GoToSettings()
+    {
+        isDropdownOpen = false;
+        NavigationManager.NavigateTo("/settings"); // Example settings page
+    }
+
+    private async Task Logout()
+    {
+        isDropdownOpen = false;
+        user1 = null;
+        isLoggedIn = false;
+        role = null;
+        await authService.LogoutAsync();
+        StateHasChanged(); // Trigger UI update
+
+        NavigationManager.NavigateTo("/login");
+    }
+    private void GoToLogin()
+    {
+        isDropdownOpen = false;
+        NavigationManager.NavigateTo("/login");
+    }
+    private void GoToRegister()
+    {
+        isDropdownOpen = false;
+        NavigationManager.NavigateTo("/register");
+    }
+    private async void OnAuthenticationStateChanged(Task<AuthenticationState> authStateTask)
+    {
+        await LoadUserInfo();
+        StateHasChanged(); // Notify Blazor to re-render the component
+    }
+    
+}
