@@ -21,8 +21,13 @@ Content-Type: application/json
     "surname": "string",
     "email": "string",
     "phoneNumber": 0,
+    "password": "string",
     "isTutor": false,
-    "language": "string"
+    "language": "string",
+    "bachelor": {
+        "id": 1,
+        "programName": "Computer Science"
+    }
 }
 
 ###Put Student
@@ -35,8 +40,13 @@ Content-Type: application/json
     "surname": "string",
     "email": "string",
     "phoneNumber": 0,
+    "password": "string",
     "isTutor": true,
-    "language": "string"
+    "language": "string",
+    "bachelor": {
+        "id": 1,
+        "programName": "Computer Science"
+    }
 }
 
 ###Delete Student

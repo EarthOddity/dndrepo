@@ -40,7 +40,7 @@ public class JwtAuthService(HttpClient client, IJSRuntime jsRuntime) : IAuthServ
         
         }
         else{
-        string studentAsJson = JsonSerializer.Serialize(new Student(id, "firstName", "lastName", "email", 0, false, "course", password));
+        string studentAsJson = JsonSerializer.Serialize(new Student(id, "firstName", "lastName", "email", 0, false, "course", new Bachelor(), password));
         StringContent content = new(studentAsJson, Encoding.UTF8, "application/json");
 
         HttpResponseMessage response = await client.PostAsync("/auth/login-student", content);
