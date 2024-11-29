@@ -6,6 +6,9 @@ public class SavedMaterial
     public TeachingMaterial Material { get; set; }
     public Student User { get; set; }
 
+    public SavedMaterial()
+    {
+    }
     public SavedMaterial(int Id, int UserId, int MaterialId, TeachingMaterial Material, Student User)
     {
         this.Id = Id;
