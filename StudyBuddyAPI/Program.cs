@@ -18,6 +18,7 @@ builder.Services.AddSingleton<BachelorService>();
 builder.Services.AddSingleton<CalendarService>();
 builder.Services.AddSingleton<EventService>();
 builder.Services.AddSingleton<FileContext>();
+builder.Services.AddDbContext<DatabaseContext>();
 builder.Services.AddSingleton<IAuthServiceAPI, AuthService>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
