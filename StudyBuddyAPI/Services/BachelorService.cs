@@ -1,7 +1,6 @@
-public class BachelorService : IBachelorService
+public class BachelorService(DatabaseContext context) : IBachelorService
 {
     private readonly DatabaseContext context;
-
     public BachelorService(DatabaseContext context)
     {
         context = context;

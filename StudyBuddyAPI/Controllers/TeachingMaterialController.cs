@@ -10,7 +10,7 @@ public class TeachingMaterialController(ITeachingMaterialService _teachingMateri
         _teachingMaterialService = teachingMaterialService;
     }
     
-    [HttpGet]
+    HttpGet]
     public async Task<ActionResult<IEnumerable<TeachingMaterial>>> GetAllMaterials()
     {
         try
