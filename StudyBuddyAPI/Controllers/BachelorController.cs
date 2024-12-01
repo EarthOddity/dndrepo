@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 public class BachelorController : ControllerBase
 {
-    private readonly BachelorService _bachelorService;
+    private BachelorService _bachelorService;
 
     public BachelorController(BachelorService bachelorService)
     {
@@ -14,31 +14,19 @@ public class BachelorController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Bachelor>>> GetBachelors()
     {
-        try
-        {
-            var bachelors = await _bachelorService.GetAllBachelors();
-            return Ok(bachelors);
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, ex.Message);
-        }
+        var bachelors = await _bachelorService.GetAllBachelors();
+        return Ok(bachelors);
     }
 
     [HttpGet("{id}")]
     public async Task<ActionResult<Bachelor>> GetBachelor(int id)
     {
-        try
+        var bachelor = await _bachelorService.GetBachelorById(id);
+        if (bachelor == null)
         {
-            var bachelor = await _bachelorService.GetBachelorById(id);
-            if (bachelor == null)
-                return NotFound($"Bachelor with ID {id} not found");
-            return Ok(bachelor);
+            return NotFound();
         }
-        catch (KeyNotFoundException ex)
-        {
-            return NotFound(ex.Message);
-        }
+        return Ok(bachelor);
     }
 
     [HttpPost]

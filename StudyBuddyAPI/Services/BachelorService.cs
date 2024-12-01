@@ -4,39 +4,40 @@ public class BachelorService(DatabaseContext context) : IBachelorService
     public BachelorService(DatabaseContext context)
     {
         context = context;
-    }
+    } 
 
-    public async Task<IEnumerable<Bachelor>> GetAllBachelors()
+    public Task<IEnumerable<Bachelor>> GetAllBachelors()
     {
-        return await context.Bachelors.ToListAsync();
+        return Task.FromResult(context.Bachelors.AsEnumerable());
     }
 
     public async Task<Bachelor> GetBachelorById(int id)
     {
-        var bachelor = await context.Bachelors.FindAsync(id);
-        return bachelor;
+        var bachelor = context.Bachelors.FirstOrDefault(b => b.id == id);
+        return await Task.FromResult(bachelor);
     }
 
     public async Task<Bachelor> CreateBachelor(Bachelor bachelor)
     {
-        await context.Bachelors.AddAsync(bachelor);
+        context.Bachelors.Add(bachelor);
         await context.SaveChangesAsync();
         return bachelor;
     }
 
     public async Task UpdateBachelor(int id, Bachelor updatedBachelor)
     {
-        var bachelor = await context.Bachelors.FindAsync(id);
-        if (bachelor == null)
-            throw new KeyNotFoundException($"Bachelor with ID {id} not found");
+        var index = context.Bachelors.FindIndex(b => b.id == id);
+        if (index != -1)
+        {
+            context.Bachelors[index] = updatedBachelor;
+            await context.SaveChangesAsync();
 
-        context.Entry(bachelor).CurrentValues.SetValues(updatedBachelor);
-        await context.SaveChangesAsync();
+        }
     }
 
     public async Task<bool> DeleteBachelor(int id)
     {
-        var bachelor = await context.Bachelors.FindAsync(id);
+        var bachelor = context.Bachelors.FirstOrDefault(b => b.id == id);
         if (bachelor != null)
         {
             context.Bachelors.Remove(bachelor);
@@ -48,39 +49,38 @@ public class BachelorService(DatabaseContext context) : IBachelorService
 
     public Task<bool> AddSubjectToBachelor(int bachelorId, Subject subject)
     {
-        var bachelor = await context.Bachelors
-           .Include(b => b.associatedSubjects)
-           .FirstOrDefaultAsync(b => b.id == bachelorId);
-
-        if (bachelor == null)
-            return false;
-
-        bachelor.associatedSubjects.Add(subject);
-        await context.SaveChangesAsync();
-        return true;
+        var bachelor = context.Bachelors.FirstOrDefault(b => b.id == bachelorId);
+        if (bachelor != null)
+        {
+            bachelor.associatedSubjects.Add(subject);
+            return Task.FromResult(true);
+        }
+        return Task.FromResult(false);
     }
 
     public async Task<List<Subject>> GetSubjectsByBachelorId(int bachelorId)
     {
-        var bachelor = await context.Bachelors
-       .Include(b => b.associatedSubjects)
-       .FirstOrDefaultAsync(b => b.id == bachelorId);
-
-        return bachelor?.associatedSubjects ?? new List<Subject>();
+        var bachelor = context.Bachelors.FirstOrDefault(b => b.id == bachelorId);
+        if (bachelor != null)
+        {
+            return await Task.FromResult(bachelor.associatedSubjects);
+        }
+        return await Task.FromResult(new List<Subject>());
     }
 
     public Task<Bachelor> GetBachelorByStudentId(int studentId)
     {
-        return await _context.Students
+        var bachelor = context.Students
             .Where(s => s.id == studentId)
             .Select(s => s.bachelor)
-            .FirstOrDefaultAsync();
+            .FirstOrDefault();
+
+        return Task.FromResult(bachelor);
     }
 
     public async Task<IEnumerable<Bachelor>> SearchBachelors(string searchTerm)
     {
-        return await _context.Bachelors
-     .Where(b => b.programName.Contains(searchTerm))
-     .ToListAsync();
+        var bachelors = context.Bachelors.Where(b => b.programName.Contains(searchTerm));
+        return await Task.FromResult(bachelors);
     }
 }
