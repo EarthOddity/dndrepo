@@ -6,19 +6,22 @@ using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllers();
 builder.Services.AddScoped<IStudentService, StudentService>();
-builder.Services.AddSingleton<IModeratorService, ModeratorService>();
+builder.Services.AddScoped<IModeratorService, ModeratorService>();
 builder.Services.AddSingleton<ISubjectService, SubjectService>();
 builder.Services.AddSingleton<BachelorService>();
 builder.Services.AddSingleton<CalendarService>();
 builder.Services.AddSingleton<EventService>();
 builder.Services.AddSingleton<FileContext>();
-builder.Services.AddSingleton<IAuthServiceAPI, AuthService>();
+builder.Services.AddDbContext<DatabaseContext>(options =>
+    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddScoped<IAuthServiceAPI, AuthService>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 

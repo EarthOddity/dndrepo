@@ -40,7 +40,7 @@ public class JwtAuthService(HttpClient client, IJSRuntime jsRuntime) : IAuthServ
         
         }
         else{
-        string studentAsJson = JsonSerializer.Serialize(new Student(id, "firstName", "lastName", "email", 0, false, "course", new Bachelor(), password));
+        string studentAsJson = JsonSerializer.Serialize(new Student(id, "firstName", "lastName", "email", 0, false, "course", password));
         StringContent content = new(studentAsJson, Encoding.UTF8, "application/json");
 
         HttpResponseMessage response = await client.PostAsync("/auth/login-student", content);
@@ -92,7 +92,7 @@ public class JwtAuthService(HttpClient client, IJSRuntime jsRuntime) : IAuthServ
         OnAuthStateChanged.Invoke(principal);
     }
 
-   public async Task RegisterStudentAsync(Student student)
+   public async Task<Student> RegisterStudentAsync(Student student)
     {
         
         string userAsJson = JsonSerializer.Serialize(student);
@@ -104,6 +104,7 @@ public class JwtAuthService(HttpClient client, IJSRuntime jsRuntime) : IAuthServ
         {
             throw new Exception(responseContent);
         }
+        return JsonSerializer.Deserialize<Student>(await response.Content.ReadAsStringAsync());
     }
 
     public async Task<ClaimsPrincipal> GetAuthAsync()
