@@ -1,10 +1,9 @@
 
 public class TeachingMaterialService : ITeachingMaterialService
 {
-    //private static List<Student> studentsList = new List<Student>();
-    private readonly FileContext context;
+    private readonly DatebaseContext context;
 
-    public TeachingMaterialService(FileContext context)
+    public TeachingMaterialService(DatebaseContext context)
     {
         this.context = context;
     }

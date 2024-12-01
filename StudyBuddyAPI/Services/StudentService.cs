@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 
 public class StudentService (FileContext context) : IStudentService{
-    //private static List<Student> studentsList = new List<Student>();
     private readonly FileContext context = context;
     static StudentService()
     {
