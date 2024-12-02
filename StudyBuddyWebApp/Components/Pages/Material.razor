@@ -1,4 +1,4 @@
-@page "/material/{id:int}"
+@page "/material"
 @inject IAcademicService AcademicService
 
 <h3>Teaching Material Details</h3>
@@ -13,7 +13,7 @@ else
         <div class="material-info">
             <h4>@teachingMaterial.title</h4>
             <p>@teachingMaterial.description</p>
-            <p><strong>Author:</strong> @teachingMaterial.author.name</p>
+            <p><strong>Author:</strong> @teachingMaterial.author?.name</p>
             <p><strong>Approved:</strong> @(teachingMaterial.isApproved ? "Yes" : "No")</p>
         </div>
         <button class="heart-button @(isSaved ? "saved" : "")" @onclick="ToggleSave">
@@ -36,7 +36,7 @@ else
             @foreach (var review in reviews)
             {
                 <div>
-                    <p><strong>@review.author.name:</strong> @review.reviewText</p>
+                    <p><strong>@review.author?.name:</strong> @review.reviewText</p>
                     <p><strong>Approved:</strong> @(review.isApproved ? "Yes" : "No")</p>
                 </div>
             }
@@ -49,9 +49,8 @@ else
 }
 
 @code {
-    [Parameter]
-    public int id { get; set; }
-
+    
+    public int id { get; set; } =1;
     private TeachingMaterial teachingMaterial {get; set;}
     private Subject subject { get; set; }
     private IEnumerable<global::Review> reviews;
@@ -75,7 +74,7 @@ else
     {
         try
         {
-            await AcademicService.ToggleSaveMaterial(currentUserId, id);
+            await AcademicService.ToggleSaveMaterial(currentUserId, 1);
             isSaved = !isSaved;
             StateHasChanged();
         }

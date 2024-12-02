@@ -7,7 +7,7 @@ public interface IBachelorService
     Task UpdateBachelor(int id, Bachelor updatedBachelor);
     Task<bool> DeleteBachelor(int id);
     Task<bool> AddSubjectToBachelor(int bachelorId, Subject subject);
-    Task<List<Subject>> GetSubjectsByBachelorId(int bachelorId);
+    Task<List<int>> GetSubjectsByBachelorId(int bachelorId);
     Task<Bachelor> GetBachelorByStudentId(int studentId);
     Task<IEnumerable<Bachelor>> SearchBachelors(string searchTerm);
 }
