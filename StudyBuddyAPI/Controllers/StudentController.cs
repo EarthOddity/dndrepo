@@ -45,7 +45,6 @@ public class StudentController(IStudentService _studentService, ISBCalendarServi
     public async Task<ActionResult<Student>> RegisterStudent(Student student)
     {
         var newStudent = await _studentService.RegisterStudent(student);
-        var calendar = 
         return CreatedAtAction(nameof(GetStudent), new { id = newStudent.id }, newStudent);
     }
 
