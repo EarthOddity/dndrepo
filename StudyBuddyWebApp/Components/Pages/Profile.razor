@@ -2,8 +2,6 @@
 @inject IProfileService ProfileService
 @using System.Security.Claims
 @using StudyBuddyWebApp.Components.Layout
-@using Microsoft.AspNetCore.Components.Authorization
-@using Microsoft.AspNetCore.Authorization
 @inject AuthenticationStateProvider AuthStateProvider
 @rendermode InteractiveServer
 @attribute [Authorize("MustBeStudent")]
@@ -16,7 +14,7 @@
 }
 else
 {
-    <EditForm Model="student" OnValidSubmit="SaveChanges" FormName="StudentProfileForm">
+     <EditForm Model="student" OnValidSubmit="SaveChanges" FormName="StudentProfileForm">
         <DataAnnotationsValidator />
 
         <!-- Read-only and Editable Fields -->
@@ -121,7 +119,7 @@ else
 @code {
     private Student? student = null;
 
-    private bool isEditing = false;
+     private bool isEditing = false ;
     [CascadingParameter]
     public Task<AuthenticationState> AuthState { get; set; } = null!;
 
@@ -138,13 +136,13 @@ else
         AuthenticationState authState = await AuthState;
         ClaimsPrincipal user = authState.User;
         isLoggedIn = user.Identity != null;
-
+        
         var role = user.Claims.FirstOrDefault(c => c.Type == "role")?.Value;
         Console.WriteLine($"User is authenticated with role: {role}");
 
         if (!isLoggedIn) return;
         userClaims = user.Claims;
-        id = int.Parse(user.Claims.First(claim => claim.Type.Equals("id")).Value);
+        id  = int.Parse(user.Claims.First(claim => claim.Type.Equals("id")).Value);
         Console.WriteLine("Id is : " + id);
 
 
@@ -164,7 +162,7 @@ else
         student = await ProfileService.GetStudentProfile(1); // Reload the updated data
         isEditing = false;
     }
-    private void CancelEdit()
+     private void CancelEdit()
     {
         isEditing = false; // Exit edit mode without saving
     }

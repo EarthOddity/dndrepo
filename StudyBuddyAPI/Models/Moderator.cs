@@ -3,7 +3,7 @@ public class Moderator : User
     public string accessLevel { get; set; }
     public List<string> assignedSections { get; set; }
     public List<Review> bannedReviews { get; set; }
-    public Moderator() : base()
+    public Moderator(): base()
     {
         this.accessLevel = string.Empty;
         this.assignedSections = new List<string>();
@@ -16,7 +16,7 @@ public class Moderator : User
         this.assignedSections = assignedSections;
         this.bannedReviews = bannedReviews;
     }
-    public Moderator(int id, string password) : base(id, password)
+    public Moderator(int id, string password ): base(id, password)
     {
         this.accessLevel = string.Empty;
         this.assignedSections = new List<string>();

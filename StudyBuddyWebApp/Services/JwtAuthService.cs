@@ -1,4 +1,6 @@
+using System.Reflection.Metadata;
 using System.Security.Claims;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 using System.Text.Json;
 using Microsoft.JSInterop;
@@ -15,7 +17,7 @@ public class JwtAuthService(HttpClient client, IJSRuntime jsRuntime) : IAuthServ
     {
         if (moderator)
         {
-            string moderatorAsJson = JsonSerializer.Serialize(new Moderator(id, "firstName", "lastName", "email", 123, "access", new List<string>(), new List<Review>(), password));
+            string moderatorAsJson = JsonSerializer.Serialize(new Moderator(id, "firstName", "lastName", "email",123, "access",new List<string>(), new List<Review>(), password));
             StringContent content = new(moderatorAsJson, Encoding.UTF8, "application/json");
 
             HttpResponseMessage response = await client.PostAsync("/auth/login-moderator", content);
@@ -34,33 +36,32 @@ public class JwtAuthService(HttpClient client, IJSRuntime jsRuntime) : IAuthServ
             ClaimsPrincipal principal = await CreateClaimsPrincipal();
 
             OnAuthStateChanged.Invoke(principal);
-
-
+            
+        
         }
-        else
+        else{
+        string studentAsJson = JsonSerializer.Serialize(new Student(id, "firstName", "lastName", "email", 0, false, "course", password));
+        StringContent content = new(studentAsJson, Encoding.UTF8, "application/json");
+
+        HttpResponseMessage response = await client.PostAsync("/auth/login-student", content);
+        string responseContent = await response.Content.ReadAsStringAsync();
+
+        if (!response.IsSuccessStatusCode)
         {
-            string studentAsJson = JsonSerializer.Serialize(new Student(id, "firstName", "lastName", "email", 0, false, "course", password));
-            StringContent content = new(studentAsJson, Encoding.UTF8, "application/json");
+            throw new Exception(responseContent);
+        }
 
-            HttpResponseMessage response = await client.PostAsync("/auth/login-student", content);
-            string responseContent = await response.Content.ReadAsStringAsync();
+        string token = responseContent;
+        Jwt = token;
 
-            if (!response.IsSuccessStatusCode)
-            {
-                throw new Exception(responseContent);
-            }
+        await CacheTokenAsync();
 
-            string token = responseContent;
-            Jwt = token;
+        ClaimsPrincipal principal = await CreateClaimsPrincipal();
 
-            await CacheTokenAsync();
-
-            ClaimsPrincipal principal = await CreateClaimsPrincipal();
-
-            OnAuthStateChanged.Invoke(principal);
+        OnAuthStateChanged.Invoke(principal);
         }
     }
-
+    
 
     private async Task<ClaimsPrincipal> CreateClaimsPrincipal()
     {
@@ -77,7 +78,7 @@ public class JwtAuthService(HttpClient client, IJSRuntime jsRuntime) : IAuthServ
             client.DefaultRequestHeaders.Add("Authorization", "Bearer " + Jwt);
 
         IEnumerable<Claim> claims = ParseClaimsFromJwt(Jwt);
-
+        
         ClaimsIdentity identity = new(claims, "jwt");
         ClaimsPrincipal principal = new(identity);
         return principal;
@@ -91,9 +92,9 @@ public class JwtAuthService(HttpClient client, IJSRuntime jsRuntime) : IAuthServ
         OnAuthStateChanged.Invoke(principal);
     }
 
-    public async Task<Student> RegisterStudentAsync(Student student)
+   public async Task<Student> RegisterStudentAsync(Student student)
     {
-
+        
         string userAsJson = JsonSerializer.Serialize(student);
         StringContent content = new(userAsJson, Encoding.UTF8, "application/json");
         HttpResponseMessage response = await client.PostAsync("api/student", content);

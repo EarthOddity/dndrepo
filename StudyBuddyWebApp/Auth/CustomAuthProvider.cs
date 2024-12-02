@@ -25,6 +25,6 @@ public class CustomAuthProvider : AuthenticationStateProvider
             Task.FromResult(
                 new AuthenticationState(principal)
             )
-  );
+        );
     }
 }

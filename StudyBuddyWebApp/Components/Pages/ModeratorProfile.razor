@@ -2,9 +2,6 @@
 @inject IProfileService ProfileService
 @using System.Security.Claims
 @using StudyBuddyWebApp.Components.Layout
-@using Microsoft.AspNetCore.Components.Authorization
-@using Microsoft.AspNetCore.Authorization
-@inject AuthenticationStateProvider AuthenticationStateProvider
 @inject AuthenticationStateProvider AuthStateProvider
 @rendermode InteractiveServer
 @attribute [Authorize("MustBeModerator")]
@@ -17,7 +14,7 @@
 }
 else
 {
-    <EditForm Model="moderator" OnValidSubmit="SaveChanges" FormName="ModeratorProfileForm">
+     <EditForm Model="moderator" OnValidSubmit="SaveChanges" FormName="ModeratorProfileForm">
         <DataAnnotationsValidator />
 
         <!-- Read-only and Editable Fields -->
@@ -86,8 +83,8 @@ else
 @code {
     private Moderator? moderator = null;
 
-    private bool isEditing = false;
-
+     private bool isEditing = false ;
+     
     [CascadingParameter]
     public Task<AuthenticationState> AuthState { get; set; } = null!;
 
@@ -104,13 +101,13 @@ else
         AuthenticationState authState = await AuthState;
         ClaimsPrincipal user = authState.User;
         isLoggedIn = user.Identity != null;
-
+        
         var role = user.Claims.FirstOrDefault(c => c.Type == "role")?.Value;
         Console.WriteLine($"User is authenticated with role: {role}");
 
         if (!isLoggedIn) return;
         userClaims = user.Claims;
-        id = int.Parse(user.Claims.First(claim => claim.Type.Equals("id")).Value);
+        id  = int.Parse(user.Claims.First(claim => claim.Type.Equals("id")).Value);
         Console.WriteLine("Id is : " + id);
 
 
@@ -130,7 +127,7 @@ else
         moderator = await ProfileService.GetModeratorProfile(1); // Reload the updated data
         isEditing = false;
     }
-    private void CancelEdit()
+     private void CancelEdit()
     {
         isEditing = false; // Exit edit mode without saving
     }
