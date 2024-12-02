@@ -3,24 +3,24 @@ using Microsoft.AspNetCore.Mvc;
 
 [ApiController]
 [Route("api/[controller]")]
-public class SBCalendarController : ControllerBase
+public class CalendarController : ControllerBase
 {
-    private readonly SBCalendarService _calendarService; //injecting dependencies to access the methods of CalendarService without directly creating an instance in te controller -> easier to manage dependencies and test the controller
+    private readonly CalendarService _calendarService; //injecting dependencies to access the methods of CalendarService without directly creating an instance in te controller -> easier to manage dependencies and test the controller
 
-    public SBCalendarController(SBCalendarService calendarService)
+    public CalendarController(CalendarService calendarService)
     {
         _calendarService = calendarService;
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<SBCalendar>>> GetCalendars()
+    public async Task<ActionResult<IEnumerable<Calendar>>> GetCalendars()
     {
         var calendars = await _calendarService.GetAllCalendars();
         return Ok(calendars);
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<SBCalendar>> GetCalendar(int id)
+    public async Task<ActionResult<Calendar>> GetCalendar(int id)
     {
         var calendar = await _calendarService.GetCalendarById(id);
         if (calendar == null)
@@ -31,14 +31,14 @@ public class SBCalendarController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<SBCalendar>> CreateCalendar(SBCalendar calendar)
+    public async Task<ActionResult<Calendar>> CreateCalendar(Calendar calendar)
     {
         var newCalendar = await _calendarService.CreateCalendar(calendar);
         return CreatedAtAction(nameof(GetCalendar), new { id = newCalendar.id }, newCalendar);
     }
 
     [HttpPost("{calendarId}/event")]
-    public async Task<ActionResult<SBCalendar>> AddEvent(int calendarId, SBEvent @event) // need the @ to distinguish it from the event keyword
+    public async Task<ActionResult<Calendar>> AddEvent(int calendarId, Event @event) // need the @ to distinguish it from the event keyword
     {
         var calendar = await _calendarService.AddEventToCalendar(calendarId, @event);
         if (calendar == null)
@@ -72,7 +72,7 @@ public class SBCalendarController : ControllerBase
     }
 
     [HttpGet("{id}/events")]
-    public async Task<ActionResult<IEnumerable<SBEvent>>> GetEventsByCalendarId(int id)
+    public async Task<ActionResult<IEnumerable<Event>>> GetEventsByCalendarId(int id)
     {
         var events = await _calendarService.GetEventsByCalendarId(id);
         return Ok(events);
