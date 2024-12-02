@@ -5,9 +5,9 @@ using Microsoft.AspNetCore.Mvc;
 [Route("api/[controller]")]
 public class SBCalendarController : ControllerBase
 {
-    private readonly SBCalendarService _calendarService; //injecting dependencies to access the methods of CalendarService without directly creating an instance in te controller -> easier to manage dependencies and test the controller
+    private readonly ISBCalendarService _calendarService; //injecting dependencies to access the methods of CalendarService without directly creating an instance in te controller -> easier to manage dependencies and test the controller
 
-    public SBCalendarController(SBCalendarService calendarService)
+    public SBCalendarController(ISBCalendarService calendarService)
     {
         _calendarService = calendarService;
     }

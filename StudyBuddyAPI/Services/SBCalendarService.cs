@@ -1,6 +1,6 @@
-public class SBCalendarService(FileContext context) : ISBCalendarService
+public class SBCalendarService(DatabaseContext context) : ISBCalendarService
 {
-    private readonly FileContext _context = context;
+    private readonly DatabaseContext _context = context;
 
     public Task<IEnumerable<SBCalendar>> GetAllCalendars()
     {
@@ -15,7 +15,7 @@ public class SBCalendarService(FileContext context) : ISBCalendarService
 
     public async Task<SBCalendar> CreateCalendar(SBCalendar calendar)
     {
-        _context.Calendars.Add(calendar);
+        _context.Calendars.AddAsync(calendar);
         await _context.SaveChangesAsync();
         return calendar;
     }

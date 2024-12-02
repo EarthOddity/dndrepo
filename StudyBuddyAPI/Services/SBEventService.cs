@@ -1,6 +1,6 @@
-public class SBEventService(FileContext context) : ISBEventService
+public class SBEventService(DatabaseContext context) : ISBEventService
 {
-    private readonly FileContext _context = context;
+    private readonly DatabaseContext _context = context;
 
     public Task<IEnumerable<SBEvent>> GetAllEvents()
     {
@@ -19,7 +19,7 @@ public class SBEventService(FileContext context) : ISBEventService
     }
     public async Task<SBEvent> CreateEvent(SBEvent @event)
     {
-        _context.Events.Add(@event);
+        _context.Events.AddAsync(@event);
         await _context.SaveChangesAsync();
         return @event;
     }
