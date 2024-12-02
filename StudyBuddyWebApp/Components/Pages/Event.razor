@@ -2,7 +2,7 @@
 @inject NavigationManager NavigationManager
 @inject ISBEventService EventService
 
-<EditForm Model="@newEvent" OnValidSubmit="CreateNewEvent">
+<EditForm Model="@newEvent"> @*  OnValidSubmit="CreateNewEvent" *@
     <DataAnnotationsValidator />
 
     @if (!string.IsNullOrEmpty(errorMessage))
@@ -71,7 +71,7 @@
         }
     }
 
-    private async Task CreateNewEvent()
+    @* private async Task CreateNewEvent()
     {
         errorMessage = "";
         try
@@ -99,7 +99,7 @@ name = selectedTutor.name
         {
             errorMessage = $"Error creating event: {ex.Message}";
         }
-    }
+    } *@
 
     private void Cancel()
     {

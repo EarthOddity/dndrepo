@@ -16,8 +16,7 @@ public class AuthService : IAuthServiceAPI
             throw new Exception("Password mismatch");
         }
 
-    //     return Task.FromResult(existingStudent);
-
+        return Task.FromResult(existingStudent);
     }
     public Task<Moderator> ValidateModerator(int id, string password)
     {
