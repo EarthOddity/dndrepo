@@ -10,12 +10,12 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddScoped<IStudentService, StudentService>();
 builder.Services.AddScoped<IModeratorService, ModeratorService>();
-builder.Services.AddSingleton<ISubjectService, SubjectService>();
+builder.Services.AddScoped<ISubjectService, SubjectService>();
 builder.Services.AddScoped<ITeachingMaterialService, TeachingMaterialService>();
 builder.Services.AddScoped<IBachelorService, BachelorService>();
-builder.Services.AddSingleton<ISBCalendarService, SBCalendarService>();
-builder.Services.AddSingleton<ISBEventService, SBEventService>();
-builder.Services.AddSingleton<FileContext>();
+builder.Services.AddScoped<ISBCalendarService, SBCalendarService>();
+builder.Services.AddScoped<ISBEventService, SBEventService>();
+builder.Services.AddScoped<FileContext>();
 builder.Services.AddDbContext<DatabaseContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddScoped<IAuthServiceAPI, AuthService>();
