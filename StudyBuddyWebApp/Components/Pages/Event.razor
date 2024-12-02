@@ -56,11 +56,10 @@
     private SBEvent newEvent = new SBEvent();
     private int selectedTutorId;
     private string errorMessage = "";
-    private List<Student> Tutors = new(); // Populate this list
+    private List<Student> Tutors = new();
 
     protected override void OnInitialized()
     {
-        // Pre-populate from query parameters if available
         var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
         var query = System.Web.HttpUtility.ParseQueryString(uri.Query);
 
@@ -85,10 +84,8 @@
                 return;
             }
 
-            // Set owner ID (from authentication context)
             newEvent.ownerId = 1; // Placeholder
 
-            // Add selected tutor to participants
             var selectedTutor = Tutors.FirstOrDefault(t => t.id == selectedTutorId);
             if (selectedTutor != null)
             {
@@ -100,15 +97,11 @@ name = selectedTutor.name
 };
             }
 
-            // Create event
             var createdEvent = await EventService.CreateEvent(newEvent);
-
-            // Navigate to calendar
             NavigationManager.NavigateTo("/calendar");
         }
         catch (Exception ex)
         {
-            // Set error message
             errorMessage = $"Error creating event: {ex.Message}";
         }
     }
@@ -160,7 +153,6 @@ name = selectedTutor.name
         opacity: 0.9;
     }
 
-    /* Scrollbar Styling */
     .week-grid::-webkit-scrollbar {
         width: 10px;
         height: 10px;
