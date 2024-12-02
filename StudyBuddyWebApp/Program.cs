@@ -1,5 +1,4 @@
-using StudyBuddyWebApp.Components;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+using StudyBuddyWebApp;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,6 +14,8 @@ builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("http://
 
 // Register the app's services
 builder.Services.AddScoped<IAcademicService, AcademicService>();
+builder.Services.AddScoped<ISBCalendarService, SBCalendarService>();
+builder.Services.AddScoped<ISBEventService, SBEventService>();
 builder.Services.AddScoped<ISubjectService, SubjectService>();
 builder.Services.AddScoped<IReviewService, ReviewService>();
 builder.Services.AddScoped<IProfileService, ProfileService>();
@@ -24,11 +25,6 @@ builder.Services.AddAuthentication().AddCookie(options =>
     options.LoginPath = "/login";
 });
 
-builder.Services.AddScoped<IAuthService, JwtAuthService>();
-
-builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthProvider>();
-
-AuthorizationPolicies.AddPolicies(builder.Services);
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -40,10 +36,9 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.UseAuthorization();
-
 app.UseStaticFiles();
 app.UseAntiforgery();
+app.UseAuthorization();
 
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
