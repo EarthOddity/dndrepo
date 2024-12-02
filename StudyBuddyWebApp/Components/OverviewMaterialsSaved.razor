@@ -1,9 +1,8 @@
-@inject ITeachingMaterialService TeachingMaterialService
 @inject NavigationManager NavigationManager
 
 <div class="materials-container">
     <div class="materials-list">
-        <h4>Title</h4>
+        <h4>@Title</h4>
         @if (Materials == null)
         {
             <p>Loading materials...</p>
@@ -21,7 +20,8 @@
                         <h4>@material.title</h4>
                         <p>@material.description</p>
                     </div>
-                    <button class="heart-button saved" @onclick="() => SavingMethod.InvokeAsync(material.id)">
+                    <button class="heart-button @(SavedMaterialIds.Contains(material.id) ? "saved" : "")"
+                        @onclick="() => SavingMethod.InvokeAsync(material.id)">
                         <i class="fas fa-heart"></i>
                     </button>
                 </div>
@@ -31,7 +31,6 @@
 </div>
 
 @code {
-
     [Parameter]
     public string Title { get; set; }
 
@@ -41,11 +40,13 @@
     [Parameter]
     public EventCallback<int> SavingMethod { get; set; }
 
+    [Parameter]
+    public HashSet<int> SavedMaterialIds { get; set; }
+
     private void NavigateToMaterial(int materialId)
     {
         NavigationManager.NavigateTo($"/material/{materialId}");
     }
-
 }
 
 <style>

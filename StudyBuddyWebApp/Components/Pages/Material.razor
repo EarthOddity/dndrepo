@@ -53,11 +53,13 @@ else
     [Parameter]
     public int id { get; set; }
 
-    private TeachingMaterial teachingMaterial {get; set;}
+    private TeachingMaterial teachingMaterial { get; set; }
     private Subject subject { get; set; }
     private IEnumerable<global::Review> reviews;
     private readonly int currentUserId = 1; // For future: Get actual user ID
     private bool isSaved;
+    private string error;
+
 
 
     protected override async Task OnInitializedAsync()
@@ -83,12 +85,13 @@ else
     {
         try
         {
-            await AcademicService.ToggleSaveMaterial(currentUserId, 1);
+            await AcademicService.ToggleSaveMaterial(currentUserId, id);
             isSaved = !isSaved;
             StateHasChanged();
         }
         catch (Exception ex)
         {
+            error = "Failed to save material. Please try again.";
             Console.WriteLine($"Error toggling save state: {ex.Message}");
         }
     }
