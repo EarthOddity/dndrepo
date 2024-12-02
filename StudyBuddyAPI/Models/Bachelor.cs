@@ -14,6 +14,6 @@ public class Bachelor
     {
         this.id = id;
         this.programName = programName ?? throw new ArgumentNullException(nameof(programName));
-        associatedSubjects = new List<Subject>();
+        //associatedSubjects = new List<Subject>();
     }
 }

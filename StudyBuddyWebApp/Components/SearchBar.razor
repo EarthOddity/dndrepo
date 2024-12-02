@@ -1,7 +1,7 @@
 @rendermode InteractiveServer
 @inject NavigationManager NavigationManager
-@inject ITeachingMaterialService TeachingMaterialService
-@inject ISubjectService SubjectService
+@* @inject ITeachingMaterialService TeachingMaterialService
+@inject ISubjectService SubjectService *@
 @inject IBachelorService BachelorService
 
 <div class="search-container">
@@ -99,9 +99,9 @@
         {
             Console.WriteLine($"Searching for: {searchTerm}");
 
-            materials = (await TeachingMaterialService.SearchTeachingMaterials(searchTerm))?.ToList();
-            subjects = (await SubjectService.SearchSubjectsByName(searchTerm))?.ToList();
-            bachelors = (await BachelorService.SearchBachelors(searchTerm))?.ToList();
+            materials = (await AcademicService.SearchMaterials(searchTerm))?.ToList();
+            //subjects = (await SubjectService.SearchSubjectsByName(searchTerm))?.ToList();
+            bachelors = (await AcademicService.SearchBachelors(searchTerm))?.ToList();
 
             Console.WriteLine($"Found subjects: {string.Join(", ", subjects?.Select(s => s.name) ?? Array.Empty<string>())}");
         }
