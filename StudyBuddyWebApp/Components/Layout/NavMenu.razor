@@ -1,6 +1,6 @@
 ﻿<nav class="nav-menu">
     <div class="logo">
-        <img src="/studybuddylogo.png" alt="StudyBuddy Logo" width="220px" />
+        <img src="images/studybuddylogo.png" alt="StudyBuddy Logo" width="220px" />
     </div>
     <div class="nav-links">
         <NavLink href="/" Match="NavLinkMatch.All">
@@ -19,6 +19,9 @@
             <span class="nav-icon">👥</span>
             Tutors
         </NavLink>
+    </div>
+    <div class="profile-bar">
+        <ProfileBar />
     </div>
 </nav>
 <style>
@@ -71,6 +74,10 @@
 
     .nav-icon {
         font-size: 18px;
+    }
+
+    .profile-bar {
+        margin-left: 20px;
     }
 
     @@media (max-width: 768px) {

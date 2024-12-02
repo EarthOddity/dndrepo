@@ -1,4 +1,3 @@
-
 public class AcademicService : IAcademicService
 {
     private readonly HttpClient _httpClient;
@@ -144,5 +143,104 @@ public class AcademicService : IAcademicService
         var response = await _httpClient.GetAsync($"api/Bachelor/search/{searchTerm}");
         response.EnsureSuccessStatusCode();
         return await response.Content.ReadFromJsonAsync<IEnumerable<Bachelor>>();
+    }
+
+    // Subject Methods
+    public async Task<IEnumerable<Subject>> GetAllSubjects()
+    {
+        var response = await _httpClient.GetAsync("api/Subject");
+        response.EnsureSuccessStatusCode();
+        return await response.Content.ReadFromJsonAsync<IEnumerable<Subject>>();
+    }
+
+    public async Task<Subject> GetSubjectById(int id)
+    {
+        var response = await _httpClient.GetAsync($"api/Subject/{id}");
+        response.EnsureSuccessStatusCode();
+        return await response.Content.ReadFromJsonAsync<Subject>();
+    }
+
+    public async Task<Subject> GetSubjectByName(string name)
+    {
+        var response = await _httpClient.GetAsync($"api/Subject/name/{name}");
+        response.EnsureSuccessStatusCode();
+        return await response.Content.ReadFromJsonAsync<Subject>();
+    }
+
+    public async Task<Subject> AddSubject(Subject subject)
+    {
+        var response = await _httpClient.PostAsJsonAsync("api/Subject", subject);
+        response.EnsureSuccessStatusCode();
+        return await response.Content.ReadFromJsonAsync<Subject>();
+    }
+
+    public async Task UpdateSubject(Subject updatedSubject)
+    {
+        var response = await _httpClient.PutAsJsonAsync($"api/Subject/{updatedSubject.id}", updatedSubject);
+        if (!response.IsSuccessStatusCode)
+        {
+            throw new HttpRequestException($"Failed to update subject. Status code: {response.StatusCode}");
+        }
+    }
+
+    public async Task<bool> DeleteSubject(int id)
+    {
+        var response = await _httpClient.DeleteAsync($"api/Subject/{id}");
+        return response.IsSuccessStatusCode;
+    }
+
+    public async Task<IEnumerable<Subject>> SearchSubjectsByName(string searchTerm)
+    {
+        var response = await _httpClient.GetAsync($"api/Subject/search/{searchTerm}");
+        response.EnsureSuccessStatusCode();
+        return await response.Content.ReadFromJsonAsync<IEnumerable<Subject>>();
+    }
+
+    // Review Methods
+    public async Task<IEnumerable<Review>> GetAllReviews()
+    {
+        var response = await _httpClient.GetAsync("api/Review");
+        response.EnsureSuccessStatusCode();
+        return await response.Content.ReadFromJsonAsync<IEnumerable<Review>>();
+    }
+
+    public async Task<Review> GetReviewById(int id)
+    {
+        var response = await _httpClient.GetAsync($"api/Review/{id}");
+        response.EnsureSuccessStatusCode();
+        return await response.Content.ReadFromJsonAsync<Review>();
+    }
+
+    public async Task<List<Review>> GetReviewsByAuthor(int authorId)
+    {
+        var response = await _httpClient.GetAsync($"api/Review/author/{authorId}");
+        response.EnsureSuccessStatusCode();
+        return await response.Content.ReadFromJsonAsync<List<Review>>();
+    }
+
+    public async Task<Review> AddReview(Review review)
+    {
+        var response = await _httpClient.PostAsJsonAsync("api/Review", review);
+        response.EnsureSuccessStatusCode();
+        return await response.Content.ReadFromJsonAsync<Review>();
+    }
+
+    public async Task<bool> UpdateReview(int id, string reviewText, bool isApproved)
+    {
+        var response = await _httpClient.PutAsJsonAsync($"api/Review/{id}", new { reviewText, isApproved });
+        return response.IsSuccessStatusCode;
+    }
+
+    public async Task<bool> DeleteReview(int id)
+    {
+        var response = await _httpClient.DeleteAsync($"api/Review/{id}");
+        return response.IsSuccessStatusCode;
+    }
+
+    public async Task<IEnumerable<Review>> GetReviewsByMaterialId(int materialId)
+    {
+        var response = await _httpClient.GetAsync($"api/Review/material/{materialId}");
+        response.EnsureSuccessStatusCode();
+        return await response.Content.ReadFromJsonAsync<IEnumerable<Review>>();
     }
 }

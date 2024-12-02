@@ -126,3 +126,51 @@ Content-Type: application/json
 ### Get all bachelors
 GET http://localhost:5044/api/Bachelor
 Accept: application/json
+
+### Get all teaching materials
+GET http://localhost:5044/api/TeachingMaterial
+Accept: application/json
+
+### Get material by id
+GET http://localhost:5044/api/TeachingMaterial/1
+Accept: application/json
+
+### Get material by title
+GET http://localhost:5044/api/TeachingMaterial/title/Calculus Basics
+Accept: application/json
+
+### Create new teaching material
+POST http://localhost:5044/api/TeachingMaterial
+Content-Type: application/json
+
+{
+    "title": "Calculus Basics",
+    "description": "Introduction to differential calculus",
+    "isApproved": false
+    }
+
+### Update teaching material
+PUT http://localhost:5044/api/TeachingMaterial/2
+Content-Type: application/json
+
+{
+    "title": "Calculus Basics",
+    "description": "Updated calculus content",
+    "isApproved": true
+}
+
+### Delete teaching material
+DELETE http://localhost:5044/api/TeachingMaterial/1
+Accept: application/json
+
+### Get saved materials by user
+GET http://localhost:5044/api/TeachingMaterial/saved/
+Accept: application/json
+
+### Toggle save material
+POST http://localhost:5044/api/TeachingMaterial/toggle-save?userId=1&materialId=1
+Accept: application/json
+
+### Search materials
+GET http://localhost:5044/api/TeachingMaterial/search/calculus
+Accept: application/jsonç
