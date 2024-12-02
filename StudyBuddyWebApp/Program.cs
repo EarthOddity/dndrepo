@@ -25,6 +25,7 @@ builder.Services.AddDbContext<DatabaseContext>(options =>
 
 builder.Services.AddAuthorizationCore();
 builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthProvider>();
+AuthorizationPolicies.AddPolicies(builder.Services);
 
 builder.Services.AddAuthentication().AddCookie(options =>
 {
