@@ -23,7 +23,8 @@
         {
             @foreach (var bachelor in bachelors)
             {
-                <div class="bachelor-item" @onclick="() => LoadSubjects(bachelor.id)">
+                Console.WriteLine("I reached here");
+                <div class="bachelor-item">
                     <h4>@bachelor.programName</h4>
                 </div>
             }
@@ -54,7 +55,7 @@
     {
         teachingMaterials = (await TeachingMaterialService.GetAllMaterials()).ToList();
         bachelors = (await BachelorService.GetAllBachelors()).ToList();
-
+        
         var savedMaterials = await TeachingMaterialService.GetSavedMaterialsByUserId(currentUserId);
         savedMaterialIds = new HashSet<int>(savedMaterials.Select(m => m.id));
     }

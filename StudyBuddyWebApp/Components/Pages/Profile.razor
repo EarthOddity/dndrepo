@@ -89,7 +89,7 @@ else
                 <span>@student.language</span>
             }
         </div>
-
+@* 
         <div>
             <label>Bachelor:</label>
             @if (isEditing)
@@ -100,7 +100,7 @@ else
             {
                 <span>@student.bachelor</span>
             }
-        </div>
+        </div> *@
 
         <!-- Buttons -->
         @if (isEditing)
@@ -159,7 +159,7 @@ else
     private async Task SaveChanges()
     {
         await ProfileService.UpdateStudentProfile(id, student);
-        student = await ProfileService.GetStudentProfile(1); // Reload the updated data
+        student = await ProfileService.GetStudentProfile(id); // Reload the updated data
         isEditing = false;
     }
      private void CancelEdit()

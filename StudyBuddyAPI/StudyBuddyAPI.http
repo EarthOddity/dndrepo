@@ -3,4 +3,3 @@
 GET {{StudyBuddyAPI_HostAddress}}/weatherforecast/
 Accept: application/json
 
-###

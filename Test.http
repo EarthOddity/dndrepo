@@ -112,3 +112,16 @@ Content-Type: application/json
 ### Delete a subject
 DELETE http://localhost:5044/api/Subject/2
 Accept: application/json
+
+###
+POST http://localhost:5044/api/Bachelor
+Content-Type: application/json
+
+{
+  "id": 1,
+  "programName": "Computer Science"
+}
+
+### Get all bachelors
+GET http://localhost:5044/api/Bachelor
+Accept: application/json
