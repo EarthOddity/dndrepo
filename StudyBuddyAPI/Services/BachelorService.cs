@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 public class BachelorService(DatabaseContext context) : IBachelorService
 {
-    private readonly FileContext _context = context;
+    private readonly DatabaseContext _context = context;
 
     public Task<IEnumerable<Bachelor>> GetAllBachelors()
     {
@@ -16,19 +16,18 @@ public class BachelorService(DatabaseContext context) : IBachelorService
 
     public async Task<Bachelor> CreateBachelor(Bachelor bachelor)
     {
-        _context.Bachelors.Add(bachelor);
+        _context.Bachelors.AddAsync(bachelor);
         await _context.SaveChangesAsync();
         return bachelor;
     }
 
     public async Task UpdateBachelor(int id, Bachelor updatedBachelor)
     {
-        var index = _context.Bachelors.FindIndex(b => b.id == id);
-        if (index != -1)
+        var bachelor = await _context.Bachelors.FindAsync(id);
+        if (bachelor != null)
         {
-            _context.Bachelors[index] = updatedBachelor;
+            _context.Entry(bachelor).CurrentValues.SetValues(updatedBachelor);
             await _context.SaveChangesAsync();
-
         }
     }
 
@@ -44,15 +43,16 @@ public class BachelorService(DatabaseContext context) : IBachelorService
         return false;
     }
 
-    public Task<bool> AddSubjectToBachelor(int bachelorId, Subject subject)
+    public async Task<bool> AddSubjectToBachelor(int bachelorId, Subject subject)
     {
         var bachelor = _context.Bachelors.FirstOrDefault(b => b.id == bachelorId);
         if (bachelor != null)
         {
             bachelor.associatedSubjects.Add(subject);
-            return Task.FromResult(true);
+            await _context.SaveChangesAsync();
+            return true;
         }
-        return Task.FromResult(false);
+        return false;
     }
 
     public async Task<List<Subject>> GetSubjectsByBachelorId(int bachelorId)

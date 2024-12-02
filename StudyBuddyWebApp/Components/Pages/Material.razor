@@ -3,17 +3,13 @@
 
 <h3>Teaching Material Details</h3>
 
-@if (teachingMaterial == null)
-{
-    <p>Loading...</p>
-}
-else
+@if (teachingMaterial != null)
 {
     <div class="material-header">
         <div class="material-info">
             <h4>@teachingMaterial.title</h4>
             <p>@teachingMaterial.description</p>
-            <p><strong>Author:</strong> @teachingMaterial.author.name</p>
+            <p><strong>Author:</strong> @teachingMaterial.author?.name</p>
             <p><strong>Approved:</strong> @(teachingMaterial.isApproved ? "Yes" : "No")</p>
         </div>
         <button class="heart-button @(isSaved ? "saved" : "")" @onclick="ToggleSave">
@@ -36,7 +32,7 @@ else
             @foreach (var review in reviews)
             {
                 <div>
-                    <p><strong>@review.author.name:</strong> @review.reviewText</p>
+                    <p><strong>@review.author?.name:</strong> @review.reviewText</p>
                     <p><strong>Approved:</strong> @(review.isApproved ? "Yes" : "No")</p>
                 </div>
             }
@@ -46,6 +42,11 @@ else
     {
         <p>No reviews available.</p>
     }
+}
+else
+{
+    <p>Loading...</p>
+
 }
 
 @code {
@@ -61,13 +62,20 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        teachingMaterial = await AcademicService.GetMaterialById(id);
-        if (teachingMaterial != null)
+        try
         {
-            subject = await AcademicService.GetSubjectById(teachingMaterial.id);
-            reviews = await AcademicService.GetReviewsByMaterialId(teachingMaterial.id);
-            var savedMaterials = await AcademicService.GetSavedMaterialsByUserId(currentUserId);
-            isSaved = savedMaterials.Any(m => m.id == id);
+            teachingMaterial = await AcademicService.GetMaterialById(id);
+            if (teachingMaterial != null)
+            {
+                subject = await AcademicService.GetSubjectById(teachingMaterial.id);
+                reviews = await AcademicService.GetReviewsByMaterialId(teachingMaterial.id);
+                var savedMaterials = await AcademicService.GetSavedMaterialsByUserId(1); // Replace with actual user ID
+                isSaved = savedMaterials.Any(m => m.id == id);
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error loading material: {ex.Message}");
         }
 
     }
