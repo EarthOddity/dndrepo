@@ -1,7 +1,8 @@
 @rendermode InteractiveServer
 @inject NavigationManager NavigationManager
+@inject ITeachingMaterialService TeachingMaterialService
 @inject ISubjectService SubjectService
-@inject IAcademicService AcademicService
+@inject IBachelorService BachelorService
 
 <div class="search-container">
     <div class="search-input">
@@ -87,7 +88,7 @@
 
     private async Task Search()
     {
-       if (string.IsNullOrWhiteSpace(searchTerm))
+        if (string.IsNullOrWhiteSpace(searchTerm))
         {
             Clear();
             return;
@@ -98,9 +99,9 @@
         {
             Console.WriteLine($"Searching for: {searchTerm}");
 
-            materials = (await AcademicService.SearchMaterials(searchTerm))?.ToList();
+            materials = (await TeachingMaterialService.SearchTeachingMaterials(searchTerm))?.ToList();
             subjects = (await SubjectService.SearchSubjectsByName(searchTerm))?.ToList();
-            bachelors = (await AcademicService.SearchBachelors(searchTerm))?.ToList();
+            bachelors = (await BachelorService.SearchBachelors(searchTerm))?.ToList();
 
             Console.WriteLine($"Found subjects: {string.Join(", ", subjects?.Select(s => s.name) ?? Array.Empty<string>())}");
         }

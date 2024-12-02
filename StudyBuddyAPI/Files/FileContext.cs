@@ -56,7 +56,7 @@ public class FileContext
         }
     }
 
-    public List<Calendar> Calendars
+    public List<SBCalendar> Calendars
     {
         get
         {
@@ -69,7 +69,7 @@ public class FileContext
         }
     }
 
-    public List<Event> Events
+    public List<SBEvent> Events
     {
         get
         {

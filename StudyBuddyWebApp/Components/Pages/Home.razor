@@ -1,0 +1,113 @@
+﻿@page "/"
+@using StudyBuddyWebApp.Components
+
+<div class="study-buddy-container">
+    <section class="introduction">
+        <h2>Welcome to StudyBuddy!</h2>
+        <p>Connect with your peers, discover study resources, and find the perfect tutor to help you excel in your
+            academic
+            journey!</p>
+    </section>
+
+    <main class="content-grid">
+        <div class="events-section">
+            <h3>Upcoming Events</h3>
+            <CalendarDay />
+        </div>
+
+        <div class="materials-section">
+            <h3>Saved Materials</h3>
+            <div class="materials-grid">
+                @if (savedMaterials == null)
+                {
+                    <p>Loading materials...</p>
+                }
+                else if (!savedMaterials.Any())
+                {
+                    <p>No materials available.</p>
+                }
+                else
+                {
+                    @foreach (var material in savedMaterials)
+                    {
+                        <div class="material-card">
+                            <h4>@material.title</h4>
+                            <p>@material.description</p>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+    </main>
+</div>
+
+@code {
+    [Inject]
+    private ITeachingMaterialService? TeachingMaterialService { get; set; }
+
+    private List<TeachingMaterial> savedMaterials = new List<TeachingMaterial>();
+
+    @* protected override async Task OnInitializedAsync()
+    {
+        if (TeachingMaterialService != null)
+        {
+            savedMaterials = (await TeachingMaterialService.GetAllMaterials()).ToList();
+        }
+
+        // mock teaching material
+        var mockedMaterial = new TeachingMaterial(
+        3,
+        "Math 101 - Derivatives",
+        "Extra materials, notes and explanations to help on courses about Derivatives",
+        new Student { id = 1, name = "John Austin" },
+        true
+        );
+
+        savedMaterials.Add(mockedMaterial);
+    } *@
+
+
+}
+
+<style>
+    .study-buddy-container {
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #0f172a;
+        color: #e2e8f0;
+    }
+
+    .introduction {
+        background-color: #1e293b;
+        padding: 20px;
+        border-radius: 8px;
+        margin: 30px 0;
+    }
+
+    .content-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+
+    .events-section,
+    .materials-section {
+        background-color: #1e293b;
+        padding: 20px;
+        border-radius: 8px;
+        min-height: fit-content;
+        height: 800px;
+    }
+
+    .materials-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+    }
+
+    .material-card {
+        background-color: #0f172a;
+        padding: 15px;
+        border-radius: 6px;
+    }
+</style>

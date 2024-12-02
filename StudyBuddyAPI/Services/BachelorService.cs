@@ -42,16 +42,15 @@ public class BachelorService(DatabaseContext context) : IBachelorService
         return false;
     }
 
-    public async Task<bool> AddSubjectToBachelor(int bachelorId, Subject subject)
+    public Task<bool> AddSubjectToBachelor(int bachelorId, Subject subject)
     {
         var bachelor = _context.Bachelors.FirstOrDefault(b => b.id == bachelorId);
         if (bachelor != null)
         {
             bachelor.associatedSubjects.Add(subject);
-            await _context.SaveChangesAsync();
-            return true;
+            return Task.FromResult(true);
         }
-        return false;
+        return Task.FromResult(false);
     }
 
     public async Task<List<Subject>> GetSubjectsByBachelorId(int bachelorId)

@@ -1,5 +1,5 @@
 @page "/material/{id:int}"
-@inject IAcademicService AcademicService
+@inject ITeachingMaterialService TeachingMaterialService
 @inject ISubjectService SubjectService
 @inject IReviewService ReviewService
 
@@ -63,27 +63,23 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        teachingMaterial = await AcademicService.GetMaterialById(id);
+        teachingMaterial = await TeachingMaterialService.GetMaterialById(id);
         if (teachingMaterial != null)
         {
             subject = await SubjectService.GetSubjectById(teachingMaterial.id);
             reviews = await ReviewService.GetReviewsByMaterialId(teachingMaterial.id);
-            var savedMaterials = await AcademicService.GetSavedMaterialsByUserId(currentUserId);
+            var savedMaterials = await TeachingMaterialService.GetSavedMaterialsByUserId(currentUserId);
             isSaved = savedMaterials.Any(m => m.id == id);
         }
 
     }
     private async Task ToggleSave()
     {
-        try
+        var success = await TeachingMaterialService.ToggleSaveMaterial(currentUserId, id);
+        if (success)
         {
-            await AcademicService.ToggleSaveMaterial(currentUserId, id);
             isSaved = !isSaved;
             StateHasChanged();
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error toggling save state: {ex.Message}");
         }
     }
 }

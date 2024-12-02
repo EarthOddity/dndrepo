@@ -15,6 +15,7 @@ public class TeachingMaterialController(ITeachingMaterialService _teachingMateri
     public async Task<ActionResult<List<TeachingMaterial>>> GetAllMaterials()
     {
         return Ok(await _teachingMaterialService.GetAllMaterials());
+        return Ok(await _teachingMaterialService.GetAllMaterials());
     }
     [HttpGet("title/{title}")]
     public async Task<ActionResult<List<TeachingMaterial>>> GetMaterialByTitle(string title)
