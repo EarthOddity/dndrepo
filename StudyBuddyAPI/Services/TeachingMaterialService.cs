@@ -1,19 +1,17 @@
-using Microsoft.EntityFrameworkCore;
 
 public class TeachingMaterialService : ITeachingMaterialService
 {
     //private static List<Student> studentsList = new List<Student>();
-    private readonly DatabaseContext context;
+    private readonly FileContext context;
 
-    public TeachingMaterialService(DatabaseContext context)
+    public TeachingMaterialService(FileContext context)
     {
         this.context = context;
     }
 
     public async Task<TeachingMaterial> CreateTeachingMaterial(TeachingMaterial material)
     {
-        context.TeachingMaterials.AddAsync(material);
-        await context.SaveChangesAsync();
+        context.TeachingMaterials.Add(material);
         return await Task.FromResult(material);
     }
 
@@ -27,25 +25,24 @@ public class TeachingMaterialService : ITeachingMaterialService
         return Task.FromResult(context.TeachingMaterials.FirstOrDefault(m => m.id == id));
     }
 
-    public async Task<IEnumerable<TeachingMaterial>> GetMaterialByAuthor(Student author)
+    public Task<TeachingMaterial> GetMaterialByAuthor(Student author)
     {
-        return await context.TeachingMaterials
-            .Include(m => m.author)
-            .Where(m => m.author != null && m.author.id == author.id)
-            .ToListAsync();
+        var material = context.TeachingMaterials.Find(m =>
+            m.author != null &&
+            m.author.Equals(author)
+        );
+        return Task.FromResult(material);
     }
     public Task<IEnumerable<TeachingMaterial>> GetMaterialByTitle(string title)
     {
-        var material = context.TeachingMaterials.Where(m => m.title == title).AsEnumerable();
+        var material = context.TeachingMaterials.Where(m => m.title == title);
         return Task.FromResult(material);
     }
-    public async Task<bool> UpdateMaterial(int id, string title, string description, bool isApproved, Student author)
+    public async Task<bool> UpdateMaterial(int id, string description, bool isApproved, Student author)
     {
-        
         var material = context.TeachingMaterials.FirstOrDefault(r => r.id == id);
         if (material != null)
         {
-            material.title = title;
             material.description = description;
             material.isApproved = isApproved;
             material.author = author;
@@ -57,15 +54,14 @@ public class TeachingMaterialService : ITeachingMaterialService
 
     public async Task<bool> DeleteMaterial(int id)
     {
-        Console.WriteLine("Deleting material with id: " + id);
-        var material =  context.TeachingMaterials.FirstOrDefault(material => material.id == id);
+        var material = context.TeachingMaterials.FirstOrDefault(r => r.id == id);
         if (material == null)
         {
-            return false;
+            context.TeachingMaterials.Remove(material);
+            await context.SaveChangesAsync();
+            return true;
         }
-        context.TeachingMaterials.Remove(material);
-        await context.SaveChangesAsync();
-        return true;
+        return false;
     }
 
 
@@ -73,8 +69,7 @@ public class TeachingMaterialService : ITeachingMaterialService
     {
         var savedMaterials = context.SavedMaterials
             .Where(sm => sm.UserId == userId)
-            .Select(sm => sm.Material)
-            .AsEnumerable();
+            .Select(sm => sm.Material);
 
         return Task.FromResult(savedMaterials);
     }
@@ -107,12 +102,11 @@ public class TeachingMaterialService : ITeachingMaterialService
         return true;
     }
 
-    public async Task<IEnumerable<TeachingMaterial>> SearchTeachingMaterials(string searchTerm)
+
+    public Task<IEnumerable<TeachingMaterial>> SearchTeachingMaterials(string searchTerm)
     {
-        return await context.TeachingMaterials
-            .Where(m => m.title.Contains(searchTerm) ||
-                        m.description.Contains(searchTerm))
-            .ToListAsync();
+        var materials = context.TeachingMaterials.Where(m => m.title.Contains(searchTerm) || m.description.Contains(searchTerm));
+        return Task.FromResult(materials);
     }
 
 }

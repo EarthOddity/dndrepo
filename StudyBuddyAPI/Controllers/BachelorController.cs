@@ -4,9 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 
 public class BachelorController : ControllerBase
 {
-    private readonly IBachelorService _bachelorService;
+    private BachelorService _bachelorService;
 
-    public BachelorController(IBachelorService bachelorService)
+    public BachelorController(BachelorService bachelorService)
     {
         _bachelorService = bachelorService;
     }
