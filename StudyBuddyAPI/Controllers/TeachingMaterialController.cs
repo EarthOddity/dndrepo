@@ -46,17 +46,17 @@ public class TeachingMaterialController(ITeachingMaterialService _teachingMateri
         return CreatedAtAction(nameof(GetMaterialById), new { id = material.id }, material);
     }
 
-    [HttpPut("{title}")]
+    [HttpPut("{id}")]
     public async Task<IActionResult> UpdateMaterial(int id, TeachingMaterial updatedMaterial)
     {
-        var success = await _teachingMaterialService.UpdateMaterial(id, updatedMaterial.description, updatedMaterial.isApproved, updatedMaterial.author);
+        var success = await _teachingMaterialService.UpdateMaterial(id, updatedMaterial.title, updatedMaterial.description, updatedMaterial.isApproved, updatedMaterial.author);
         if (!success)
             return NotFound();
 
         return NoContent();
     }
 
-    [HttpDelete("{title}")]
+    [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteMaterial(int id)
     {
         var success = await _teachingMaterialService.DeleteMaterial(id);
