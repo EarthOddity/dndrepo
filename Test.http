@@ -30,9 +30,8 @@ PUT http://localhost:5044/api/Student/1
 Content-Type: application/json
 
 {
-    "id": 4,
     "name": "José",
-    "surname": "string",
+    "surname": "Papa",
     "email": "string",
     "phoneNumber": 0,
     "password": "string",
@@ -167,7 +166,7 @@ GET http://localhost:5044/api/Bachelor
 Accept: application/json
 
 ### Get bachelor by id
-GET http://localhost:5044/api/Bachelor/1
+GET http://localhost:5044/api/Bachelor/3
 Accept: application/json
 
 ### Create new bachelor
@@ -196,7 +195,7 @@ DELETE http://localhost:5044/api/Bachelor/1
 Accept: application/json
 
 ### Add subject to bachelor
-POST http://localhost:5044/api/Bachelor/1/subjects
+POST http://localhost:5044/api/Bachelor/3/subjects
 Content-Type: application/json
 
 {
@@ -206,7 +205,7 @@ Content-Type: application/json
 }
 
 ### Get subjects by bachelor id
-GET http://localhost:5044/api/Bachelor/1/subjects
+GET http://localhost:5044/api/Bachelor/3/subjects
 Accept: application/json
 
 ### Get bachelor by student id

@@ -13,7 +13,7 @@ public class SavedMaterial
     {
         this.Id = Id;
         this.UserId = UserId;
-        this.MaterialId = MaterialId;
+        this.MaterialId =MaterialId;
         this.Material = Material;
         this.User = User;
     }

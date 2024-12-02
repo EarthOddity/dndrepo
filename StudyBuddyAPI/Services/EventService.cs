@@ -1,30 +1,26 @@
-public class SBEventService(FileContext context) : ISBEventService
+public class EventService(FileContext context) : IEventService
 {
     private readonly FileContext _context = context;
 
-    public Task<IEnumerable<SBEvent>> GetAllEvents()
+    public Task<IEnumerable<Event>> GetAllEvents()
     {
         return Task.FromResult(_context.Events.AsEnumerable());
     }
 
-
-    public async Task<SBEvent> GetEventById(int id)
+    public async Task<Event> GetEventById(int id)
     {
         var @event = _context.Events.FirstOrDefault(e => e.id == id);
-        if (@event == null)
-        {
-            throw new KeyNotFoundException($"Event with id {id} not found.");
-        }
         return await Task.FromResult(@event);
     }
-    public async Task<SBEvent> CreateEvent(SBEvent @event)
+
+    public async Task<Event> CreateEvent(Event @event)
     {
         _context.Events.Add(@event);
         await _context.SaveChangesAsync();
         return @event;
     }
 
-    public async Task<bool> UpdateEvent(int id, SBEvent updatedEvent)
+    public async Task<bool> UpdateEvent(int id, Event updatedEvent)
     {
         var eventToUpdate = _context.Events.FirstOrDefault(e => e.id == id);
         if (eventToUpdate != null)
@@ -51,7 +47,7 @@ public class SBEventService(FileContext context) : ISBEventService
         return false;
     }
 
-    public async Task<IEnumerable<SBEvent>> GetEventsInRange(DateTime start, DateTime end)
+    public async Task<IEnumerable<Event>> GetEventsInRange(DateTime start, DateTime end)
     {
         var eventsInRange = _context.Events.Where(e => e.startTime >= start && e.endTime <= end);
         return await Task.FromResult(eventsInRange.AsEnumerable());
