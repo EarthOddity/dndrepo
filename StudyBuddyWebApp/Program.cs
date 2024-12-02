@@ -1,4 +1,5 @@
 using StudyBuddyWebApp;
+using Microsoft.AspNetCore.Components.Authorization;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -14,11 +15,16 @@ builder.Services.AddScoped<ISBEventService, SBEventService>();
 builder.Services.AddScoped<ISubjectService, SubjectService>();
 builder.Services.AddScoped<IReviewService, ReviewService>();
 builder.Services.AddScoped<IProfileService, ProfileService>();
+builder.Services.AddScoped<IAuthService, JwtAuthService>();
 builder.Services.AddScoped<FileContext>();
 
 builder.Services.AddAuthorizationCore();
-// builder.Services.AddScoped<AuthenticationStateProvider, RevalidatingServerAuthenticationStateProvider<IdentityUser>>();
+//builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthProvider>();
 
+builder.Services.AddAuthentication().AddCookie(options =>
+{
+    options.LoginPath = "/login";
+});
 
 var app = builder.Build();
 
