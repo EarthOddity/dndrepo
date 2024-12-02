@@ -4,13 +4,16 @@ public class TeachingMaterial
     public string title { get; set; }
     public string description { get; set; }
 
-        public Student? author { get; set; }
+    public Student? author { get; set; }
 
-        public bool isApproved { get; set; }
-        public List<SavedMaterial> savedMaterials { get; set; } = [];
-        public List<Review> reviews { get; set; } = [];
+    public bool isApproved { get; set; }
+    public List<SavedMaterial> savedMaterials { get; set; } = [];
+    public List<Review> reviews { get; set; } = [];
 
+    public TeachingMaterial()
+    {
 
+    }
     public TeachingMaterial(int id, string title, string description, Student author, bool isApproved)
     {
         this.id = id;
