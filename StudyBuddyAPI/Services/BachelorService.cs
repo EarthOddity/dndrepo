@@ -1,6 +1,6 @@
-public class BachelorService(FileContext context) : IBachelorService
+public class BachelorService(DatabaseContext context) : IBachelorService
 {
-    private readonly FileContext _context = context;
+    private readonly DatabaseContext _context = context;
 
     public Task<IEnumerable<Bachelor>> GetAllBachelors()
     {
@@ -22,12 +22,11 @@ public class BachelorService(FileContext context) : IBachelorService
 
     public async Task UpdateBachelor(int id, Bachelor updatedBachelor)
     {
-        var index = _context.Bachelors.FindIndex(b => b.id == id);
-        if (index != -1)
+        var bachelor = await _context.Bachelors.FindAsync(id);
+        if (bachelor != null)
         {
-            _context.Bachelors[index] = updatedBachelor;
+            _context.Entry(bachelor).CurrentValues.SetValues(updatedBachelor);
             await _context.SaveChangesAsync();
-
         }
     }
 
