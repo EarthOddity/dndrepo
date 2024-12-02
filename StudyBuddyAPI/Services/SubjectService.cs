@@ -1,15 +1,15 @@
 
-public class SubjectService(FileContext context) : ISubjectService
+public class SubjectService(DatabaseContext context) : ISubjectService
 {
     //private static List<Subject> subjects = new List<Subject>();
 
-    private readonly FileContext context = context;
+    private readonly DatabaseContext context = context;
     static SubjectService()
     {
     }
     public async Task<Subject> AddSubject(Subject subject)
     {
-        context.Subjects.Add(subject);
+        context.Subjects.AddAsync(subject);
         await context.SaveChangesAsync();
         return subject;
     }
