@@ -3,7 +3,7 @@ public class Bachelor
     public int id { get; set; }
     public string programName { get; set; }
 
-    public List<Subject> associatedSubjects { get; set; }
+    public List<Subject> associatedSubjects { get; set; } = [];
 
     public Bachelor()
     {
