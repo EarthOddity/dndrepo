@@ -1,29 +1,26 @@
-﻿@namespace StudyBuddy.Components
-
-<nav class="nav-menu">
-    <div class="logo">
-        <img src="/studybuddylogo.png" alt="StudyBuddy Logo" width="220px" />
-    </div>
-    <div class="nav-links">
-        <NavLink href="/" Match="NavLinkMatch.All">
-            <span class="nav-icon">🏠</span>
-            Home
-        </NavLink>
-        <NavLink href="/calendar">
-            <span class="nav-icon">📅</span>
-            Calendar
-        </NavLink>
-        <NavLink href="/materials">
-            <span class="nav-icon">📚</span>
-            Materials
-        </NavLink>
-        <NavLink href="/tutors">
-            <span class="nav-icon">👥</span>
-            Tutors
-        </NavLink>
-    </div>
-    <div class="profile-bar">
-        @* <ProfileBar /> *@
+﻿<nav>
+    <div class="top-row ps-3 navbar navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="">StudyBuddyWebApp</a>
+        </div>
+        <div class="nav-links">
+            <NavLink href="/" Match="NavLinkMatch.All">
+                <span class="nav-icon">🏠</span>
+                Home
+            </NavLink>
+            <NavLink href="/calendar">
+                <span class="nav-icon">📅</span>
+                Calendar
+            </NavLink>
+            <NavLink href="/materials">
+                <span class="nav-icon">📚</span>
+                Materials
+            </NavLink>
+            <NavLink href="/tutors">
+                <span class="nav-icon">👥</span>
+                Tutors
+            </NavLink>
+        </div>
     </div>
 </nav>
 
