@@ -254,3 +254,41 @@ Accept: application/json
 ### Search subjects by name
 GET http://localhost:5044/api/Subject/name/Marketing
 Accept: application/json
+
+### Get all reviews
+GET http://localhost:5044/api/Review
+Accept: application/json
+
+### Get review by id
+GET http://localhost:5044/api/Review/2
+Accept: application/json
+
+### Get reviews by material id
+GET http://localhost:5044/api/Review/Material/2
+Accept: application/json
+
+### Create new review
+POST http://localhost:5044/api/Review
+Content-Type: application/json
+
+{
+    "reviewText": "This is a test review",
+    "materialId": 2,
+    "isApproved": false,
+    "authorId" : 1
+}
+
+### Update review
+PUT http://localhost:5044/api/Review/2
+Content-Type: application/json
+
+{
+    "reviewText": "This is a test review V2",
+    "materialId": 2,
+    "isApproved": false,
+    "authorId" : 1
+}
+
+### Delete review
+DELETE http://localhost:5044/api/Review/1
+Accept: application/json

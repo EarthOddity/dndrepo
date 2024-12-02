@@ -17,6 +17,7 @@ builder.Services.AddScoped<IModeratorService, ModeratorService>();
 builder.Services.AddScoped<ISubjectService, SubjectService>();
 builder.Services.AddScoped<ITeachingMaterialService, TeachingMaterialService>();
 builder.Services.AddScoped<IBachelorService, BachelorService>();
+builder.Services.AddScoped<IReviewService, ReviewService>();
 builder.Services.AddSingleton<CalendarService>();
 builder.Services.AddSingleton<EventService>();
 builder.Services.AddSingleton<FileContext>();
