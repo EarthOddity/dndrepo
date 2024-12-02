@@ -1,31 +1,70 @@
 ﻿@inherits LayoutComponentBase
 
-<div class="page">
-    <div class="navbar">
-        <NavMenu />
+<div class="main-layout">
+    <StudyBuddy.Components.NavMenu />
+
+    <div class="main-content">
+        @Body
     </div>
 
-    <main>
-        <div class="top-row px-4">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
-            
-        </div>
-
-        <div class="search-bar px-4">
-            <SearchBar/>
-        </div>
-        
-        <article class="content px-4">
-            @Body
-        </article>
-    </main>
+    <ProfileBar />
 </div>
 
-<div id="blazor-error-ui">
-    An unhandled error has occurred.
-    <a href="" class="reload">Reload</a>
-    <a class="dismiss">🗙</a>
-</div>
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: 'Arial', sans-serif;
+        background-color: #0f172a;
+        color: #e2e8f0;
+        min-height: fit-content;
+        width: 100%;
+        box-sizing: border-box;
+    }
 
-@code {
-}
+    a {
+        color: #006bb7;
+        text-decoration: none;
+    }
+
+    a:hover {
+        color: #004a8f;
+    }
+
+    .btn-primary {
+        color: #fff;
+        background-color: #1b6ec2;
+        border-color: #1861ac;
+    }
+
+    .btn:focus,
+    .btn:active:focus,
+    .btn-link.nav-link:focus,
+    .form-control:focus,
+    .form-check-input:focus {
+        box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+    }
+
+    .validation-message {
+        color: #e50000;
+    }
+
+    .blazor-error-boundary::after {
+        content: "An error has occurred.";
+    }
+
+    .main-layout {
+        display: flex;
+        flex-direction: column;
+        min-height: fit-content;
+        height: 800px;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+    }
+
+    .main-content {
+        flex: 1;
+        background-color: #0f172a;
+    }
+</style>
