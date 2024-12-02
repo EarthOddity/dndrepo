@@ -1,0 +1,191 @@
+@page "/calendar"
+@inject ISBCalendarService ISBCalendarService
+@inject NavigationManager NavigationManager
+@rendermode InteractiveServer
+@using StudyBuddyWebApp.Components
+
+<h2>Calendar</h2>
+
+<div class="button-container">
+    <button class="create-event-button">Create A New Event</button>
+</div>
+<div class="week-calendar">
+    <div class="calendar-header">
+        <button class="nav-button" @onclick="PreviousWeek">❮</button>
+        <span class="week-title">@GetWeekTitle()</span>
+        <button class="nav-button" @onclick="NextWeek">❯</button>
+    </div>
+
+    <div class="week-grid">
+        <div class="time-labels">
+            @for (int hour = 0; hour < 24; hour++)
+            {
+                <div class="hour-label">@(hour.ToString("00")):00</div>
+            }
+        </div>
+        <div class="days-container">
+            @for (int i = 0; i < 7; i++)
+            {
+                <CalendarDay Day="@currentWeek.AddDays(i)" Events="GetDayEvents(currentWeek.AddDays(i))" />
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    private DateTime currentWeek = DateTime.Today.AddDays(-(int)DateTime.Today.DayOfWeek);
+    private SBCalendar? currentCalendar;
+    private int calendarId = 1; // Placeholder for the owner ID
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadCalendar();
+    }
+
+    private async Task LoadCalendar()
+    {
+        currentCalendar = await ISBCalendarService.GetCalendarById(calendarId);
+    }
+
+    private string GetWeekTitle()
+    {
+        return $"{currentWeek:MMM dd} - {currentWeek.AddDays(6):MMM dd, yyyy}";
+    }
+
+    private void PreviousWeek()
+    {
+        currentWeek = currentWeek.AddDays(-7);
+        StateHasChanged();
+    }
+
+    private void NextWeek()
+    {
+        currentWeek = currentWeek.AddDays(7);
+        StateHasChanged();
+    }
+
+    private void NavigateToCreateEvent()
+    {
+        NavigationManager.NavigateTo("/create-event");
+    }
+
+    private List<SBEvent> GetDayEvents(DateTime day)
+    {
+        return currentCalendar?.events
+        .Where(e => e.startTime.Date == day.Date)
+        .ToList() ?? new List<SBEvent>();
+    }
+    private async Task BookEvent((DateTime date, int hour) args)
+    {
+        var (date, hour) = args;
+        var newEvent = new SBEvent
+            {
+                id = currentCalendar.events.Count + 1,
+                title = "New Event",
+                startTime = new DateTime(date.Year, date.Month, date.Day, hour, 0, 0),
+                endTime = new DateTime(date.Year, date.Month, date.Day, hour + 1, 0, 0)
+            };
+        currentCalendar = await ISBCalendarService.AddEventToCalendar(currentCalendar.id, newEvent);
+        StateHasChanged();
+    }
+}
+
+<style>
+    h2 {
+        font-size: 1.5em;
+        margin-left: 20px;
+
+    }
+
+    .week-calendar {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f4f7f9;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        margin: 20px;
+    }
+
+    .calendar-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 20px;
+        background-color: #ffffff;
+        border-bottom: 1px solid #e0e6ed;
+    }
+
+    .nav-button {
+        background: none;
+        border: none;
+        color: #4a5568;
+        font-size: 1.5em;
+        cursor: pointer;
+        transition: color 0.3s ease;
+    }
+
+    .nav-button:hover {
+        color: #3182ce;
+    }
+
+    .week-title {
+        font-size: 1.2em;
+        font-weight: 600;
+        color: #2d3748;
+    }
+
+    .week-grid {
+        display: flex;
+        height: calc(100vh - 70px);
+        background-color: #f4f7f9;
+        padding: 20px;
+    }
+
+    .time-labels {
+        width: 70px;
+        background-color: #ffffff;
+        border-right: 1px solid #e0e6ed;
+        padding-top: 40px;
+    }
+
+    .hour-label {
+        height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        padding-right: 15px;
+        font-size: 0.9em;
+        color: #718096;
+    }
+
+    .days-container {
+        display: flex;
+        flex-grow: 1;
+        overflow-x: auto;
+    }
+
+    .button-container {
+        display: flex;
+        justify-content: flex-end;
+        width: 100%;
+        padding: 10px;
+    }
+
+    .create-event-button {
+        background: linear-gradient(135deg, #71b3e5 0%, #013faa 100%);
+        color: #000000;
+        border: none;
+        text-align: center;
+        padding: 10px 15px;
+        cursor: pointer;
+        margin-right: 30px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        transition: background 0.3s ease, transform 0.2s ease;
+    }
+
+    .create-event-button:hover {
+        background: linear-gradient(135deg, #53b5ff 0%, #002a74 100%);
+        transform: scale(1.05);
+    }
+</style>

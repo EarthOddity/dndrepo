@@ -1,11 +1,7 @@
-using Microsoft.AspNetCore.Builder;
-using System.IdentityModel.Tokens.Jwt;
-using System.Text;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
+using System.Text;
+
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,13 +13,14 @@ builder.Services.AddScoped<IModeratorService, ModeratorService>();
 builder.Services.AddScoped<ISubjectService, SubjectService>();
 builder.Services.AddScoped<ITeachingMaterialService, TeachingMaterialService>();
 builder.Services.AddScoped<IBachelorService, BachelorService>();
-builder.Services.AddScoped<IReviewService, ReviewService>();
-builder.Services.AddSingleton<CalendarService>();
-builder.Services.AddSingleton<EventService>();
-builder.Services.AddSingleton<FileContext>();
+builder.Services.AddScoped<ISBCalendarService, SBCalendarService>();
+builder.Services.AddScoped<ISBEventService, SBEventService>();
+builder.Services.AddScoped<FileContext>();
 builder.Services.AddDbContext<DatabaseContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddScoped<IAuthServiceAPI, AuthService>();
+builder.Services.AddScoped<IReviewService, ReviewService>();
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -42,6 +39,7 @@ builder.Services.AddAuthentication().AddJwtBearer(JwtBearerDefaults.Authenticati
         ClockSkew = TimeSpan.Zero,
     };
 });
+
 
 AuthorizationPolicies.AddPolicies(builder.Services);
 
@@ -63,13 +61,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.UseCors(x => x
-    .AllowAnyMethod()
-    .AllowAnyHeader()
-    .SetIsOriginAllowed(origin => true) // allow any origin
-    .AllowCredentials());
-
-app.UseHttpsRedirection();
+app.UseCors("AllowBlazorClient"); // Apply CORS policy
 app.UseAuthorization();
+
 app.MapControllers();
 app.Run();

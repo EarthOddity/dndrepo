@@ -6,8 +6,8 @@ public class DatabaseContext : DbContext
     public DbSet<Student> Students { get; set; }
     public DbSet<Moderator> Moderators { get; set; }
     public DbSet<Bachelor> Bachelors { get; set; }
-    public DbSet<Calendar> Calendars { get; set; }
-    public DbSet<Event> Events { get; set; }
+    public DbSet<SBCalendar> Calendars { get; set; }
+    public DbSet<SBEvent> Events { get; set; }
     public DbSet<Subject> Subjects { get; set; }
     public DbSet<TeachingMaterial> TeachingMaterials { get; set; }
     public DbSet<SavedMaterial> SavedMaterials { get; set; }

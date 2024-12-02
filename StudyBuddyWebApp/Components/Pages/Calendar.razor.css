@@ -1,0 +1,64 @@
+.week-calendar {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f7f9;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    background-color: #ffffff;
+    border-bottom: 1px solid #e0e6ed;
+}
+
+.nav-button {
+    background: none;
+    border: none;
+    color: #4a5568;
+    font-size: 1.5em;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.nav-button:hover {
+    color: #3182ce;
+}
+
+.week-title {
+    font-size: 1.2em;
+    font-weight: 600;
+    color: #2d3748;
+}
+
+.week-grid {
+    display: flex;
+    height: 500px;
+    background-color: #f4f7f9;
+}
+
+.time-labels {
+    width: 70px;
+    background-color: #ffffff;
+    border-right: 1px solid #e0e6ed;
+    padding-top: 40px;
+}
+
+.hour-label {
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 15px;
+    font-size: 0.9em;
+    color: #718096;
+}
+
+.days-container {
+    display: flex;
+    flex-grow: 1;
+    overflow-x: auto;
+}

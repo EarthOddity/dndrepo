@@ -1,6 +1,7 @@
 @rendermode InteractiveServer
 @inject NavigationManager NavigationManager
 @inject IAcademicService AcademicService
+@*@inject ISubjectService SubjectService *@
 
 <div class="search-container">
     <div class="search-input">
@@ -86,7 +87,7 @@
 
     private async Task Search()
     {
-       if (string.IsNullOrWhiteSpace(searchTerm))
+        if (string.IsNullOrWhiteSpace(searchTerm))
         {
             Clear();
             return;

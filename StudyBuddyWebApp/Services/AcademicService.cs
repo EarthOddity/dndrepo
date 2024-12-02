@@ -1,4 +1,3 @@
-
 public class AcademicService : IAcademicService
 {
     private readonly HttpClient _httpClient;

@@ -18,9 +18,13 @@ public class Review
         this.reviewText = reviewText;
         this.author = author;
         this.authorId = authorId;
+        this.authorId = authorId;
         this.isApproved = isApproved;
         this.materialId = materialId;
         this.material = material;
+        this.materialId = materialId;
+        this.material = material;
     }
+
 
 }

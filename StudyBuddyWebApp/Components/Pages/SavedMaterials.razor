@@ -1,5 +1,6 @@
 @page "/saved-materials"
-@inject IAcademicService AcademicService
+@inject ITeachingMaterialService TeachingMaterialService
+@inject IBachelorService BachelorService
 @inject NavigationManager NavigationManager
 
 <h3>My Saved Materials</h3>
@@ -36,29 +37,25 @@
     {
         await LoadSavedMaterials();
 
-        var userBachelor = await AcademicService.GetBachelorByStudentId(currentUserId);
+        var userBachelor = await BachelorService.GetBachelorByStudentId(currentUserId);
         if (userBachelor != null)
         {
-            userSubjects = (await AcademicService.GetSubjectsByBachelorId(userBachelor.id)).ToList();
+            userSubjects = (await BachelorService.GetSubjectsByBachelorId(userBachelor.id)).ToList();
         }
     }
 
     private async Task LoadSavedMaterials()
     {
-        savedMaterials = (await AcademicService.GetSavedMaterialsByUserId(currentUserId)).ToList();
+        savedMaterials = (await TeachingMaterialService.GetSavedMaterialsByUserId(currentUserId)).ToList();
     }
 
     private async Task ToggleSaveMaterial(int materialId)
     {
-        try
+        var success = await TeachingMaterialService.ToggleSaveMaterial(currentUserId, materialId);
+        if (success)
         {
-            await AcademicService.ToggleSaveMaterial(currentUserId, materialId);
             await LoadSavedMaterials();
             StateHasChanged();
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error toggling saved material: {ex.Message}");
         }
     }
 
