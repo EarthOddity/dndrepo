@@ -14,7 +14,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddScoped<IStudentService, StudentService>();
 builder.Services.AddScoped<IModeratorService, ModeratorService>();
-builder.Services.AddSingleton<ISubjectService, SubjectService>();
+builder.Services.AddScoped<ISubjectService, SubjectService>();
 builder.Services.AddScoped<ITeachingMaterialService, TeachingMaterialService>();
 builder.Services.AddScoped<IBachelorService, BachelorService>();
 builder.Services.AddSingleton<CalendarService>();

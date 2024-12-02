@@ -215,3 +215,42 @@ Accept: application/json
 ### Search bachelors
 GET http://localhost:5044/api/Bachelor/search/Computer
 Accept: application/json
+
+### Get all subjects
+GET http://localhost:5044/api/Subject
+Accept: application/json
+
+### Get subject by id
+GET http://localhost:5044/api/Subject/2
+Accept: application/json
+
+### Get subject by name
+GET http://localhost:5044/api/Subject/name/Test Subject
+Accept: application/json
+
+### Create new subject
+POST http://localhost:5044/api/Subject
+Content-Type: application/json
+
+{
+    "name": "Test Subject",
+    "description": "This is a test subject"
+}
+
+### Update subject
+PUT http://localhost:5044/api/Subject/2
+Content-Type: application/json
+
+{
+    "id": 2,
+    "name": "Marketing",
+    "description": "This is an updated test subject"
+}
+
+### Delete subject
+DELETE http://localhost:5044/api/Subject/2
+Accept: application/json
+
+### Search subjects by name
+GET http://localhost:5044/api/Subject/name/Marketing
+Accept: application/json
