@@ -108,9 +108,8 @@ public class FileContext
         }
     }
 
-    public List<SavedMaterial> SavedMaterials
-    {
-        get
+    public List<SavedMaterial> SavedMaterials {
+      get
         {
             if (!isDataLoaded)
             {

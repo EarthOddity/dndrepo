@@ -8,7 +8,6 @@ public interface ITeachingMaterialService
     Task<bool> DeleteMaterial(int id);
     Task<IEnumerable<TeachingMaterial>> GetMaterialByTitle(string title);
     Task<IEnumerable<TeachingMaterial>> GetSavedMaterialsByUserId(int userId);
-    Task<bool> SaveMaterialForUser(int userId, int materialId);
-    Task<bool> UnsaveMaterialForUser(int userId, int materialId);
+    Task<bool> ToggleSaveMaterial(int userId, int materialId);
     Task<IEnumerable<TeachingMaterial>> SearchTeachingMaterials(string searchTerm);
 }

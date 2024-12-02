@@ -75,23 +75,12 @@ else
     }
     private async Task ToggleSave()
     {
-        if (isSaved)
+        var success = await TeachingMaterialService.ToggleSaveMaterial(currentUserId, id);
+        if (success)
         {
-            var success = await TeachingMaterialService.UnsaveMaterialForUser(currentUserId, id);
-            if (success)
-            {
-                isSaved = false;
-            }
+            isSaved = !isSaved;
+            StateHasChanged();
         }
-        else
-        {
-            var success = await TeachingMaterialService.SaveMaterialForUser(currentUserId, id);
-            if (success)
-            {
-                isSaved = true;
-            }
-        }
-        StateHasChanged();
     }
 }
 

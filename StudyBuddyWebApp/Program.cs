@@ -21,6 +21,7 @@ builder.Services.AddScoped<ISBCalendarService, SBCalendarService>();
 builder.Services.AddScoped<ISBEventService, SBEventService>();
 builder.Services.AddScoped<ISubjectService, SubjectService>();
 builder.Services.AddScoped<IReviewService, ReviewService>();
+builder.Services.AddScoped<IProfileService, ProfileService>();
 builder.Services.AddScoped<FileContext>();
 
 builder.Services.AddAuthorizationCore();

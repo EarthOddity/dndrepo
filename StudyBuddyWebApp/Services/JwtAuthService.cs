@@ -92,7 +92,7 @@ public class JwtAuthService(HttpClient client, IJSRuntime jsRuntime) : IAuthServ
         OnAuthStateChanged.Invoke(principal);
     }
 
-   public async Task RegisterStudentAsync(Student student)
+   public async Task<Student> RegisterStudentAsync(Student student)
     {
         
         string userAsJson = JsonSerializer.Serialize(student);
@@ -104,6 +104,7 @@ public class JwtAuthService(HttpClient client, IJSRuntime jsRuntime) : IAuthServ
         {
             throw new Exception(responseContent);
         }
+        return JsonSerializer.Deserialize<Student>(await response.Content.ReadAsStringAsync());
     }
 
     public async Task<ClaimsPrincipal> GetAuthAsync()
