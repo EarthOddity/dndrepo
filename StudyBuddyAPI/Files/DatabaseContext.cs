@@ -25,5 +25,11 @@ public class DatabaseContext : DbContext
         modelBuilder.Entity<User>().UseTpcMappingStrategy();
         modelBuilder.Entity<Student>().ToTable("Students").Property(s => s.id).ValueGeneratedOnAdd();
         modelBuilder.Entity<Moderator>().ToTable("Moderators").Property(s => s.id).ValueGeneratedOnAdd();
+        modelBuilder.Entity<TeachingMaterial>()
+       .HasOne(t => t.subject)
+       .WithMany()
+       .HasForeignKey(t => t.subjectId);
+
+
     }
 }

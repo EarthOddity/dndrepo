@@ -1,14 +1,14 @@
-public class ReviewService(FileContext context) : IReviewService
+public class ReviewService(DatabaseContext context) : IReviewService
 {
     // private readonly List<Review> reviews = new List<Review>();
 
-    private readonly FileContext context = context;
+    private readonly DatabaseContext context = context;
     static ReviewService()
     {
     }
     public async Task<Review> AddReview(Review review)
     {
-        context.Reviews.Add(review);
+        context.Reviews.AddAsync(review);
         await context.SaveChangesAsync();
         return review;
     }
@@ -58,7 +58,7 @@ public class ReviewService(FileContext context) : IReviewService
 
     public Task<IEnumerable<Review>> GetReviewsByMaterialId(int materialId)
     {
-        var reviews = context.Reviews.Where(r => r.materialId == materialId);
+        var reviews = context.Reviews.Where(r => r.materialId == materialId).AsEnumerable();
         return Task.FromResult(reviews);
     }
 
