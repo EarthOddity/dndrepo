@@ -19,6 +19,8 @@ builder.Services.AddSingleton<FileContext>();
 builder.Services.AddDbContext<DatabaseContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddScoped<IAuthServiceAPI, AuthService>();
+builder.Services.AddScoped<IReviewService, ReviewService>();
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -37,6 +39,7 @@ builder.Services.AddAuthentication().AddJwtBearer(JwtBearerDefaults.Authenticati
         ClockSkew = TimeSpan.Zero,
     };
 });
+
 
 AuthorizationPolicies.AddPolicies(builder.Services);
 
