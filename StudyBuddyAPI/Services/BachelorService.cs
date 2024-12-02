@@ -15,7 +15,7 @@ public class BachelorService(DatabaseContext context) : IBachelorService
 
     public async Task<Bachelor> CreateBachelor(Bachelor bachelor)
     {
-        _context.Bachelors.Add(bachelor);
+        _context.Bachelors.AddAsync(bachelor);
         await _context.SaveChangesAsync();
         return bachelor;
     }

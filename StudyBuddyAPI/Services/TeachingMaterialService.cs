@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore; 
+using Microsoft.EntityFrameworkCore;
 
 public class TeachingMaterialService : ITeachingMaterialService
 {
@@ -29,21 +29,23 @@ public class TeachingMaterialService : ITeachingMaterialService
 
     public async Task<IEnumerable<TeachingMaterial>> GetMaterialByAuthor(Student author)
     {
-    return await context.TeachingMaterials
-        .Include(m => m.author)
-        .Where(m => m.author != null && m.author.id == author.id)
-        .ToListAsync();
+        return await context.TeachingMaterials
+            .Include(m => m.author)
+            .Where(m => m.author != null && m.author.id == author.id)
+            .ToListAsync();
     }
     public Task<IEnumerable<TeachingMaterial>> GetMaterialByTitle(string title)
     {
         var material = context.TeachingMaterials.Where(m => m.title == title).AsEnumerable();
         return Task.FromResult(material);
     }
-    public async Task<bool> UpdateMaterial(int id, string description, bool isApproved, Student author)
+    public async Task<bool> UpdateMaterial(int id, string title, string description, bool isApproved, Student author)
     {
+        
         var material = context.TeachingMaterials.FirstOrDefault(r => r.id == id);
         if (material != null)
         {
+            material.title = title;
             material.description = description;
             material.isApproved = isApproved;
             material.author = author;
@@ -55,14 +57,15 @@ public class TeachingMaterialService : ITeachingMaterialService
 
     public async Task<bool> DeleteMaterial(int id)
     {
-        var material = context.TeachingMaterials.FirstOrDefault(r => r.id == id);
+        Console.WriteLine("Deleting material with id: " + id);
+        var material =  context.TeachingMaterials.FirstOrDefault(material => material.id == id);
         if (material == null)
         {
-            context.TeachingMaterials.Remove(material);
-            await context.SaveChangesAsync();
-            return true;
+            return false;
         }
-        return false;
+        context.TeachingMaterials.Remove(material);
+        await context.SaveChangesAsync();
+        return true;
     }
 
 
