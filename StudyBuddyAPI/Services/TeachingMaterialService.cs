@@ -69,7 +69,7 @@ public class TeachingMaterialService : ITeachingMaterialService
     {
         var savedMaterials = context.SavedMaterials
             .Where(sm => sm.UserId == userId)
-            .Select(sm => sm.material);
+            .Select(sm => sm.Material);
 
         return Task.FromResult(savedMaterials);
     }

@@ -10,81 +10,81 @@
 
 @if (moderator == null)
 {
-    <p>Loading...</p>
+        <p>Loading...</p>
 }
 else
 {
-     <EditForm Model="moderator" OnValidSubmit="SaveChanges" FormName="ModeratorProfileForm">
-        <DataAnnotationsValidator />
+         <EditForm Model="moderator" OnValidSubmit="SaveChanges" FormName="ModeratorProfileForm">
+            <DataAnnotationsValidator />
 
-        <!-- Read-only and Editable Fields -->
-        <div>
-            <label>First Name:</label>
+            <!-- Read-only and Editable Fields -->
+            <div>
+                <label>First Name:</label>
             @if (isEditing)
             {
-                <InputText @bind-Value="moderator.name" class="form-control" />
+                        <InputText @bind-Value="moderator.name" class="form-control" />
             }
             else
             {
-                <span>@moderator.name</span>
+                        <span>@moderator.name</span>
             }
-        </div>
+            </div>
 
-        <div>
-            <label>Surname:</label>
+            <div>
+                <label>Surname:</label>
             @if (isEditing)
             {
-                <InputText @bind-Value="moderator.surname" class="form-control" />
+                        <InputText @bind-Value="moderator.surname" class="form-control" />
             }
             else
             {
-                <span>@moderator.surname</span>
+                        <span>@moderator.surname</span>
             }
-        </div>
+            </div>
 
-        <div>
-            <label>Email:</label>
+            <div>
+                <label>Email:</label>
             @if (isEditing)
             {
-                <InputText @bind-Value="moderator.email" class="form-control" />
+                        <InputText @bind-Value="moderator.email" class="form-control" />
             }
             else
             {
-                <span>@moderator.email</span>
+                        <span>@moderator.email</span>
             }
-        </div>
+            </div>
 
-        <div>
-            <label>Phone Number:</label>
+            <div>
+                <label>Phone Number:</label>
             @if (isEditing)
             {
-                <InputNumber @bind-Value="moderator.phoneNumber" class="form-control" />
+                        <InputNumber @bind-Value="moderator.phoneNumber" class="form-control" />
             }
             else
             {
-                <span>@moderator.phoneNumber</span>
+                        <span>@moderator.phoneNumber</span>
             }
-        </div>
+            </div>
 
-        <!-- Buttons -->
+            <!-- Buttons -->
         @if (isEditing)
         {
-            <button type="submit" class="btn btn-primary">Save Changes</button>
-            <button type="button" @onclick="CancelEdit" class="btn btn-secondary">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                    <button type="button" @onclick="CancelEdit" class="btn btn-secondary">Cancel</button>
         }
         else
         {
-            <button type="button" @onclick="EnableEditMode" class="btn btn-warning">Edit</button>
-            <button type="button" @onclick="DeleteProfile" class="btn btn-danger">Delete Profile</button>
+                    <button type="button" @onclick="EnableEditMode" class="btn btn-warning">Edit</button>
+                    <button type="button" @onclick="DeleteProfile" class="btn btn-danger">Delete Profile</button>
         }
-    </EditForm>
+        </EditForm>
 }
 
 @code {
     private Moderator? moderator = null;
 
-     private bool isEditing = false ;
-     
+    private bool isEditing = false;
+
     [CascadingParameter]
     public Task<AuthenticationState> AuthState { get; set; } = null!;
 
@@ -101,13 +101,13 @@ else
         AuthenticationState authState = await AuthState;
         ClaimsPrincipal user = authState.User;
         isLoggedIn = user.Identity != null;
-        
+
         var role = user.Claims.FirstOrDefault(c => c.Type == "role")?.Value;
         Console.WriteLine($"User is authenticated with role: {role}");
 
         if (!isLoggedIn) return;
         userClaims = user.Claims;
-        id  = int.Parse(user.Claims.First(claim => claim.Type.Equals("id")).Value);
+        id = int.Parse(user.Claims.First(claim => claim.Type.Equals("id")).Value);
         Console.WriteLine("Id is : " + id);
 
 
@@ -127,7 +127,7 @@ else
         moderator = await ProfileService.GetModeratorProfile(1); // Reload the updated data
         isEditing = false;
     }
-     private void CancelEdit()
+    private void CancelEdit()
     {
         isEditing = false; // Exit edit mode without saving
     }
