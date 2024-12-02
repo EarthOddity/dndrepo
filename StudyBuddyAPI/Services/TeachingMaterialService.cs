@@ -41,7 +41,7 @@ public class TeachingMaterialService : ITeachingMaterialService
     }
     public async Task<bool> UpdateMaterial(int id, string title, string description, bool isApproved, Student author)
     {
-        
+
         var material = context.TeachingMaterials.FirstOrDefault(r => r.id == id);
         if (material != null)
         {
@@ -100,7 +100,7 @@ public class TeachingMaterialService : ITeachingMaterialService
                 Material: context.TeachingMaterials.FirstOrDefault(m => m.id == materialId),
                 User: context.Students.FirstOrDefault(s => s.id == userId)
             );
-            context.SavedMaterials.Add(savedMaterial);
+            context.SavedMaterials.AddAsync(savedMaterial);
         }
 
         await context.SaveChangesAsync();
