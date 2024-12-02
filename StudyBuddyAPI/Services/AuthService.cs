@@ -2,9 +2,9 @@ using System.ComponentModel.DataAnnotations;
 
 public class AuthService : IAuthServiceAPI
 {
-    private readonly FileContext _context;
+    private readonly DatabaseContext _context;
 
-    public AuthService(FileContext context)
+    public AuthService(DatabaseContext context)
     {
         _context = context;
     }

@@ -5,7 +5,7 @@ public class Calendar
     public int studentId { get; set; }
     public Student user { get; set; }
 
-    public List<Event> events { get; set; }
+    public List<Event> events { get; set; } =[];
 
     public Calendar()
     {}
