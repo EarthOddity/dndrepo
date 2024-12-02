@@ -1,10 +1,10 @@
-
 @inject NavigationManager NavigationManager
 @inject IProfileService ProfileService
 @inject IAuthService authService
 @rendermode InteractiveServer
 @using System.Security.Claims
 @using StudyBuddyWebApp.Components.Layout
+@using Microsoft.AspNetCore.Components.Authorization
 @inject AuthenticationStateProvider AuthStateProvider
 
 
@@ -14,13 +14,13 @@
     </button>
 
     @if (user1 != null && !string.IsNullOrEmpty(user1.name))
-        {
-            <span>Hello, @user1.name</span>
-        }
+    {
+        <span>Hello, @user1.name</span>
+    }
     else
-        {
-            <span>Hello, User</span>
-        }
+    {
+        <span>Hello, User</span>
+    }
 
     <div class="dropdown-menu @(isDropdownOpen ? "show" : "")">
         <AuthorizeView>
@@ -35,7 +35,7 @@
             </Authorized>
         </AuthorizeView>
     </div>
-        
+
 
 </div>
 
@@ -55,25 +55,28 @@
     private bool isLoggedIn;
 
     protected override async Task OnInitializedAsync()
-    {   
+    {
         AuthStateProvider.AuthenticationStateChanged += OnAuthenticationStateChanged;
         await LoadUserInfo();
- 
+
     }
-    private async Task LoadUserInfo(){
+    private async Task LoadUserInfo()
+    {
         AuthenticationState authState = await AuthState;
         ClaimsPrincipal user = authState.User;
         isLoggedIn = user.Identity != null;
 
         if (!isLoggedIn) return;
         userClaims = user.Claims;
-        id  = int.Parse(user.Claims.First(claim => claim.Type.Equals("id")).Value);
+        id = int.Parse(user.Claims.First(claim => claim.Type.Equals("id")).Value);
         Console.WriteLine("Id is : " + id);
         role = user.Claims.FirstOrDefault(c => c.Type == "Role")?.Value;
-        if(role == "Student"){
+        if (role == "Student")
+        {
             user1 = await ProfileService.GetStudentProfile(id);
         }
-        else if(role == "Moderator"){
+        else if (role == "Moderator")
+        {
             user1 = await ProfileService.GetModeratorProfile(id);
             Console.WriteLine("User is authenticated with role: " + role);
         }
@@ -90,9 +93,9 @@
     private void GoToProfile()
     {
         isDropdownOpen = false;
-        if(role == "Student")
+        if (role == "Student")
             NavigationManager.NavigateTo("/user-profile");
-        else if(role == "Moderator")
+        else if (role == "Moderator")
             NavigationManager.NavigateTo("/moderator-profile");
     }
 
@@ -128,5 +131,5 @@
         await LoadUserInfo();
         StateHasChanged(); // Notify Blazor to re-render the component
     }
-    
+
 }
