@@ -1,17 +1,10 @@
-
-public class TeachingMaterialService : ITeachingMaterialService
-
 public class TeachingMaterialService : ITeachingMaterialService
 {
     //private static List<Student> studentsList = new List<Student>();
     private readonly FileContext context;
 
     public TeachingMaterialService(FileContext context)
-    private readonly FileContext context;
-
-    public TeachingMaterialService(FileContext context)
     {
-        this.context = context;
         this.context = context;
     }
 
@@ -62,12 +55,12 @@ public class TeachingMaterialService : ITeachingMaterialService
     {
         var material = context.TeachingMaterials.FirstOrDefault(r => r.id == id);
         if (material == null)
-        if (material == null)
-        {
-            context.TeachingMaterials.Remove(material);
-            await context.SaveChangesAsync();
-            return true;
-        }
+            if (material == null)
+            {
+                context.TeachingMaterials.Remove(material);
+                await context.SaveChangesAsync();
+                return true;
+            }
         return false;
     }
 
@@ -76,7 +69,7 @@ public class TeachingMaterialService : ITeachingMaterialService
     {
         var savedMaterials = context.SavedMaterials
             .Where(sm => sm.UserId == userId)
-            .Select(sm => sm.Material);
+            .Select(sm => sm.material);
 
         return Task.FromResult(savedMaterials);
     }
