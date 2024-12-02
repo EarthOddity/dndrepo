@@ -73,19 +73,15 @@
 
     private async Task CreateNewEvent()
     {
-        errorMessage = ""; // Reset error message
-
+        errorMessage = "";
         try
         {
-            // Validate required fields
             if (string.IsNullOrWhiteSpace(newEvent.title))
             {
                 errorMessage = "Title is required.";
                 return;
             }
-
             newEvent.ownerId = 1; // Placeholder
-
             var selectedTutor = Tutors.FirstOrDefault(t => t.id == selectedTutorId);
             if (selectedTutor != null)
             {
@@ -96,7 +92,6 @@ name = selectedTutor.name
 }
 };
             }
-
             var createdEvent = await EventService.CreateEvent(newEvent);
             NavigationManager.NavigateTo("/calendar");
         }
