@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 public class BachelorService(DatabaseContext context) : IBachelorService
 {
     private readonly DatabaseContext _context = context;
@@ -56,12 +57,10 @@ public class BachelorService(DatabaseContext context) : IBachelorService
 
     public async Task<List<Subject>> GetSubjectsByBachelorId(int bachelorId)
     {
-        var bachelor = _context.Bachelors.FirstOrDefault(b => b.id == bachelorId);
-        if (bachelor != null)
-        {
-            return await Task.FromResult(bachelor.associatedSubjects);
-        }
-        return await Task.FromResult(new List<Subject>());
+        var bachelor = await _context.Bachelors
+            .Include(b => b.associatedSubjects)
+            .FirstOrDefaultAsync(b => b.id == bachelorId);
+        return bachelor?.associatedSubjects.ToList() ?? new List<Subject>();
     }
 
     public Task<Bachelor> GetBachelorByStudentId(int studentId)

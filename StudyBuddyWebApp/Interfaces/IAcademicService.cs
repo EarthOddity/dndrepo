@@ -22,4 +22,22 @@ public interface IAcademicService
     Task<List<Subject>> GetSubjectsByBachelorId(int bachelorId);
     Task<Bachelor> GetBachelorByStudentId(int studentId);
     Task<IEnumerable<Bachelor>> SearchBachelors(string searchTerm);
+
+    // Subject methods
+    Task<IEnumerable<Subject>> GetAllSubjects();
+    Task<Subject> GetSubjectById(int id);
+    Task<Subject> GetSubjectByName(string name);
+    Task<Subject> AddSubject(Subject subject);
+    Task UpdateSubject(Subject updatedSubject);
+    Task<bool> DeleteSubject(int id);
+    Task<IEnumerable<Subject>> SearchSubjectsByName(string searchTerm);
+
+    // Review methods
+    Task<IEnumerable<Review>> GetAllReviews();
+    Task<Review> GetReviewById(int id);
+    Task<List<Review>> GetReviewsByAuthor(int authorId);
+    Task<Review> AddReview(Review review);
+    Task<bool> UpdateReview(int id, string reviewText, bool isApproved);
+    Task<bool> DeleteReview(int id);
+    Task<IEnumerable<Review>> GetReviewsByMaterialId(int materialId);
 }

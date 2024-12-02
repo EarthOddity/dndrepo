@@ -1,7 +1,5 @@
 @page "/material/{id:int}"
 @inject IAcademicService AcademicService
-@inject ISubjectService SubjectService
-@inject IReviewService ReviewService
 
 <h3>Teaching Material Details</h3>
 
@@ -54,8 +52,8 @@ else
     [Parameter]
     public int id { get; set; }
 
-    private TeachingMaterial teachingMaterial;
-    private Subject subject;
+    private TeachingMaterial teachingMaterial {get; set;}
+    private Subject subject { get; set; }
     private IEnumerable<global::Review> reviews;
     private readonly int currentUserId = 1; // For future: Get actual user ID
     private bool isSaved;
@@ -66,8 +64,8 @@ else
         teachingMaterial = await AcademicService.GetMaterialById(id);
         if (teachingMaterial != null)
         {
-            subject = await SubjectService.GetSubjectById(teachingMaterial.id);
-            reviews = await ReviewService.GetReviewsByMaterialId(teachingMaterial.id);
+            subject = await AcademicService.GetSubjectById(teachingMaterial.id);
+            reviews = await AcademicService.GetReviewsByMaterialId(teachingMaterial.id);
             var savedMaterials = await AcademicService.GetSavedMaterialsByUserId(currentUserId);
             isSaved = savedMaterials.Any(m => m.id == id);
         }

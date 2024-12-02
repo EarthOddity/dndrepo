@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 
-public class DatabaseContext: DbContext 
+public class DatabaseContext : DbContext
 {
     public DbSet<User> Users { get; set; }
     public DbSet<Student> Students { get; set; }
@@ -23,7 +23,13 @@ public class DatabaseContext: DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<User>().UseTpcMappingStrategy();
-        modelBuilder.Entity<Student>().ToTable("Students").Property(s=> s.id).ValueGeneratedOnAdd();
-        modelBuilder.Entity<Moderator>().ToTable("Moderators").Property(s=> s.id).ValueGeneratedOnAdd();
+        modelBuilder.Entity<Student>().ToTable("Students").Property(s => s.id).ValueGeneratedOnAdd();
+        modelBuilder.Entity<Moderator>().ToTable("Moderators").Property(s => s.id).ValueGeneratedOnAdd();
+        modelBuilder.Entity<TeachingMaterial>()
+       .HasOne(t => t.subject)
+       .WithMany()
+       .HasForeignKey(t => t.subjectId);
+
+
     }
 }
