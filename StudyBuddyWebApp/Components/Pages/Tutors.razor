@@ -20,6 +20,14 @@
             </div>
         </div>
     }
+    else if (!tutors.Any())
+    {
+        <div class="row justify-content-center">
+            <div class="col text-center">
+                <p class="text-muted">No tutors available at the moment</p>
+            </div>
+        </div>
+    }
     else
     {
         <div class="row justify-content-center gap-3">
@@ -43,7 +51,7 @@
 </div>
 
 @code{
-    private List<Student>? tutors = new();
+    private List<Student>? tutors;
 
     protected override async Task OnInitializedAsync()
     {
