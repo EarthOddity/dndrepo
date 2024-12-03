@@ -8,23 +8,19 @@ public class Review
     public int materialId { get; set; }
     public TeachingMaterial? material { get; set; }
 
-    public Review()
+    public Review() // Default constructor
     {
     }
 
+    // Parameterized constructor without duplicate assignments
     public Review(int id, string reviewText, Student author, bool isApproved, int authorId, int materialId, TeachingMaterial material)
     {
         this.id = id;
         this.reviewText = reviewText;
         this.author = author;
         this.authorId = authorId;
-        this.authorId = authorId;
         this.isApproved = isApproved;
         this.materialId = materialId;
         this.material = material;
-        this.materialId = materialId;
-        this.material = material;
     }
-
-
 }

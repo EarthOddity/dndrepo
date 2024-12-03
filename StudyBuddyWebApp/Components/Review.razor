@@ -1,5 +1,7 @@
 @page "/leave-review"
-@inject AcademicService IAcademicService 
+@inject AcademicService academicService
+
+@using StudyBuddyAPI.Models  <!-- Import the correct namespace for the Review model -->
 
 <h3>Leave a Review</h3>
 
@@ -18,27 +20,54 @@ else
 }
 
 @code {
-    private string reviewText = "";
-    private bool isSubmitted = false;
-    private int reviewId = 1; // Example review ID; you'll likely set this dynamically based on the current review
+    private string reviewText = "";  // Review text from the user input
+    private bool isSubmitted = false;  // Flag to indicate submission status
+    private int reviewId = 1;  // Example review ID; set this dynamically
+    private int materialId = 1;  // Example material ID; replace with actual material ID
+    private bool isApproved = false;  // Example review approval status; adjust as needed
 
     private async Task HandleSubmit()
     {
-        var newReview = new Review { ReviewText = reviewText }; // Create a review object
-        await academicService.AddReview(newReview);  // Call the service method to add a review
-        isSubmitted = true;  // Mark the form as submitted
+        // Create a new Review object to be submitted (correct type with lowercase property names)
+        var newReview = new Review
+        {
+            reviewText = reviewText,    // Review text from the input
+            isApproved = isApproved,    // Assuming review approval is controlled via the logic
+            materialId = materialId     // Assign the correct materialId for the review
+        };
+
+        // Call AddReview method from AcademicService to save the new review
+        await academicService.AddReview(newReview);
+        isSubmitted = true;  // Set isSubmitted flag to true to show thank you message
     }
 
     private async Task HandleUpdate()
     {
-        // Update review with the current ID and new text
-        await academicService.UpdateReview(reviewId, reviewText, isApproved: true);  
-        isSubmitted = true;
+        // Update the review with the current review ID (with lowercase property names)
+        var updatedReview = new Review
+        {
+            id = reviewId,              // Use the current review ID
+            reviewText = reviewText,    // Updated review text from input
+            isApproved = isApproved,    // Review approval status
+            materialId = materialId     // Material ID for the review
+        };
+
+        // Call UpdateReview method from AcademicService
+        bool success = await academicService.UpdateReview(reviewId, reviewText, isApproved);
+        if (success)
+        {
+            isSubmitted = true; // Indicate review has been updated successfully
+        }
     }
 
     private async Task HandleDelete()
     {
-        await academicService.DeleteReview(reviewId);  // Delete review by ID
-        isSubmitted = true;
+        // Call DeleteReview method from AcademicService to delete the review by ID
+        bool success = await academicService.DeleteReview(reviewId);
+        if (success)
+        {
+            reviewText = "";        // Clear the review text
+            isSubmitted = true;     // Indicate the review has been deleted
+        }
     }
 }
