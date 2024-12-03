@@ -1,0 +1,188 @@
+@page "/moderatorview"
+@inject AcademicService academicService
+
+<h3>Moderator View</h3>
+
+<h4>Unapproved Reviews</h4>
+<ul>
+    @foreach (var review in unapprovedReviews)
+    {
+        <li>
+            @review.reviewText
+            <button @onclick="() => ApproveReview(review.id)">Approve</button>
+            <button @onclick="() => DeleteReview(review.id)">Delete</button>
+        </li>
+    }
+</ul>
+
+<h4>Approved Reviews</h4>
+<ul>
+    @foreach (var review in approvedReviews)
+    {
+        <li>
+            @review.reviewText
+            <button @onclick="() => DeleteReview(review.id)">Delete</button>
+        </li>
+    }
+</ul>
+
+<h4>Bachelors</h4>
+<ul>
+    @foreach (var bachelor in bachelors)
+    {
+        <li>
+            @bachelor.name
+            <button @onclick="() => UpdateBachelor(bachelor.id)">Update</button>
+            <button @onclick="() => DeleteBachelor(bachelor.id)">Delete</button>
+        </li>
+    }
+</ul>
+<button @onclick="CreateBachelor">Create Bachelor</button>
+
+<h4>Subjects</h4>
+<ul>
+    @foreach (var subject in subjects)
+    {
+        <li>
+            @subject.name
+            <button @onclick="() => UpdateSubject(subject.id)">Update</button>
+            <button @onclick="() => DeleteSubject(subject.id)">Delete</button>
+        </li>
+    }
+</ul>
+<button @onclick="CreateSubject">Create Subject</button>
+
+<h4>Add Subject to Bachelor</h4>
+<select @bind="selectedBachelorId">
+    @foreach (var bachelor in bachelors)
+    {
+        <option value="@bachelor.id">@bachelor.name</option>
+    }
+</select>
+<select @bind="selectedSubjectId">
+    @foreach (var subject in subjects)
+    {
+        <option value="@subject.id">@subject.name</option>
+    }
+</select>
+<button @onclick="AddSubjectToBachelor">Add Subject</button>
+
+<h4>Delete Users</h4>
+<ul>
+    @foreach (var user in users)
+    {
+        <li>
+            @user.username
+            <button @onclick="() => DeleteUser(user.id)">Delete</button>
+        </li>
+    }
+</ul>
+
+@code {
+    private List<Review> unapprovedReviews = new List<Review>();
+    private List<Review> approvedReviews = new List<Review>();
+    private List<Bachelor> bachelors = new List<Bachelor>();
+    private List<Subject> subjects = new List<Subject>();
+    private List<User> users = new List<User>();
+
+    private int selectedBachelorId;
+    private int selectedSubjectId;
+
+    protected override async Task OnInitializedAsync()
+    {
+        unapprovedReviews = (await academicService.GetAllReviews()).Where(r => !r.isApproved).ToList();
+        approvedReviews = (await academicService.GetAllReviews()).Where(r => r.isApproved).ToList();
+        bachelors = (await academicService.GetAllBachelors()).ToList();
+        subjects = (await academicService.GetAllSubjects()).ToList();
+        users = await GetUsers(); // Assuming you have a method to fetch users
+    }
+
+    private async Task ApproveReview(int reviewId)
+    {
+        await academicService.UpdateReview(reviewId, "Approved", true);
+        await LoadReviews();
+    }
+
+    private async Task DeleteReview(int reviewId)
+    {
+        await academicService.DeleteReview(reviewId);
+        await LoadReviews();
+    }
+
+    private async Task CreateBachelor()
+    {
+        var newBachelor = new Bachelor { name = "New Bachelor" };
+        await academicService.CreateBachelor(newBachelor);
+        await LoadBachelors();
+    }
+
+    private async Task UpdateBachelor(int bachelorId)
+    {
+        var bachelor = await academicService.GetBachelorById(bachelorId);
+        bachelor.name = "Updated Bachelor";
+        await academicService.UpdateBachelor(bachelorId, bachelor);
+        await LoadBachelors();
+    }
+
+    private async Task DeleteBachelor(int bachelorId)
+    {
+        await academicService.DeleteBachelor(bachelorId);
+        await LoadBachelors();
+    }
+
+    private async Task CreateSubject()
+    {
+        var newSubject = new Subject { name = "New Subject" };
+        await academicService.AddSubject(newSubject);
+        await LoadSubjects();
+    }
+
+    private async Task UpdateSubject(int subjectId)
+    {
+        var subject = await academicService.GetSubjectById(subjectId);
+        subject.name = "Updated Subject";
+        await academicService.UpdateSubject(subject);
+        await LoadSubjects();
+    }
+
+    private async Task DeleteSubject(int subjectId)
+    {
+        await academicService.DeleteSubject(subjectId);
+        await LoadSubjects();
+    }
+
+    private async Task AddSubjectToBachelor()
+    {
+        var subject = await academicService.GetSubjectById(selectedSubjectId);
+        await academicService.AddSubjectToBachelor(selectedBachelorId, subject);
+    }
+
+    private async Task DeleteUser(int userId)
+    {
+        // Assume you have a user service to delete users
+        await userService.DeleteUser(userId);
+    }
+
+    private async Task LoadReviews()
+    {
+        var allReviews = await academicService.GetAllReviews();
+        unapprovedReviews = allReviews.Where(r => !r.isApproved).ToList();
+        approvedReviews = allReviews.Where(r => r.isApproved).ToList();
+    }
+
+    private async Task LoadBachelors()
+    {
+        bachelors = (await academicService.GetAllBachelors()).ToList();
+    }
+
+    private async Task LoadSubjects()
+    {
+        subjects = (await academicService.GetAllSubjects()).ToList();
+    }
+
+    private async Task<List<User>> GetUsers()
+    {
+        // Assume this fetches the list of users from the system
+        return new List<User>(); // Placeholder
+    }
+}
