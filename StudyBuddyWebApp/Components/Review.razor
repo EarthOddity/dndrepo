@@ -1,5 +1,5 @@
 @page "/leave-review"
-@inject AcademicService academicService
+@inject AcademicService academicService  <!-- Inject AcademicService -->
 
 <h3>Leave a Review</h3>
 
@@ -11,17 +11,34 @@ else
 {
     <form @onsubmit="HandleSubmit">
         <textarea @bind="reviewText" rows="4" cols="50" placeholder="Write your review here..."></textarea><br />
-        <button type="submit">Submit Review</button> //onclick method (add review),a use method form academic service
+        <button type="submit">Submit Review</button>
+        <button type="button" @onclick="HandleUpdate">Update Review</button>
+        <button type="button" @onclick="HandleDelete">Delete Review</button>
     </form>
 }
 
 @code {
     private string reviewText = "";
     private bool isSubmitted = false;
+    private int reviewId = 1; // Example review ID; you'll likely set this dynamically based on the current review
 
-    private void HandleSubmit()
+    private async Task HandleSubmit()
     {
-        isSubmitted = true;
+        var newReview = new Review { ReviewText = reviewText }; // Create a review object
+        await academicService.AddReview(newReview);  // Call the service method to add a review
+        isSubmitted = true;  // Mark the form as submitted
+    }
 
+    private async Task HandleUpdate()
+    {
+        // Update review with the current ID and new text
+        await academicService.UpdateReview(reviewId, reviewText, isApproved: true);  
+        isSubmitted = true;
+    }
+
+    private async Task HandleDelete()
+    {
+        await academicService.DeleteReview(reviewId);  // Delete review by ID
+        isSubmitted = true;
     }
 }
