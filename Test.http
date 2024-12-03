@@ -119,10 +119,18 @@ POST http://localhost:5044/api/Bachelor
 Content-Type: application/json
 
 {
-  "id": 1,
+  "id": 2,
   "programName": "Computer Science"
 }
 
+### Update a bachelor
+PUT http://localhost:5044/api/Bachelor/1
+Content-Type: application/json
+
+{
+    "id": 1,
+    "programName": "Aaaaaaaaaaaa"
+}
 ### Get all bachelors
 GET http://localhost:5044/api/Bachelor
 Accept: application/json

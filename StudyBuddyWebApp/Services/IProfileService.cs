@@ -1,6 +1,7 @@
 public interface IProfileService
 {
     Task<Student> GetStudentProfile(int id);
+    Task<List<Student>> GetAllStudents();
     Task UpdateStudentProfile(int id, Student student);
     Task DeleteStudentProfile(int id);
     Task<Moderator> GetModeratorProfile(int id);

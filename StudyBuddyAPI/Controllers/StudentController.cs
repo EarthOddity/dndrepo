@@ -6,7 +6,7 @@ using System.Collections.Generic;
 [ApiController]
 [Route("api/[controller]")]
 
-public class StudentController(IStudentService _studentService ) : ControllerBase
+public class StudentController(IStudentService _studentService, ISBCalendarService _calendarService ) : ControllerBase
 {
     //private readonly IStudentService _studentService;
 
