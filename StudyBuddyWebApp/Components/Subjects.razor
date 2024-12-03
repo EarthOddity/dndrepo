@@ -1,0 +1,107 @@
+@inject IAcademicService AcademicService
+
+@if (subjects == null)
+{
+    <p class="text-muted text-center">Loading subjects...</p>
+}
+else
+{
+    <div class="container my-4">
+        <div class="row justify-content-center gap-3">
+            <!-- Display subjects -->
+            @foreach (var subject in subjects)
+            {
+                <div class="col-md-4">
+                    <div class="card shadow-lg h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">@subject.name</h5>
+                            <div class="d-flex justify-content-between">
+                                <button class="btn btn-primary btn-sm" @onclick="() => Editsubject(subject)">Edit</button>
+                                <button class="btn btn-danger btn-sm" @onclick="() => Deletesubject(subject.id)">Delete</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Add/Edit subject Form -->
+    <div class="container mt-5">
+        <h5>@(editingsubject != null ? "Edit subject" : "Add New subject")</h5>
+        <EditForm Model="subjectForm" OnValidSubmit="Savesubject">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+            <div class="form-group">
+                <label for="name">Name</label>
+                <InputText id="name" @bind-Value="subjectForm.name" class="form-control" />
+            </div>
+             <div class="form-group">
+                <label for="description">Description</label>
+                <InputText id="description" @bind-Value="subjectForm.description" class="form-control" />
+            </div>
+            
+            <button type="submit" class="btn btn-success">@("Save")</button>
+            @if (editingsubject != null)
+            {
+                <button type="button" class="btn btn-secondary ms-2" @onclick="CancelEdit">Cancel</button>
+            }
+        </EditForm>
+    </div>
+}
+
+@code{
+    private List<Subject>? subjects;
+    private Subject subjectForm = new();
+    private Subject? editingsubject;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Loadsubjects();
+    }
+
+    private async Task Loadsubjects()
+    {
+        subjects = (await AcademicService.GetAllSubjects()).ToList();
+    }
+    private void Editsubject(Subject subject)
+    {
+        editingsubject = subject;
+        subjectForm = new Subject
+        {   
+            id = subject.id,
+            name = subject.name,
+            description = subject.description,
+        };
+    }
+    private async Task Savesubject()
+    {
+        if (editingsubject != null)
+        {
+            await AcademicService.UpdateSubject(subjectForm);
+        }
+        else
+        {
+            await AcademicService.AddSubject(subjectForm);
+        }
+
+        await Loadsubjects();
+        ResetForm();
+    }
+
+    private async Task Deletesubject(int id)
+    {
+        await AcademicService.DeleteSubject(id);
+        await Loadsubjects(); // Reload list
+    }
+    private void CancelEdit()
+    {
+        ResetForm();
+    }
+
+    private void ResetForm()
+    {
+        subjectForm = new Subject(); // Clear form
+        editingsubject = null;
+    }
+}
