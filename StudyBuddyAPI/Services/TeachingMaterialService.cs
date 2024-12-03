@@ -41,7 +41,7 @@ public class TeachingMaterialService : ITeachingMaterialService
     }
     public async Task<bool> UpdateMaterial(int id, string title, string description, bool isApproved, Student author)
     {
-        
+
         var material = context.TeachingMaterials.FirstOrDefault(r => r.id == id);
         if (material != null)
         {
@@ -58,7 +58,7 @@ public class TeachingMaterialService : ITeachingMaterialService
     public async Task<bool> DeleteMaterial(int id)
     {
         Console.WriteLine("Deleting material with id: " + id);
-        var material =  context.TeachingMaterials.FirstOrDefault(material => material.id == id);
+        var material = context.TeachingMaterials.FirstOrDefault(material => material.id == id);
         if (material == null)
         {
             return false;
@@ -81,8 +81,8 @@ public class TeachingMaterialService : ITeachingMaterialService
 
     public async Task<bool> ToggleSaveMaterial(int userId, int materialId)
     {
-        var existingSave = context.SavedMaterials
-            .FirstOrDefault(sm => sm.UserId == userId && sm.MaterialId == materialId);
+        var existingSave = await context.SavedMaterials
+            .FirstOrDefaultAsync(sm => sm.UserId == userId && sm.MaterialId == materialId);
 
         if (existingSave != null)
         {
@@ -100,7 +100,7 @@ public class TeachingMaterialService : ITeachingMaterialService
                 Material: context.TeachingMaterials.FirstOrDefault(m => m.id == materialId),
                 User: context.Students.FirstOrDefault(s => s.id == userId)
             );
-            context.SavedMaterials.Add(savedMaterial);
+            await context.SavedMaterials.AddAsync(savedMaterial);
         }
 
         await context.SaveChangesAsync();

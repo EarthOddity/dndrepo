@@ -37,17 +37,16 @@ public class SBCalendarController : ControllerBase
         return CreatedAtAction(nameof(GetCalendar), new { id = newCalendar.id }, newCalendar);
     }
 
-    [HttpPost("{calendarId}/event")]
-    public async Task<ActionResult<SBCalendar>> AddEvent(int calendarId, SBEvent @event) // need the @ to distinguish it from the event keyword
+    [HttpPost("{calendarId}/events")]
+    public async Task<ActionResult> AddEventToCalendar(int calendarId, SBEvent @event) // need the @ to distinguish it from the event keyword
     {
         var calendar = await _calendarService.AddEventToCalendar(calendarId, @event);
-        if (calendar == null)
+        if (!calendar)
         {
             return NotFound();
         }
-        return Ok(calendar);
+        return NoContent();
     }
-
 
     [HttpDelete("{calendarId}/events/{eventId}")]
     public async Task<IActionResult> DeleteEvent(int calendarId, int eventId)

@@ -337,14 +337,18 @@ POST http://localhost:5044/api/SBCalendar/1/events
 Content-Type: application/json
 
 {
+    "ownerId": 1,
     "title": "New Event",
     "description": "This is a new event.",
+    "participants": [],
+    "materials": [],
+    "calendars": [],
     "startTime": "2023-10-01T10:00:00",
     "endTime": "2023-10-01T12:00:00"
 }
 
 ### Delete an event from a calendar
-DELETE http://localhost:5044/api/SBCalendar/1/events/1
+DELETE http://localhost:5044/api/SBCalendar/1/events/3
 Accept: application/json
 
 ### Get all events

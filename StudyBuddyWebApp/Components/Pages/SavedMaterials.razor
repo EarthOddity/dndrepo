@@ -4,8 +4,8 @@
 
 <h3>My Saved Materials</h3>
 
-<OverviewMaterialsSaved Title="Saved Materials" Materials="@savedMaterials" SavingMethod="@ToggleSave"
-    SavedMaterialIds="@savedMaterialIds" />
+<OverviewMaterialsSaved Title="Saved Materials" Materials="@savedMaterials"
+    SavingMethod="EventCallback.Factory.Create<int>(this, ToggleSaveMaterial)" />
 
 <div class="subjects-list">
     <h4>My Subjects</h4>
@@ -49,28 +49,17 @@
     {
         savedMaterials = (await AcademicService.GetSavedMaterialsByUserId(currentUserId)).ToList();
         savedMaterialIds = new HashSet<int>(savedMaterials.Select(m => m.id));
+
     }
 
-    private async Task ToggleSave(int materialId)
+    private async Task ToggleSaveMaterial(int materialId)
     {
-        try
+        var success = await AcademicService.ToggleSaveMaterial(currentUserId, materialId);
+        if (success)
         {
-            await AcademicService.ToggleSaveMaterial(currentUserId, materialId);
-
-            if (savedMaterialIds.Contains(materialId))
-            {
-                savedMaterialIds.Remove(materialId);
-            }
-            else
-            {
-                savedMaterialIds.Add(materialId);
-            }
-
+            await LoadSavedMaterials();
             StateHasChanged();
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error toggling save state: {ex.Message}");
+
         }
     }
 

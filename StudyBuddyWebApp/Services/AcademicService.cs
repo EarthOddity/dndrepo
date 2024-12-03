@@ -72,7 +72,7 @@ public class AcademicService : IAcademicService
         return await response.Content.ReadFromJsonAsync<IEnumerable<TeachingMaterial>>();
     }
 
-    public async Task ToggleSaveMaterial(int userId, int materialId)
+    public async Task<bool> ToggleSaveMaterial(int userId, int materialId)
     {
         var response = await _httpClient.PostAsync($"api/TeachingMaterial/toggle-save?userId={userId}&materialId={materialId}", null);
         response.EnsureSuccessStatusCode();

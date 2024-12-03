@@ -4,9 +4,9 @@ public class SBEvent
     public int ownerId { get; set; }
     public string title { get; set; }
     public string description { get; set; }
-    public List<Student> participants { get; set; }
-    public List<TeachingMaterial> materials { get; set; }
-    public List<SBCalendar> calendars { get; set; }
+    public List<Student> participants { get; set; } = new List<Student>();
+    public List<TeachingMaterial> materials { get; set; } = new List<TeachingMaterial>();
+    public List<SBCalendar> calendars { get; set; } = new List<SBCalendar>();
 
     public DateTime startTime { get; set; }
     public DateTime endTime { get; set; }
