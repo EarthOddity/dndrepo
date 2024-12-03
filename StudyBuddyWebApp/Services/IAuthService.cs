@@ -6,6 +6,6 @@ public interface IAuthService
     public Task LogoutAsync();
     public Action<ClaimsPrincipal> OnAuthStateChanged { get; set; }
     public Task<ClaimsPrincipal> GetAuthAsync();
-    public Task RegisterStudentAsync(Student student);
+    public Task<Student> RegisterStudentAsync(Student student);
 
 }

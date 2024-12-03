@@ -1,0 +1,38 @@
+.study-buddy-container {
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #0f172a;
+    color: #e2e8f0;
+}
+
+.introduction {
+    background-color: #1e293b;
+    padding: 20px;
+    border-radius: 8px;
+    margin: 30px 0;
+}
+
+.content-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.events-section,
+.materials-section {
+    background-color: #1e293b;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+.materials-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.material-card {
+    background-color: #0f172a;
+    padding: 15px;
+    border-radius: 6px;
+}
