@@ -4,9 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 [Route("api/[controller]")]
 public class SBEventController : ControllerBase
 {
-    private readonly SBEventService _eventService;
+    private readonly ISBEventService _eventService;
 
-    public SBEventController(SBEventService eventService)
+    public SBEventController(ISBEventService eventService)
     {
         _eventService = eventService;
     }
