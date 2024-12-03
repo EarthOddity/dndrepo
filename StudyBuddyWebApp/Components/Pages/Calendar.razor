@@ -85,7 +85,7 @@
                 startTime = new DateTime(date.Year, date.Month, date.Day, hour, 0, 0),
                 endTime = new DateTime(date.Year, date.Month, date.Day, hour + 1, 0, 0)
             };
-        currentCalendar = await ISBCalendarService.AddEventToCalendar(currentCalendar.id, newEvent);
+        // currentCalendar = await ISBCalendarService.AddEventToCalendar(currentCalendar.id, newEvent);
         StateHasChanged();
     }
 }

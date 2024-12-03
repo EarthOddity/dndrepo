@@ -75,7 +75,11 @@ public class AcademicService : IAcademicService
     public async Task<bool> ToggleSaveMaterial(int userId, int materialId)
     {
         var response = await _httpClient.PostAsync($"api/TeachingMaterial/toggle-save?userId={userId}&materialId={materialId}", null);
-        response.EnsureSuccessStatusCode();
+        if (response.IsSuccessStatusCode)
+        {
+            return true;
+        }
+        return false;
     }
 
     // Bachelor Methods
