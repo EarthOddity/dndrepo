@@ -30,6 +30,7 @@
             </NotAuthorized>
             <Authorized>
                 <a class="dropdown-item" @onclick="GoToProfile">Profile</a>
+                <a class="dropdown-item" @onclick="GoToSaveMaterials">My Materials</a>
                 <a class="dropdown-item" @onclick="GoToSettings">Settings</a>
                 <a class="dropdown-item" @onclick="Logout">Log Out</a>
             </Authorized>
@@ -97,6 +98,12 @@
             NavigationManager.NavigateTo("/user-profile");
         else if (role == "Moderator")
             NavigationManager.NavigateTo("/moderator-profile");
+    }
+
+    private void GoToSaveMaterials()
+    {
+        isDropdownOpen = false;
+        NavigationManager.NavigateTo("/saved-materials");
     }
 
     private void GoToSettings()

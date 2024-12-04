@@ -1,3 +1,6 @@
+using System.Text.Json;
+using System.Text.Json.Serialization;
+
 public class AcademicService : IAcademicService
 {
     private readonly HttpClient _httpClient;
@@ -130,9 +133,48 @@ public class AcademicService : IAcademicService
 
     public async Task<List<Subject>> GetSubjectsByBachelorId(int bachelorId)
     {
-        var response = await _httpClient.GetAsync($"api/Bachelor/{bachelorId}/subjects");
-        response.EnsureSuccessStatusCode();
-        return await response.Content.ReadFromJsonAsync<List<Subject>>();
+        try
+        {
+            var response = await _httpClient.GetAsync($"api/Bachelor/{bachelorId}/subjects");
+            response.EnsureSuccessStatusCode();
+
+            var content = await response.Content.ReadAsStringAsync();
+            Console.WriteLine($"Raw JSON response: {content}");
+
+            // First try to deserialize as int array since API returns array of IDs
+            var subjectIds = await response.Content.ReadFromJsonAsync<int[]>() ?? Array.Empty<int>();
+
+            // Now fetch each subject by ID
+            var subjects = new List<Subject>();
+            foreach (var id in subjectIds)
+            {
+                try
+                {
+                    var subject = await GetSubjectById(id);
+                    if (subject != null)
+                    {
+                        subjects.Add(subject);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error fetching subject {id}: {ex.Message}");
+                }
+            }
+
+            return subjects;
+        }
+        catch (JsonException ex)
+        {
+            Console.WriteLine($"JSON Deserialization Error: {ex.Message}");
+            Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+            return new List<Subject>();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"General Error: {ex.Message}");
+            return new List<Subject>();
+        }
     }
 
     public async Task<Bachelor> GetBachelorByStudentId(int studentId)

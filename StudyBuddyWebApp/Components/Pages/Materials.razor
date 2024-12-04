@@ -5,9 +5,12 @@
 @using Microsoft.AspNetCore.Components.Authorization
 
 <h3>Available Teaching Materials</h3>
-
+<button class="create-button" @onclick="NavigateToCreate">
+    <i class="fas fa-plus"></i> Create Material
+</button>
 <div class="materials-container">
-    <OverviewMaterialsSaved Title="Available Materials" Materials="@teachingMaterials" SavingMethod="@ToggleSave" SavedMaterialIds="@savedMaterialIds" />
+    <OverviewMaterialsSaved Title="Available Materials" Materials="@teachingMaterials" SavingMethod="@ToggleSave"
+        SavedMaterialIds="@savedMaterialIds" />
 
     <div class="bachelors-list">
         <h3>Available Bachelors</h3>
@@ -46,6 +49,9 @@
 
     [CascadingParameter]
     private Task<AuthenticationState> AuthState { get; set; } = null!;
+
+    private string error;
+    private bool loading = true;
 
     protected override async Task OnInitializedAsync()
     {
@@ -123,12 +129,34 @@
     {
         try
         {
-            selectedSubjects = (await AcademicService.GetSubjectsByBachelorId(bachelorId)).ToList();
+            loading = true;
+            error = null;
+            selectedSubjects.Clear();
+
+            var subjects = await AcademicService.GetSubjectsByBachelorId(bachelorId);
+            selectedSubjects = subjects.ToList();
+
+            if (!selectedSubjects.Any())
+            {
+                error = "No subjects found for this bachelor";
+            }
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error loading subjects: {ex.Message}");
+            error = "Error loading subjects";
+            Console.WriteLine($"LoadSubjects error: {ex.Message}");
+            selectedSubjects = new List<Subject>();
         }
+        finally
+        {
+            loading = false;
+            StateHasChanged();
+        }
+    }
+
+    private void NavigateToCreate()
+    {
+        NavigationManager.NavigateTo("/create-material");
     }
 }
 
@@ -163,5 +191,24 @@
 
     .heart-button:hover {
         transform: scale(1.1);
+    }
+
+    .create-button {
+        background: linear-gradient(135deg, #71b3e5 0%, #013faa 100%);
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 8px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .create-button:hover {
+        background: linear-gradient(135deg, #53b5ff 0%, #002a74 100%);
+        transform: scale(1.05);
     }
 </style>
