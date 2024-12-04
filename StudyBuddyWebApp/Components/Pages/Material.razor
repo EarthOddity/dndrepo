@@ -13,7 +13,7 @@
             <p><strong>Approved:</strong> @(teachingMaterial.isApproved ? "Yes" : "No")</p>
         </div>
         <button class="heart-button @(isSaved ? "saved" : "")" @onclick="ToggleSave">
-            <i class="fas fa-heart"></i>
+            <i class="@(isSaved ? "fas" : "far") fa-heart"></i>
         </button>
     </div>
 
@@ -109,20 +109,33 @@ else
         flex-grow: 1;
     }
 
+    .heart-container {
+        display: flex;
+        align-items: center;
+        margin-left: 15px;
+    }
+
     .heart-button {
         background: none;
         border: none;
         cursor: pointer;
-        padding: 8px;
-        color: #888;
-        transition: color 0.3s ease;
+        padding: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
-    .heart-button.saved {
+    .heart-button i {
+        font-size: 1.5rem;
+        color: #888;
+        transition: all 0.3s ease;
+    }
+
+    .heart-button.saved i {
         color: #ff4444;
     }
 
-    .heart-button:hover {
+    .heart-button:hover i {
         transform: scale(1.1);
     }
 </style>

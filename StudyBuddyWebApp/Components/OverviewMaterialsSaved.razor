@@ -1,5 +1,6 @@
 @inject NavigationManager NavigationManager
 
+
 <div class="materials-container">
     <div class="materials-list">
         <h4>@Title</h4>
@@ -20,9 +21,10 @@
                         <h4>@material.title</h4>
                         <p>@material.description</p>
                     </div>
-                    <button class="heart-button saved" @onclick="() => SavingMethod.InvokeAsync(material.id)">
+                    <button class="heart-button @(SavedMaterialIds?.Contains(material.id) == true ? "saved" : "")"
+                        @onclick="() => SavingMethod.InvokeAsync(material.id)">
                         <i class="fas fa-heart"></i>
-                    </button>
+                    </button>
                 </div>
             }
         }
@@ -79,8 +81,12 @@
         border: none;
         cursor: pointer;
         padding: 8px;
+        font-size: 1.2rem;
         color: #888;
-        transition: color 0.3s ease;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
     .heart-button.saved {

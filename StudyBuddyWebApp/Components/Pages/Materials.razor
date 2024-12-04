@@ -1,12 +1,13 @@
 @page "/materials"
 @inject IAcademicService AcademicService
 @inject NavigationManager NavigationManager
+@using System.Security.Claims
+@using Microsoft.AspNetCore.Components.Authorization
 
 <h3>Available Teaching Materials</h3>
 
 <div class="materials-container">
-    <OverviewMaterialsSaved Title="Available Materials" Materials="@teachingMaterials" SavingMethod="@ToggleSave" />
-
+    <OverviewMaterialsSaved Title="Available Materials" Materials="@teachingMaterials" SavingMethod="@ToggleSave" SavedMaterialIds="@savedMaterialIds" />
 
     <div class="bachelors-list">
         <h3>Available Bachelors</h3>
@@ -36,57 +37,67 @@
     </div>
 </div>
 
-
 @code {
-    private List<TeachingMaterial> teachingMaterials;
-    private List<Bachelor> bachelors;
-    private List<Subject> selectedSubjects;
+    private List<TeachingMaterial> teachingMaterials = new();
+    private List<Bachelor> bachelors = new();
+    private List<Subject> selectedSubjects = new();
     private HashSet<int> savedMaterialIds = new();
+    private int? currentUserId;
 
-    private readonly int currentUserId = 1; // For future: Get actual user ID
+    [CascadingParameter]
+    private Task<AuthenticationState> AuthState { get; set; } = null!;
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
-            teachingMaterials = (await AcademicService.GetAllMaterials()).ToList();
-            bachelors = (await AcademicService.GetAllBachelors()).ToList();
+            var authState = await AuthState;
+            var user = authState.User;
 
-            var savedMaterials = await AcademicService.GetSavedMaterialsByUserId(currentUserId);
+            if (user.Identity?.IsAuthenticated ?? false)
+            {
+                var idClaim = user.Claims.FirstOrDefault(c => c.Type == "id");
+                if (idClaim != null && int.TryParse(idClaim.Value, out int userId))
+                {
+                    currentUserId = userId;
+                    await LoadSavedMaterials();
+                }
+            }
+
+            await LoadMaterials();
+            await LoadBachelor();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error in initialization: {ex.Message}");
+        }
+    }
+
+    private async Task LoadMaterials()
+    {
+        teachingMaterials = (await AcademicService.GetAllMaterials()).ToList();
+    }
+
+    private async Task LoadSavedMaterials()
+    {
+        if (currentUserId.HasValue)
+        {
+            var savedMaterials = await AcademicService.GetSavedMaterialsByUserId(currentUserId.Value);
             savedMaterialIds = new HashSet<int>(savedMaterials.Select(m => m.id));
         }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error loading materials: {ex.Message}");
-        }
     }
-
-    private async Task LoadSubjects(int bachelorId)
-    {
-        try
-        {
-            var subjects = await AcademicService.GetSubjectsByBachelorId(bachelorId);
-            selectedSubjects = subjects.ToList();
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error loading subjects: {ex.Message}");
-            selectedSubjects = new List<Subject>();
-        }
-    }
-
-    private bool IsMaterialSaved(int materialId)
-    {
-        return savedMaterialIds.Contains(materialId);
-    }
-
 
     private async Task ToggleSave(int materialId)
     {
+        if (!currentUserId.HasValue)
+        {
+            NavigationManager.NavigateTo("/login");
+            return;
+        }
+
         try
         {
-            await AcademicService.ToggleSaveMaterial(currentUserId, materialId);
-
+            await AcademicService.ToggleSaveMaterial(currentUserId.Value, materialId);
             if (savedMaterialIds.Contains(materialId))
             {
                 savedMaterialIds.Remove(materialId);
@@ -95,12 +106,28 @@
             {
                 savedMaterialIds.Add(materialId);
             }
-
             StateHasChanged();
         }
         catch (Exception ex)
         {
             Console.WriteLine($"Error toggling save state: {ex.Message}");
+        }
+    }
+
+    private async Task LoadBachelor()
+    {
+        bachelors = (await AcademicService.GetAllBachelors()).ToList();
+    }
+
+    private async Task LoadSubjects(int bachelorId)
+    {
+        try
+        {
+            selectedSubjects = (await AcademicService.GetSubjectsByBachelorId(bachelorId)).ToList();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error loading subjects: {ex.Message}");
         }
     }
 }
