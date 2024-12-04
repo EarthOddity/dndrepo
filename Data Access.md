@@ -9,5 +9,8 @@ We used **Entity Framework Core (EF Core)**, an **Object-Relational Mapping (ORM
 
 ---
 
-### **Step 2: Creating the Database**  
+### **Step 2: Implementing the Database**  
 EF Core allows us to define **entities** (classes) that represent our data. EF Core then converts these classes into database tables. This process is called Code First—we define the code, and EF Core generates the database schema for us.
+
+### **Step 3: Saving data**
+We used CRUD operations (Create, Read, Update, Delete) to manage data.
