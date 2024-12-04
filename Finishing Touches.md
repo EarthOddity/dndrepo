@@ -28,3 +28,7 @@ We wanted StudyBuddy to feel inviting and easy to navigate, so we focused on enh
 ```
 ### **Ensuring Smooth Functionality: Testing 🧪 **
 Throughout development, we ran general tests on each part of the system to catch any issues early. Regular testing helped us adjust and fine-tune the system, ensuring everything runs smoothly before launch.
+
+These final touches—both in design and testing—ensure StudyBuddy is not only functional but also enjoyable to use. We want students to feel supported and confident navigating the platform, whether they’re searching for a tutor or sharing notes.
+
+
