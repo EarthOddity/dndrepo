@@ -1,0 +1,24 @@
+.review-section {
+    margin: 20px 0;
+}
+.existing-review {
+    background-color: #f8f9fa;
+    padding: 15px;
+    border-radius: 5px;
+}
+.button-group {
+    margin-top: 10px;
+    display: flex;
+    gap: 10px;
+}
+.error {
+    color: red;
+    padding: 10px;
+    margin: 10px 0;
+    background-color: #ffe6e6;
+    border-radius: 4px;
+}
+.success-message {
+    color: #28a745;
+    font-weight: bold;
+}
