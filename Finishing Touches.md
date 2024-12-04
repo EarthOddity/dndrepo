@@ -7,7 +7,7 @@ As we near the final stages of building StudyBuddy, we’ve focused on polishing
 ### **Playing with the Layout and Colors** 🌈  
 We wanted StudyBuddy to feel inviting and easy to navigate, so we focused on enhancing the **user interface (UI)** with CSS. Key elements we worked on included:
 
-- **Consistent Color Scheme:** We chose soft, student-friendly colors to create a comfortable browsing environment.  
+### **Consistent Color Scheme:** We chose soft, student-friendly colors to create a comfortable browsing environment.  
  ```css
 .nav-menu { 
     width: 100%;
@@ -25,3 +25,6 @@ We wanted StudyBuddy to feel inviting and easy to navigate, so we focused on enh
     margin: 0;
     box-sizing: border-box;
 }
+```
+### **Ensuring Smooth Functionality: Testing 🧪 **
+Throughout development, we ran general tests on each part of the system to catch any issues early. Regular testing helped us adjust and fine-tune the system, ensuring everything runs smoothly before launch.
