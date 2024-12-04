@@ -1,4 +1,4 @@
-### **How We Built the StudyBuddy Database** 💾✨  
+### **How We Implemented the StudyBuddy Database** 💾✨  
 
 At StudyBuddy, we needed a reliable database to store user profiles, teaching materials, and reviews. Here’s a simple look at how we set it up and made it work.
 
