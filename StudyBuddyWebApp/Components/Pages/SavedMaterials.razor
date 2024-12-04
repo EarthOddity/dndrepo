@@ -1,11 +1,11 @@
 @page "/saved-materials"
-@inject ITeachingMaterialService TeachingMaterialService
-@inject IBachelorService BachelorService
+@inject IAcademicService AcademicService
 @inject NavigationManager NavigationManager
 
 <h3>My Saved Materials</h3>
 
-<OverviewMaterialsSaved Title="Saved Materials" Materials="@savedMaterials" SavingMethod="@ToggleSaveMaterial" />
+<OverviewMaterialsSaved Title="Saved Materials" Materials="@savedMaterials"
+    SavingMethod="EventCallback.Factory.Create<int>(this, ToggleSaveMaterial)" />
 
 <div class="subjects-list">
     <h4>My Subjects</h4>
@@ -31,31 +31,35 @@
 @code {
     private List<TeachingMaterial> savedMaterials;
     private List<Subject> userSubjects;
+    private HashSet<int> savedMaterialIds = new();
     private readonly int currentUserId = 1;
 
     protected override async Task OnInitializedAsync()
     {
         await LoadSavedMaterials();
 
-        var userBachelor = await BachelorService.GetBachelorByStudentId(currentUserId);
+        var userBachelor = await AcademicService.GetBachelorByStudentId(currentUserId);
         if (userBachelor != null)
         {
-            userSubjects = (await BachelorService.GetSubjectsByBachelorId(userBachelor.id)).ToList();
+            userSubjects = (await AcademicService.GetSubjectsByBachelorId(userBachelor.id)).ToList();
         }
     }
 
     private async Task LoadSavedMaterials()
     {
-        savedMaterials = (await TeachingMaterialService.GetSavedMaterialsByUserId(currentUserId)).ToList();
+        savedMaterials = (await AcademicService.GetSavedMaterialsByUserId(currentUserId)).ToList();
+        savedMaterialIds = new HashSet<int>(savedMaterials.Select(m => m.id));
+
     }
 
     private async Task ToggleSaveMaterial(int materialId)
     {
-        var success = await TeachingMaterialService.ToggleSaveMaterial(currentUserId, materialId);
+        var success = await AcademicService.ToggleSaveMaterial(currentUserId, materialId);
         if (success)
         {
             await LoadSavedMaterials();
             StateHasChanged();
+
         }
     }
 

@@ -29,7 +29,8 @@ public class DatabaseContext : DbContext
        .HasOne(t => t.subject)
        .WithMany()
        .HasForeignKey(t => t.subjectId);
-
+        modelBuilder.Entity<SBCalendar>().ToTable("Calendars");
+        modelBuilder.Entity<SBEvent>().ToTable("Events");
 
     }
 }

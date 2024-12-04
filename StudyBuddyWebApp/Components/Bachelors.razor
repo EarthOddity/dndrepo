@@ -1,0 +1,102 @@
+@inject IAcademicService AcademicService
+
+
+@if (bachelors == null)
+{
+    <p class="text-muted text-center">Loading bachelors...</p>
+}
+else
+{
+    <div class="container my-4">
+        <div class="row justify-content-center gap-3">
+            <!-- Display Bachelors -->
+            @foreach (var bachelor in bachelors)
+            {
+                <div class="col-md-4">
+                    <div class="card shadow-lg h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">@bachelor.programName</h5>
+                            <div class="d-flex justify-content-between">
+                                <button class="btn btn-primary btn-sm" @onclick="() => EditBachelor(bachelor)">Edit</button>
+                                <button class="btn btn-danger btn-sm" @onclick="() => DeleteBachelor(bachelor.id)">Delete</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Add/Edit Bachelor Form -->
+    <div class="container mt-5">
+        <h5>@(editingBachelor != null ? "Edit Bachelor" : "Add New Bachelor")</h5>
+        <EditForm Model="bachelorForm" OnValidSubmit="SaveBachelor">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+            <div class="form-group">
+                <label for="name">Name</label>
+                <InputText id="name" @bind-Value="bachelorForm.programName" class="form-control" />
+            </div>
+            <button type="submit" class="btn btn-success">@("Save")</button>
+            @if (editingBachelor != null)
+            {
+                <button type="button" class="btn btn-secondary ms-2" @onclick="CancelEdit">Cancel</button>
+            }
+        </EditForm>
+    </div>
+}
+
+@code{
+    private List<Bachelor>? bachelors;
+    private Bachelor bachelorForm = new();
+    private Bachelor? editingBachelor;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadBachelors();
+    }
+
+    private async Task LoadBachelors()
+    {
+        bachelors = (await AcademicService.GetAllBachelors()).ToList();
+    }
+    private void EditBachelor(Bachelor bachelor)
+    {
+        editingBachelor = bachelor;
+        bachelorForm = new Bachelor
+        {   
+            id = bachelor.id,
+            programName = bachelor.programName,
+        };
+    }
+    private async Task SaveBachelor()
+    {
+        if (editingBachelor != null)
+        {
+            await AcademicService.UpdateBachelor(editingBachelor.id, bachelorForm);
+        }
+        else
+        {
+            await AcademicService.CreateBachelor(bachelorForm);
+        }
+
+        await LoadBachelors();
+        ResetForm();
+    }
+
+    private async Task DeleteBachelor(int id)
+    {
+        await AcademicService.DeleteBachelor(id);
+        await LoadBachelors(); // Reload list
+    }
+    private void CancelEdit()
+    {
+        ResetForm();
+    }
+
+    private void ResetForm()
+    {
+        bachelorForm = new Bachelor(); // Clear form
+        editingBachelor = null;
+    }
+}

@@ -1,6 +1,7 @@
-public class SBCalendarService(FileContext context) : ISBCalendarService
+using Microsoft.EntityFrameworkCore;
+public class SBCalendarService(DatabaseContext context) : ISBCalendarService
 {
-    private readonly FileContext _context = context;
+    private readonly DatabaseContext _context = context;
 
     public Task<IEnumerable<SBCalendar>> GetAllCalendars()
     {
@@ -15,7 +16,7 @@ public class SBCalendarService(FileContext context) : ISBCalendarService
 
     public async Task<SBCalendar> CreateCalendar(SBCalendar calendar)
     {
-        _context.Calendars.Add(calendar);
+        _context.Calendars.AddAsync(calendar);
         await _context.SaveChangesAsync();
         return calendar;
     }
@@ -34,21 +35,21 @@ public class SBCalendarService(FileContext context) : ISBCalendarService
 
     public async Task<IEnumerable<SBEvent>> GetEventsByCalendarId(int calendarId)
     {
-        var calendar = _context.Calendars.FirstOrDefault(c => c.id == calendarId);
-        return await Task.FromResult(calendar?.events.AsEnumerable() ?? Enumerable.Empty<SBEvent>());
+        var calendar = await _context.Calendars.Include(c => c.events).FirstOrDefaultAsync(c => c.id == calendarId);
+        return calendar?.events ?? Enumerable.Empty<SBEvent>();
     }
 
 
-    public async Task<SBCalendar> AddEventToCalendar(int calendarId, SBEvent eventToAdd)
+    public async Task<bool> AddEventToCalendar(int calendarId, SBEvent eventToAdd)
     {
-        var calendar = _context.Calendars.FirstOrDefault(c => c.id == calendarId);
-        if (calendar != null && calendar.events != null)
+        var calendar = _context.Calendars.Include(c => c.events).FirstOrDefault(c => c.id == calendarId);
+        if (calendar != null)
         {
             calendar.events.Add(eventToAdd);
             await _context.SaveChangesAsync();
-
+            return true;
         }
-        return await Task.FromResult(calendar);
+        return false;
     }
 
     public async Task<SBCalendar> DeleteEventFromCalendar(int calendarId, int eventId)

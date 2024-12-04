@@ -5,9 +5,9 @@ using Microsoft.AspNetCore.Mvc;
 [Route("api/[controller]")]
 public class SBCalendarController : ControllerBase
 {
-    private readonly SBCalendarService _calendarService; //injecting dependencies to access the methods of CalendarService without directly creating an instance in te controller -> easier to manage dependencies and test the controller
+    private readonly ISBCalendarService _calendarService; //injecting dependencies to access the methods of CalendarService without directly creating an instance in te controller -> easier to manage dependencies and test the controller
 
-    public SBCalendarController(SBCalendarService calendarService)
+    public SBCalendarController(ISBCalendarService calendarService)
     {
         _calendarService = calendarService;
     }
@@ -37,17 +37,16 @@ public class SBCalendarController : ControllerBase
         return CreatedAtAction(nameof(GetCalendar), new { id = newCalendar.id }, newCalendar);
     }
 
-    [HttpPost("{calendarId}/event")]
-    public async Task<ActionResult<SBCalendar>> AddEvent(int calendarId, SBEvent @event) // need the @ to distinguish it from the event keyword
+    [HttpPost("{calendarId}/events")]
+    public async Task<ActionResult> AddEventToCalendar(int calendarId, SBEvent @event) // need the @ to distinguish it from the event keyword
     {
         var calendar = await _calendarService.AddEventToCalendar(calendarId, @event);
-        if (calendar == null)
+        if (!calendar)
         {
             return NotFound();
         }
-        return Ok(calendar);
+        return NoContent();
     }
-
 
     [HttpDelete("{calendarId}/events/{eventId}")]
     public async Task<IActionResult> DeleteEvent(int calendarId, int eventId)

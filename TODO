@@ -1,0 +1,7 @@
+ok things to do 
+
+1. Fix the exception I get from Saved Materials should be the same as using the ?
+2. Add the claims bullshit so i can get the id of the person registered
+3. Remember to fix the method GetBacherlorBySubect, now it returns an int it should return a list of subjects
+4. Create new component for creating materials
+5. Fix the database context for the calendars
