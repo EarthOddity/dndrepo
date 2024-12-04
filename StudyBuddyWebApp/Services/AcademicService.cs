@@ -115,9 +115,9 @@ public class AcademicService : IAcademicService
         response.EnsureSuccessStatusCode();
     }
 
-    public async Task AddSubjectToBachelor(int bachelorId, Subject subject)
+    public async Task AddSubjectToBachelor(int bachelorId, int subjectId)
     {
-        var response = await _httpClient.PostAsJsonAsync($"api/Bachelor/{bachelorId}/subjects", subject);
+        var response = await _httpClient.PostAsync($"api/Bachelor/{bachelorId}/add-subject/{subjectId}", null);
         if (!response.IsSuccessStatusCode)
         {
             throw new HttpRequestException($"Failed to add subject. Status code: {response.StatusCode}");

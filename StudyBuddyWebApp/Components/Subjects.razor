@@ -12,13 +12,21 @@ else
             @foreach (var subject in subjects)
             {
                 <div class="col-md-4">
-                    <div class="card shadow-lg h-100">
+                    <div class="card shadow-lg h-100 @(SelectedBachelor != null ? "cursor-pointer" : "")"
+                        @onclick="() => OnSubjectClick(subject)">
                         <div class="card-body">
                             <h5 class="card-title">@subject.name</h5>
-                            <div class="d-flex justify-content-between">
-                                <button class="btn btn-primary btn-sm" @onclick="() => Editsubject(subject)">Edit</button>
-                                <button class="btn btn-danger btn-sm" @onclick="() => Deletesubject(subject.id)">Delete</button>
-                            </div>
+                            @if (bachelorSubjects.Any(s => s.id == subject.id))
+                                {
+                                    <span class="badge bg-success">Associated</span>
+                                }
+                            @if (SelectedBachelor == null)
+                            {
+                                <div class="d-flex justify-content-between">
+                                    <button class="btn btn-primary btn-sm" @onclick="() => Editsubject(subject)">Edit</button>
+                                    <button class="btn btn-danger btn-sm" @onclick="() => Deletesubject(subject.id)">Delete</button>
+                                </div>
+                            }
                         </div>
                     </div>
                 </div>
@@ -36,11 +44,12 @@ else
                 <label for="name">Name</label>
                 <InputText id="name" @bind-Value="subjectForm.name" class="form-control" />
             </div>
-             <div class="form-group">
+            <div class="form-group">
                 <label for="description">Description</label>
                 <InputText id="description" @bind-Value="subjectForm.description" class="form-control" />
             </div>
             
+
             <button type="submit" class="btn btn-success">@("Save")</button>
             @if (editingsubject != null)
             {
@@ -50,29 +59,44 @@ else
     </div>
 }
 
-@code{
+@code {
+    [Parameter]
+    public Bachelor? SelectedBachelor { get; set; }
+    [Parameter]
+    public EventCallback<Subject> OnSubjectSelected { get; set; }
     private List<Subject>? subjects;
     private Subject subjectForm = new();
     private Subject? editingsubject;
-
+    private List<Subject>? bachelorSubjects;
     protected override async Task OnInitializedAsync()
     {
         await Loadsubjects();
+        await LoadBachelorSubjects();
+    }
+
+    public async Task LoadBachelorSubjects()
+    {
+        if (SelectedBachelor != null)
+        {
+            bachelorSubjects = (await AcademicService.GetSubjectsByBachelorId(SelectedBachelor.id)).ToList();
+        }
+        
     }
 
     private async Task Loadsubjects()
     {
         subjects = (await AcademicService.GetAllSubjects()).ToList();
+        
     }
     private void Editsubject(Subject subject)
     {
         editingsubject = subject;
         subjectForm = new Subject
-        {   
-            id = subject.id,
-            name = subject.name,
-            description = subject.description,
-        };
+            {
+                id = subject.id,
+                name = subject.name,
+                description = subject.description,
+            };
     }
     private async Task Savesubject()
     {
@@ -104,4 +128,13 @@ else
         subjectForm = new Subject(); // Clear form
         editingsubject = null;
     }
+
+    private async Task OnSubjectClick(Subject subject)
+    {
+        if (SelectedBachelor != null)
+        {
+            await OnSubjectSelected.InvokeAsync(subject);
+        }
+    }
+
 }
