@@ -65,22 +65,12 @@
         AuthenticationState authState = await AuthState;
         ClaimsPrincipal user = authState.User;
         isLoggedIn = user.Identity != null;
-
         if (!isLoggedIn) return;
         userClaims = user.Claims;
         id = int.Parse(user.Claims.First(claim => claim.Type.Equals("id")).Value);
         Console.WriteLine("Id is : " + id);
         role = user.Claims.FirstOrDefault(c => c.Type == "Role")?.Value;
-        if (role == "Student")
-        {
-            user1 = await ProfileService.GetStudentProfile(id);
-        }
-        else if (role == "Moderator")
-        {
-            user1 = await ProfileService.GetModeratorProfile(id);
-            Console.WriteLine("User is authenticated with role: " + role);
-        }
-        Console.WriteLine("User is authenticated with role: " + role);
+        user1 = await ProfileService.GetStudentProfile(id);
         StateHasChanged(); // Trigger UI update
 
     }
