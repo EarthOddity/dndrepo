@@ -152,7 +152,7 @@ POST http://localhost:5044/api/TeachingMaterial
 Content-Type: application/json
 
 {
-    "title": "Calculus Basics",
+    "title": "c Basics",
     "description": "Introduction to differential calculus",
     "isApproved": false
     }

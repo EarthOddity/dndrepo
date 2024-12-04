@@ -20,10 +20,9 @@
                         <h4>@material.title</h4>
                         <p>@material.description</p>
                     </div>
-                    <button class="heart-button @(SavedMaterialIds.Contains(material.id) ? "saved" : "")"
-                        @onclick="() => SavingMethod.InvokeAsync(material.id)">
+                    <button class="heart-button saved" @onclick="() => SavingMethod.InvokeAsync(material.id)">
                         <i class="fas fa-heart"></i>
-                    </button>
+                    </button>
                 </div>
             }
         }
@@ -35,13 +34,13 @@
     public string Title { get; set; }
 
     [Parameter]
-    public List<TeachingMaterial> Materials { get; set; }
+    public List<TeachingMaterial>? Materials { get; set; }
 
     [Parameter]
     public EventCallback<int> SavingMethod { get; set; }
 
     [Parameter]
-    public HashSet<int> SavedMaterialIds { get; set; }
+    public HashSet<int>? SavedMaterialIds { get; set; }
 
     private void NavigateToMaterial(int materialId)
     {

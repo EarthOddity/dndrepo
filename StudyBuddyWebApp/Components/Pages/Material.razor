@@ -1,4 +1,4 @@
-@page "/material"
+@page "/material/{id:int}"
 @inject IAcademicService AcademicService
 
 <h3>Teaching Material Details</h3>
@@ -25,23 +25,26 @@
         </div>
     }
 
-    @if (reviews?.Any() == true)
-    {
-        <div>
-            <h4>Reviews</h4>
-            @foreach (var review in reviews)
+    <div class="reviews-section">
+        <ReviewsPosted MaterialId="@id" CurrentUserId="@currentUserId" />
+
+        <h4>All Reviews</h4>
+        @if (reviews?.Any() == true)
+        {
+            @foreach (var review in reviews.Where(r => r.authorId != currentUserId))
             {
-                <div>
+                <div class="review-item">
                     <p><strong>@review.author?.name:</strong> @review.reviewText</p>
                     <p><strong>Approved:</strong> @(review.isApproved ? "Yes" : "No")</p>
                 </div>
             }
-        </div>
-    }
-    else
-    {
-        <p>No reviews available.</p>
-    }
+        }
+        else
+        {
+            <p>No other reviews available.</p>
+        }
+
+    </div>
 }
 else
 {
@@ -58,8 +61,6 @@ else
     private IEnumerable<global::Review> reviews;
     private readonly int currentUserId = 1; // For future: Get actual user ID
     private bool isSaved;
-    private string error;
-
 
 
     protected override async Task OnInitializedAsync()
@@ -91,7 +92,6 @@ else
         }
         catch (Exception ex)
         {
-            error = "Failed to save material. Please try again.";
             Console.WriteLine($"Error toggling save state: {ex.Message}");
         }
     }
