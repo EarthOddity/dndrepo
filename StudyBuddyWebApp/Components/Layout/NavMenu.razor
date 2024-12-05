@@ -3,14 +3,14 @@
         <img src="images/studybuddylogo.png" alt="StudyBuddy Logo" width="220px" />
     </div>
     <div class="nav-links">
-        <NavLink href="/" Match="NavLinkMatch.All">
-            <span class="nav-icon">🏠</span>
-            Home
-        </NavLink>
-        <NavLink href="/calendar">
-            <span class="nav-icon">📅</span>
-            Calendar
-        </NavLink>
+        <AuthorizeView>
+            <Authorized>
+                <NavLink href="/" Match="NavLinkMatch.All">
+                    <span class="nav-icon">🏠</span>
+                    Home
+                </NavLink>
+            </Authorized>
+        </AuthorizeView>
         <NavLink href="/materials">
             <span class="nav-icon">📚</span>
             Materials

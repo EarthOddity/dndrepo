@@ -4,6 +4,7 @@ public class Student : User
     public bool isTutor { get; set; }
     public string language { get; set; }
     public Bachelor? bachelor { get; set; }
+    public int? bachelorId { get; set; }
     public SBCalendar? calendar { get; set; }
 
     public List<SavedMaterial> savedMaterials { get; set; } = [];
