@@ -417,3 +417,17 @@ Content-Type: application/json
   "endTime": "2024-03-20T16:00:00",
   "calendarId": 1
 }
+
+###
+POST http://localhost:5044/api/Student
+Content-Type: application/json
+
+{
+      "isTutor": true,
+      "language": "string",
+      "name": "Jos\u00E9",
+      "surname": "aaaaaaaaaaaaaa",
+      "email": "string",
+      "phoneNumber": 123456,
+      "password": "abc"
+    }
