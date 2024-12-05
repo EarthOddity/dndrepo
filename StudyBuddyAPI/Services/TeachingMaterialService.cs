@@ -107,12 +107,23 @@ public class TeachingMaterialService : ITeachingMaterialService
         return true;
     }
 
+    public async Task<IEnumerable<TeachingMaterial>> GetMaterialsBySubjectId(int subjectId)
+    {
+        return await context.TeachingMaterials
+            .Where(m => m.subjectId == subjectId)
+            .ToListAsync();
+    }
+
     public async Task<IEnumerable<TeachingMaterial>> SearchTeachingMaterials(string searchTerm)
     {
         return await context.TeachingMaterials
-            .Where(m => m.title.Contains(searchTerm) ||
-                        m.description.Contains(searchTerm))
-            .ToListAsync();
+         .Include(m => m.author)
+         .Include(m => m.subject)
+         .Where(m => m.title.Contains(searchTerm) ||
+                     m.description.Contains(searchTerm) ||
+                     m.subject.name.Contains(searchTerm) ||
+                     m.author.name.Contains(searchTerm))
+         .ToListAsync();
     }
 
 }

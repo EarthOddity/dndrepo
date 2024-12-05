@@ -9,5 +9,7 @@ public interface ITeachingMaterialService
     Task<IEnumerable<TeachingMaterial>> GetMaterialByTitle(string title);
     Task<IEnumerable<TeachingMaterial>> GetSavedMaterialsByUserId(int userId);
     Task<bool> ToggleSaveMaterial(int userId, int materialId);
+    Task<IEnumerable<TeachingMaterial>> GetMaterialsBySubjectId(int subjectId);
+
     Task<IEnumerable<TeachingMaterial>> SearchTeachingMaterials(string searchTerm);
 }

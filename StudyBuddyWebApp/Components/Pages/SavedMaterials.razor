@@ -43,8 +43,8 @@ else
 }
 
 @code {
-    private List<TeachingMaterial> savedMaterials;
-    private List<Subject> userSubjects;
+    private List<TeachingMaterial> savedMaterials = new();
+    private List<Subject> userSubjects = new();
     private HashSet<int> savedMaterialIds = new();
     private int? currentUserId;
     private bool loading = true;
@@ -79,7 +79,7 @@ else
         }
         catch (Exception ex)
         {
-            error = "Error loading saved materials";
+            error = $"Error loading saved materials: {ex.Message}";
             Console.WriteLine($"Error: {ex.Message}");
         }
         finally
@@ -94,36 +94,17 @@ else
 
         try
         {
-            // Load saved materials
-            try
-            {
-                savedMaterials = (await AcademicService.GetSavedMaterialsByUserId(currentUserId.Value)).ToList();
-                savedMaterialIds = new HashSet<int>(savedMaterials.Select(m => m.id));
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error loading saved materials: {ex.Message}");
-                savedMaterials = new List<TeachingMaterial>();
-                savedMaterialIds = new HashSet<int>();
-            }
+            savedMaterials = (await AcademicService.GetSavedMaterialsByUserId(currentUserId.Value)).ToList();
+            savedMaterialIds = new HashSet<int>(savedMaterials.Select(m => m.id));
 
-            // Load bachelor and subjects
-            try
+            var userBachelor = await AcademicService.GetBachelorByStudentId(currentUserId.Value);
+            if (userBachelor != null)
             {
-                var userBachelor = await AcademicService.GetBachelorByStudentId(currentUserId.Value);
-                if (userBachelor != null)
-                {
-                    userSubjects = (await AcademicService.GetSubjectsByBachelorId(userBachelor.id)).ToList();
-                }
-                else
-                {
-                    Console.WriteLine("No bachelor found for user");
-                    userSubjects = new List<Subject>();
-                }
+                userSubjects = (await AcademicService.GetSubjectsByBachelorId(userBachelor.id)).ToList();
             }
-            catch (Exception ex)
+            else
             {
-                Console.WriteLine($"Error loading subjects: {ex.Message}");
+                Console.WriteLine("No bachelor found for user");
                 userSubjects = new List<Subject>();
             }
         }
@@ -155,7 +136,7 @@ else
         }
         catch (Exception ex)
         {
-            error = "Error updating saved materials";
+            error = $"Error toggling save state: {ex.Message}";
             Console.WriteLine($"Error: {ex.Message}");
         }
     }
@@ -177,7 +158,8 @@ else
         flex: 1;
     }
 
-    .material-item {
+    .material-item .subject-item {
+        cursor: pointer;
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -207,14 +189,6 @@ else
 
     .heart-button:hover {
         transform: scale(1.1);
-    }
-
-    .subject-item {
-        cursor: pointer;
-        padding: 1rem;
-        margin-bottom: 1rem;
-        border: 1px solid #ddd;
-        border-radius: 4px;
     }
 
     .subject-item:hover {

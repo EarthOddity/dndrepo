@@ -15,7 +15,6 @@ public class TeachingMaterialController(ITeachingMaterialService _teachingMateri
     public async Task<ActionResult<List<TeachingMaterial>>> GetAllMaterials()
     {
         return Ok(await _teachingMaterialService.GetAllMaterials());
-        return Ok(await _teachingMaterialService.GetAllMaterials());
     }
     [HttpGet("title/{title}")]
     public async Task<ActionResult<List<TeachingMaterial>>> GetMaterialByTitle(string title)
@@ -86,6 +85,13 @@ public class TeachingMaterialController(ITeachingMaterialService _teachingMateri
             return BadRequest("Failed to toggle save state.");
         }
         return Ok();
+    }
+
+    [HttpGet("subject/{subjectId}")]
+    public async Task<ActionResult<IEnumerable<TeachingMaterial>>> GetMaterialsBySubjectId(int subjectId)
+    {
+        var materials = await _teachingMaterialService.GetMaterialsBySubjectId(subjectId);
+        return Ok(materials);
     }
 
     [HttpGet("search/{searchTerm}")]

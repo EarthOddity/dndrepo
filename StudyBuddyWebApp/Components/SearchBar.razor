@@ -1,12 +1,11 @@
 @rendermode InteractiveServer
 @inject NavigationManager NavigationManager
 @inject IAcademicService AcademicService
-@*@inject ISubjectService SubjectService *@
 
 <div class="search-container">
     <div class="search-input">
         <input @bind="searchTerm" @bind:event="oninput" @onkeyup="@HandleKeyPress"
-            placeholder="Search materials, subjects, or bachelors..." />
+            placeholder="Search materials by title, subject, or author..." />
         <button class="search-button" @onclick="Search" title="Search">
             <i class="fas fa-search"></i>
             <span class="button-text">Search</span>
@@ -22,50 +21,33 @@
         <div class="loading">Searching...</div>
     }
 
-    @if ((materials?.Any() ?? false) || (subjects?.Any() ?? false) || (bachelors?.Any() ?? false))
+    @if (materials?.Any() == true)
     {
         <div class="results-container">
-            @if (materials?.Any() == true)
-            {
-                <div class="result-section">
-                    <h4>Teaching Materials</h4>
-                    @foreach (var material in materials)
-                    {
-                        <div class="result-item" @onclick="() => NavigateToMaterial(material.id)">
-                            <i class="fas fa-book"></i>
-                            <span>@material.title</span>
+            <div class="result-section">
+                <h4>Teaching Materials</h4>
+                @foreach (var material in materials)
+                {
+                    <div class="result-item" @onclick="() => NavigateToMaterial(material.id)">
+                        <div class="result-content">
+                            <div class="result-title">
+                                <i class="fas fa-book"></i>
+                                <span>@material.title</span>
+                            </div>
+                            <div class="result-details">
+                                @if (material.subject != null)
+                                {
+                                    <span class="badge subject-badge">@material.subject.name</span>
+                                }
+                                @if (material.author != null)
+                                {
+                                    <span class="badge author-badge">@material.author.name</span>
+                                }
+                            </div>
                         </div>
-                    }
-                </div>
-            }
-
-            @if (subjects?.Any() == true)
-            {
-                <div class="result-section">
-                    <h4>Subjects</h4>
-                    @foreach (var subject in subjects)
-                    {
-                        <div class="result-item" @onclick="() => NavigateToSubject(subject.id)">
-                            <i class="fas fa-graduation-cap"></i>
-                            <span>@subject.name</span>
-                        </div>
-                    }
-                </div>
-            }
-
-            @if (bachelors?.Any() == true)
-            {
-                <div class="result-section">
-                    <h4>Bachelor Programs</h4>
-                    @foreach (var bachelor in bachelors)
-                    {
-                        <div class="result-item" @onclick="() => NavigateToBachelor(bachelor.id)">
-                            <i class="fas fa-university"></i>
-                            <span>@bachelor.programName</span>
-                        </div>
-                    }
-                </div>
-            }
+                    </div>
+                }
+            </div>
         </div>
     }
 </div>
@@ -74,8 +56,6 @@
     private string searchTerm;
     private bool isLoading;
     private List<TeachingMaterial> materials;
-    private List<Subject> subjects;
-    private List<Bachelor> bachelors;
 
     private async Task HandleKeyPress(KeyboardEventArgs e)
     {
@@ -96,13 +76,7 @@
         isLoading = true;
         try
         {
-            Console.WriteLine($"Searching for: {searchTerm}");
-
             materials = (await AcademicService.SearchMaterials(searchTerm))?.ToList();
-            subjects = (await AcademicService.SearchSubjectsByName(searchTerm))?.ToList();
-            bachelors = (await AcademicService.SearchBachelors(searchTerm))?.ToList();
-
-            Console.WriteLine($"Found subjects: {string.Join(", ", subjects?.Select(s => s.name) ?? Array.Empty<string>())}");
         }
         catch (Exception ex)
         {
@@ -119,24 +93,46 @@
     {
         searchTerm = string.Empty;
         materials = null;
-        subjects = null;
-        bachelors = null;
     }
 
     private void NavigateToMaterial(int id) => NavigationManager.NavigateTo($"/material/{id}");
-    private void NavigateToSubject(int id) => NavigationManager.NavigateTo($"/subject/{id}");
-    private void NavigateToBachelor(int id) => NavigationManager.NavigateTo($"/bachelor/{id}");
 }
 
 <style>
+    .search-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .search-input {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .search-input input {
+        padding: 10px 15px;
+        border-radius: 20px;
+        border: 1px solid #ccc;
+        outline: none;
+        width: 300px;
+        transition: border-color 0.3s ease;
+    }
+
+    .search-input input:focus {
+        border-color: #3182ce;
+    }
+
     .search-button,
     .clear-button {
         display: flex;
         align-items: center;
         gap: 8px;
-        padding: 8px 16px;
+        padding: 10px 16px;
         border: none;
-        border-radius: 4px;
+        border-radius: 20px;
         cursor: pointer;
         transition: background-color 0.3s;
     }
@@ -161,5 +157,65 @@
 
     .button-text {
         font-size: 14px;
+    }
+
+    .results-container {
+        margin-top: 20px;
+        width: 100%;
+        max-width: 600px;
+    }
+
+    .result-section {
+        background-color: #1e293b;
+        padding: 15px;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .result-item {
+        background-color: #0f172a;
+        padding: 10px;
+        border-radius: 6px;
+        margin-bottom: 10px;
+        cursor: pointer;
+        transition: transform 0.2s ease;
+    }
+
+    .result-item:hover {
+        transform: scale(1.02);
+    }
+
+    .result-content {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .result-title {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .result-details {
+        display: flex;
+        gap: 8px;
+        margin-left: 24px;
+    }
+
+    .badge {
+        padding: 2px 8px;
+        border-radius: 12px;
+        font-size: 0.8rem;
+    }
+
+    .subject-badge {
+        background-color: #4a90e2;
+        color: white;
+    }
+
+    .author-badge {
+        background-color: #50b07e;
+        color: white;
     }
 </style>
