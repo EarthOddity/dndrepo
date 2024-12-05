@@ -4,124 +4,106 @@
 @using StudyBuddyWebApp.Components.Layout
 @using Microsoft.AspNetCore.Components.Authorization
 @using Microsoft.AspNetCore.Authorization
-@inject AuthenticationStateProvider AuthStateProvider
+@inject NavigationManager NavigationManager
+@inject IAuthService authService
+@inject IJSRuntime JSRuntime
 @rendermode InteractiveServer
 @attribute [Authorize("MustBeStudent")]
 
-<h3>Student Profile</h3>
+<div class="profile-container">
+    <h3>Student Profile</h3>
 
-@if (student == null)
-{
-    <p>Loading...</p>
-}
-else
-{
-    <EditForm Model="student" OnValidSubmit="SaveChanges" FormName="StudentProfileForm">
-        <DataAnnotationsValidator />
+    @if (student == null)
+    {
+        <p>Loading...</p>
+    }
+    else
+    {
+        <div class="profile-section">
+            <EditForm Model="student" OnValidSubmit="SaveChanges" FormName="StudentProfileForm">
+                <DataAnnotationsValidator />
 
-        <!-- Read-only and Editable Fields -->
-        <div>
-            <label>First Name:</label>
-            @if (isEditing)
-            {
-                <InputText @bind-Value="student.name" class="form-control" />
-            }
-            else
-            {
-                <span>@student.name</span>
-            }
+                <div class="form-group">
+                    <label>First Name:</label>
+                    @if (isEditing)
+                    {
+                        <InputText @bind-Value="student.name" class="form-control" />
+                    }
+                    else
+                    {
+                        <span>@student.name</span>
+                    }
+                </div>
+
+                <div class="form-group">
+                    <label>Surname:</label>
+                    @if (isEditing)
+                    {
+                        <InputText @bind-Value="student.surname" class="form-control" />
+                    }
+                    else
+                    {
+                        <span>@student.surname</span>
+                    }
+                </div>
+
+                <div class="form-group">
+                    <label>Email:</label>
+                    @if (isEditing)
+                    {
+                        <InputText @bind-Value="student.email" class="form-control" />
+                    }
+                    else
+                    {
+                        <span>@student.email</span>
+                    }
+                </div>
+
+                <div class="form-group">
+                    <label>Phone Number:</label>
+                    @if (isEditing)
+                    {
+                        <InputNumber @bind-Value="student.phoneNumber" class="form-control" />
+                    }
+                    else
+                    {
+                        <span>@student.phoneNumber</span>
+                    }
+                </div>
+
+                <div class="form-group">
+                    <label>Language:</label>
+                    @if (isEditing)
+                    {
+                        <InputText @bind-Value="student.language" class="form-control" />
+                    }
+                    else
+                    {
+                        <span>@student.language</span>
+                    }
+                </div>
+
+                <div class="button-group">
+                    @if (isEditing)
+                    {
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                        <button type="button" class="btn btn-secondary" @onclick="CancelEdit">Cancel</button>
+                    }
+                    else
+                    {
+                        <button type="button" class="btn btn-warning" @onclick="EnableEditMode">Edit</button>
+                        <button type="button" class="btn btn-danger" @onclick="DeleteProfile">Delete Profile</button>
+                    }
+                </div>
+            </EditForm>
         </div>
-
-        <div>
-            <label>Surname:</label>
-            @if (isEditing)
-            {
-                <InputText @bind-Value="student.surname" class="form-control" />
-            }
-            else
-            {
-                <span>@student.surname</span>
-            }
-        </div>
-
-        <div>
-            <label>Email:</label>
-            @if (isEditing)
-            {
-                <InputText @bind-Value="student.email" class="form-control" />
-            }
-            else
-            {
-                <span>@student.email</span>
-            }
-        </div>
-
-        <div>
-            <label>Phone Number:</label>
-            @if (isEditing)
-            {
-                <InputNumber @bind-Value="student.phoneNumber" class="form-control" />
-            }
-            else
-            {
-                <span>@student.phoneNumber</span>
-            }
-        </div>
-
-        <div>
-            <label>Is Tutor:</label>
-            @if (isEditing)
-            {
-                <InputCheckbox @bind-Value="student.isTutor" class="form-check-input" />
-            }
-            else
-            {
-                <span>@(student.isTutor ? "Yes" : "No")</span>
-            }
-        </div>
-
-        <div>
-            <label>Language:</label>
-            @if (isEditing)
-            {
-                <InputText @bind-Value="student.language" class="form-control" />
-            }
-            else
-            {
-                <span>@student.language</span>
-            }
-        </div>
-@* 
-        <div>
-            <label>Bachelor:</label>
-            @if (isEditing)
-            {
-                <InputText @bind-Value="student.bachelor.programName" class="form-control" />
-            }
-            else
-            {
-                <span>@student.bachelor</span>
-            }
-        </div> *@
-
-        <!-- Buttons -->
-        @if (isEditing)
-        {
-            <button type="submit" class="btn btn-primary">Save Changes</button>
-            <button type="button" @onclick="CancelEdit" class="btn btn-secondary">Cancel</button>
-        }
-        else
-        {
-            <button type="button" @onclick="EnableEditMode" class="btn btn-warning">Edit</button>
-            <button type="button" @onclick="DeleteProfile" class="btn btn-danger">Delete Profile</button>
-        }
-    </EditForm>
-}
+    }
+</div>
 
 @code {
     private Student? student = null;
-
     private bool isEditing = false;
+    
     [CascadingParameter]
     public Task<AuthenticationState> AuthState { get; set; } = null!;
 
@@ -129,28 +111,18 @@ else
     private IEnumerable<Claim>? userClaims;
     private bool isLoggedIn;
 
-    @* protected override async Task OnInitializedAsync()
-    {
-        student = await ProfileService.GetStudentProfile(1);
-    } *@
     protected override async Task OnInitializedAsync()
     {
         AuthenticationState authState = await AuthState;
         ClaimsPrincipal user = authState.User;
         isLoggedIn = user.Identity != null;
 
-        var role = user.Claims.FirstOrDefault(c => c.Type == "role")?.Value;
-        Console.WriteLine($"User is authenticated with role: {role}");
-
         if (!isLoggedIn) return;
         userClaims = user.Claims;
         id = int.Parse(user.Claims.First(claim => claim.Type.Equals("id")).Value);
         Console.WriteLine("Id is : " + id);
 
-
         student = await ProfileService.GetStudentProfile(id);
-
-
     }
 
     private void EnableEditMode()
@@ -161,16 +133,144 @@ else
     private async Task SaveChanges()
     {
         await ProfileService.UpdateStudentProfile(id, student);
-        student = await ProfileService.GetStudentProfile(id); // Reload the updated data
+        student = await ProfileService.GetStudentProfile(id);
         isEditing = false;
     }
+
     private void CancelEdit()
     {
-        isEditing = false; // Exit edit mode without saving
+        isEditing = false;
     }
+
     private async Task DeleteProfile()
     {
-        await ProfileService.DeleteStudentProfile(id);
-        student = null;
+        if (await JSRuntime.InvokeAsync<bool>("confirm", "Are you sure you want to delete your profile? This action cannot be undone."))
+        {
+            await ProfileService.DeleteStudentProfile(id);
+            await authService.LogoutAsync();
+            NavigationManager.NavigateTo("/");
+        }
     }
 }
+
+
+<style>
+    .profile-container {
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #0f172a;
+        color: #e2e8f0;
+        max-width: 800px;
+    }
+
+    .profile-section {
+        background-color: #1e293b;
+        padding: 25px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+        transition: all 0.3s ease;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        color: #e2e8f0;
+        font-weight: 500;
+        font-size: 0.95rem;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 10px 12px;
+        background-color: #0f172a;
+        border: 1px solid #2d3748;
+        border-radius: 6px;
+        color: #e2e8f0;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus {
+        border-color: #3182ce;
+        box-shadow: 0 0 0 2px rgba(49, 130, 206, 0.2);
+        outline: none;
+    }
+
+    .form-control:hover {
+        border-color: #4a5568;
+    }
+
+    .button-group {
+        display: flex;
+        gap: 12px;
+        margin-top: 25px;
+    }
+
+    .btn {
+        padding: 10px 20px;
+        border-radius: 6px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 0.95rem;
+        border: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 100px;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #3182ce 0%, #2c5282 100%);
+        color: #e2e8f0;
+    }
+
+    .btn-secondary {
+        background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
+        color: #e2e8f0;
+    }
+
+    .btn-warning {
+        background: linear-gradient(135deg, #d69e2e 0%, #b7791f 100%);
+        color: #e2e8f0;
+    }
+
+    .btn-danger {
+        background: linear-gradient(135deg, #e53e3e 0%, #c53030 100%);
+        color: #e2e8f0;
+    }
+
+    .btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn:active {
+        transform: translateY(0);
+    }
+
+    span {
+        color: #e2e8f0;
+        font-size: 1rem;
+        padding: 8px 0;
+        display: inline-block;
+    }
+
+    .validation-message {
+        color: #fc8181;
+        font-size: 0.875rem;
+        margin-top: 4px;
+    }
+
+    h3 {
+        color: #e2e8f0;
+        margin-bottom: 1.5rem;
+        font-size: 1.75rem;
+        font-weight: 600;
+    }
+</style>
