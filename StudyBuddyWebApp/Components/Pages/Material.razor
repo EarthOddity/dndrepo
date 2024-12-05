@@ -103,32 +103,35 @@ else
         justify-content: space-between;
         align-items: flex-start;
         margin-bottom: 2rem;
+        padding: 20px;
+        background-color: #f9f9f9;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
 
-    .material-info {
-        flex-grow: 1;
+    .material-info h4 {
+        font-size: 1.5rem;
+        color: #333;
+        margin-bottom: 10px;
     }
 
-    .heart-container {
-        display: flex;
-        align-items: center;
-        margin-left: 15px;
+    .material-info p {
+        font-size: 1rem;
+        color: #555;
+        margin: 5px 0;
     }
 
     .heart-button {
         background: none;
         border: none;
         cursor: pointer;
-        padding: 12px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        padding: 10px;
     }
 
     .heart-button i {
-        font-size: 1.5rem;
-        color: #888;
-        transition: all 0.3s ease;
+        font-size: 1.8rem;
+        color: #ccc;
+        transition: color 0.3s ease;
     }
 
     .heart-button.saved i {
@@ -136,6 +139,7 @@ else
     }
 
     .heart-button:hover i {
+        color: #ff6666;
         transform: scale(1.1);
     }
 </style>
