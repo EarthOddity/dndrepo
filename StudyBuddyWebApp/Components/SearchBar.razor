@@ -59,9 +59,9 @@
                     <h4>Bachelor Programs</h4>
                     @foreach (var bachelor in bachelors)
                     {
-                        <div class="result-item" @onclick="() => NavigateToBachelor(bachelor.id)">
+                        <div class="result-item" @onclick="() => NavigateToBachelor(bachelor.Id)">
                             <i class="fas fa-university"></i>
-                            <span>@bachelor.programName</span>
+                            <span>@bachelor.ProgramName</span>
                         </div>
                     }
                 </div>

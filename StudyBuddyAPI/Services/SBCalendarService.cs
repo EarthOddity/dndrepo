@@ -1,16 +1,25 @@
-public class SBCalendarService(FileContext context) : ISBCalendarService
+using Microsoft.EntityFrameworkCore;
+
+public class SBCalendarService : ISBCalendarService
 {
-    private readonly FileContext _context = context;
+    private readonly DatabaseContext _context;
+
+
+    public SBCalendarService(DatabaseContext context)
+    {
+        _context = context;
+    }
+
 
     public Task<IEnumerable<SBCalendar>> GetAllCalendars()
     {
-        return Task.FromResult(_context.Calendars.AsEnumerable());
+        return Task.FromResult(_context.Calendars.Include(c => c.EventList).AsEnumerable());
     }
 
     public async Task<SBCalendar> GetCalendarById(int id)
     {
-        var calendar = _context.Calendars.FirstOrDefault(c => c.id == id);
-        return await Task.FromResult(calendar);
+        var calendar = await _context.Calendars.Include(c => c.EventList).FirstOrDefaultAsync(c => c.Id == id);
+        return calendar;
     }
 
     public async Task<SBCalendar> CreateCalendar(SBCalendar calendar)
@@ -20,9 +29,22 @@ public class SBCalendarService(FileContext context) : ISBCalendarService
         return calendar;
     }
 
+    public async Task<SBCalendar> UpdateCalendar(int id, SBCalendar updatedCalendar)
+    {
+        var calendar = await _context.Calendars.FindAsync(id);
+        if (calendar == null)
+        {
+            return null;
+        }
+
+        calendar.EventList = updatedCalendar.EventList;
+        await _context.SaveChangesAsync();
+        return calendar;
+    }
+
     public async Task<bool> DeleteCalendar(int id)
     {
-        var calendar = _context.Calendars.FirstOrDefault(c => c.id == id);
+        var calendar = await _context.Calendars.FindAsync(id);
         if (calendar != null)
         {
             _context.Calendars.Remove(calendar);
@@ -34,37 +56,41 @@ public class SBCalendarService(FileContext context) : ISBCalendarService
 
     public async Task<IEnumerable<SBEvent>> GetEventsByCalendarId(int calendarId)
     {
-        var calendar = _context.Calendars.FirstOrDefault(c => c.id == calendarId);
-        return await Task.FromResult(calendar?.events.AsEnumerable() ?? Enumerable.Empty<SBEvent>());
+        var calendar = _context.Calendars.FirstOrDefault(c => c.Id == calendarId);
+        return await Task.FromResult(calendar?.EventList.AsEnumerable() ?? Enumerable.Empty<SBEvent>());
     }
 
 
     public async Task<SBCalendar> AddEventToCalendar(int calendarId, SBEvent eventToAdd)
     {
-        var calendar = _context.Calendars.FirstOrDefault(c => c.id == calendarId);
-        if (calendar != null && calendar.events != null)
+        var calendar = await _context.Calendars.Include(c => c.EventList).FirstOrDefaultAsync(c => c.Id == calendarId);
+        if (calendar != null && calendar.EventList != null)
         {
-            calendar.events.Add(eventToAdd);
+            calendar.EventList.Add(eventToAdd);
             await _context.SaveChangesAsync();
 
         }
-        return await Task.FromResult(calendar);
+        return calendar;
     }
 
     public async Task<SBCalendar> DeleteEventFromCalendar(int calendarId, int eventId)
     {
-        var calendar = _context.Calendars.FirstOrDefault(c => c.id == calendarId);
-        if (calendar != null && calendar.events != null)
+        var calendar = await _context.Calendars.Include(c => c.EventList).FirstOrDefaultAsync(c => c.Id == calendarId);
+        if (calendar != null)
         {
-            var eventToRemove = calendar.events.FirstOrDefault(e => e.id == eventId);
+            var eventToRemove = calendar.EventList.FirstOrDefault(e => e.Id == eventId);
             if (eventToRemove != null)
             {
-                calendar.events.Remove(eventToRemove);
+                calendar.EventList.Remove(eventToRemove);
                 await _context.SaveChangesAsync();
-
             }
         }
-        return await Task.FromResult(calendar);
+        return calendar;
+    }
+
+    public async Task<SBCalendar> GetCalendarByUserId(int userId)
+    {
+        return await _context.Calendars.Include(c => c.EventList).FirstOrDefaultAsync(c => c.OwnerId == userId);
     }
 
 }

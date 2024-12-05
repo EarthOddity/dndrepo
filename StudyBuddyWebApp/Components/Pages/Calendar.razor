@@ -1,13 +1,20 @@
 @page "/calendar"
-@inject ISBCalendarService ISBCalendarService
+@inject ICalendarService ICalendarService
 @inject NavigationManager NavigationManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject IProfileService ProfileService
 @rendermode InteractiveServer
 @using StudyBuddyWebApp.Components
 
+
 <h2>Calendar</h2>
 
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+    <div class="alert alert-danger">@errorMessage</div>
+}
 <div class="button-container">
-    <button class="create-event-button">Create A New Event</button>
+    <button class="create-event-button" @onclick="NavigateToCreateEvent">Create A New Event</button>
 </div>
 <div class="week-calendar">
     <div class="calendar-header">
@@ -20,13 +27,14 @@
         <div class="time-labels">
             @for (int hour = 0; hour < 24; hour++)
             {
-                <div class="hour-label">@(hour.ToString("00")):00</div>
+                <div class="hour-label">@hour:00</div>
             }
         </div>
         <div class="days-container">
             @for (int i = 0; i < 7; i++)
             {
-                <CalendarDay Day="@currentWeek.AddDays(i)" Events="GetDayEvents(currentWeek.AddDays(i))" />
+                <CalendarDay Day="@currentWeek.AddDays(i)" Events="GetDayEvents(currentWeek.AddDays(i))"
+                    OnEventEdit="NavigateToEventDetails" />
             }
         </div>
     </div>
@@ -34,59 +42,77 @@
 
 @code {
     private DateTime currentWeek = DateTime.Today.AddDays(-(int)DateTime.Today.DayOfWeek);
-    private SBCalendar? currentCalendar;
-    private int calendarId = 1; // Placeholder for the owner ID
+    private SBCalendar currentCalendar;
+    private string errorMessage;
+    @* private int userId; *@
+    private int userId = 1;
 
     protected override async Task OnInitializedAsync()
     {
-        await LoadCalendar();
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity != null && user.Identity.IsAuthenticated)
+        {
+            userId = int.Parse(user.Claims.First(claim => claim.Type.Equals("id")).Value);
+            // Load the calendar for the user
+            currentCalendar = await ICalendarService.GetCalendarByUserId(userId);
+        }
+        else
+        {
+            errorMessage = "User is not authenticated.";
+        }
     }
 
-    private async Task LoadCalendar()
-    {
-        currentCalendar = await ISBCalendarService.GetCalendarById(calendarId);
-    }
 
     private string GetWeekTitle()
     {
         return $"{currentWeek:MMM dd} - {currentWeek.AddDays(6):MMM dd, yyyy}";
     }
-
-    private void PreviousWeek()
+    private async Task PreviousWeek()
     {
         currentWeek = currentWeek.AddDays(-7);
+        currentCalendar = await ICalendarService.GetCalendarByUserId(userId);
         StateHasChanged();
     }
 
-    private void NextWeek()
+    private async Task NextWeek()
     {
         currentWeek = currentWeek.AddDays(7);
+        currentCalendar = await ICalendarService.GetCalendarByUserId(userId);
         StateHasChanged();
     }
 
-    private void NavigateToCreateEvent()
+    private async Task NavigateToCreateEvent()
     {
-        NavigationManager.NavigateTo("/create-event");
+        if (currentCalendar != null)
+        {
+            NavigationManager.NavigateTo("/event/0");
+        }
+        else
+        {
+            errorMessage = "Unable to create event. Calendar not loaded.";
+            StateHasChanged();
+        }
     }
 
     private List<SBEvent> GetDayEvents(DateTime day)
     {
-        return currentCalendar?.events
-        .Where(e => e.startTime.Date == day.Date)
-        .ToList() ?? new List<SBEvent>();
+        return currentCalendar?.EventList.Where(e => e.StartTime.Date == day.Date).ToList() ?? new List<SBEvent>();
     }
-    private async Task BookEvent((DateTime date, int hour) args)
+
+    private void NavigateToEventDetails(int eventId)
     {
-        var (date, hour) = args;
-        var newEvent = new SBEvent
-            {
-                id = currentCalendar.events.Count + 1,
-                title = "New Event",
-                startTime = new DateTime(date.Year, date.Month, date.Day, hour, 0, 0),
-                endTime = new DateTime(date.Year, date.Month, date.Day, hour + 1, 0, 0)
-            };
-        currentCalendar = await ISBCalendarService.AddEventToCalendar(currentCalendar.id, newEvent);
-        StateHasChanged();
+        var eventExists = currentCalendar?.EventList.Any(e => e.Id == eventId) ?? false;
+        if (eventExists)
+        {
+            NavigationManager.NavigateTo($"/event/{eventId}");
+        }
+        else
+        {
+            errorMessage = "Event does not exist.";
+            StateHasChanged();
+        }
     }
 }
 
@@ -94,7 +120,6 @@
     h2 {
         font-size: 1.5em;
         margin-left: 20px;
-
     }
 
     .week-calendar {
@@ -135,27 +160,29 @@
     }
 
     .week-grid {
-        display: flex;
+        display: grid;
+        grid-template-columns: 70px 1fr;
         height: calc(100vh - 70px);
         background-color: #f4f7f9;
         padding: 20px;
     }
 
     .time-labels {
-        width: 70px;
+        width: 100%;
         background-color: #ffffff;
         border-right: 1px solid #e0e6ed;
-        padding-top: 40px;
+        padding-top: 20px;
     }
 
     .hour-label {
-        height: 60px;
+        height: 40px;
         display: flex;
         align-items: center;
         justify-content: flex-end;
         padding-right: 15px;
         font-size: 0.9em;
-        color: #718096;
+        color: #202833;
+        !important
     }
 
     .days-container {

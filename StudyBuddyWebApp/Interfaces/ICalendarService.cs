@@ -1,14 +1,16 @@
-public interface ISBCalendarService
+public interface ICalendarService
 {
     Task<IEnumerable<SBCalendar>> GetAllCalendars();
     Task<SBCalendar> GetCalendarById(int id);
     Task<SBCalendar> CreateCalendar(SBCalendar calendar);
-    Task<SBCalendar> UpdateCalendar(int id, SBCalendar updatedCalendar);
+    Task<SBCalendar> UpdateCalendar(int calendarId, SBCalendar updatedCalendar);
     Task<bool> DeleteCalendar(int id);
-    Task<IEnumerable<SBEvent>> GetEventsByCalendarId(int calendarId);
+    Task<SBEvent> GetEventById(int id);
+    Task<SBEvent> CreateEvent(SBEvent @event);
+    Task<SBEvent> UpdateEvent(SBEvent @event);
+    Task<bool> DeleteEvent(int id);
     Task<SBCalendar> AddEventToCalendar(int calendarId, SBEvent eventToAdd);
     Task<SBCalendar> DeleteEventFromCalendar(int calendarId, int eventId);
-    Task<SBCalendar> GetCalendarByUserId(int userId);
-
+    Task<SBCalendar> GetCalendarByUserId(int studentId);
 
 }

@@ -10,17 +10,20 @@ public class ProfileService : IProfileService
     public async Task<Student> GetStudentProfile(int id)
     {
         var response = await _httpClient.GetAsync($"api/Student/{id}");
-        response.EnsureSuccessStatusCode();
+        if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+        {
+            return null; //for now
+        }
         return await response.Content.ReadFromJsonAsync<Student>();
     }
 
     public async Task UpdateStudentProfile(int id, Student student)
     {
         var response = await _httpClient.PutAsJsonAsync($"api/Student/{id}", student);
-         if (!response.IsSuccessStatusCode)
-    {
-        throw new HttpRequestException($"Failed to update student. Status code: {response.StatusCode}");
-    }
+        if (!response.IsSuccessStatusCode)
+        {
+            throw new HttpRequestException($"Failed to update student. Status code: {response.StatusCode}");
+        }
     }
 
     public async Task DeleteStudentProfile(int id)
@@ -39,10 +42,10 @@ public class ProfileService : IProfileService
     public async Task UpdateModeratorProfile(int id, Moderator moderator)
     {
         var response = await _httpClient.PutAsJsonAsync($"api/Moderator/{id}", moderator);
-         if (!response.IsSuccessStatusCode)
-    {
-        throw new HttpRequestException($"Failed to update moderator. Status code: {response.StatusCode}");
-    }
+        if (!response.IsSuccessStatusCode)
+        {
+            throw new HttpRequestException($"Failed to update moderator. Status code: {response.StatusCode}");
+        }
     }
 
     public async Task DeleteModeratorProfile(int id)

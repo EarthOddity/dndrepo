@@ -1,0 +1,95 @@
+@inject NavigationManager NavigationManager
+@using System.Globalization
+
+<div class="event-summary" style="top: @(CalculateEventPosition(Event))%; height: @(CalculateEventHeight(Event))%;">
+    <span class="event-time">
+        @Event.StartTime.ToString("HH:mm", CultureInfo.CurrentCulture) - @Event.EndTime.ToString("HH:mm",
+        CultureInfo.CurrentCulture)
+    </span>
+    <span class="event-title">@Event.Title</span>
+    <span class="event-participants">@string.Join(", ", Event.Calendars.Select(c => c.Owner.name))</span>
+    <button class="edit-button" @onclick="() => EditEvent(Event.Id)">Edit</button>
+</div>
+
+@code {
+    [Parameter] public SBEvent Event { get; set; }
+    [Parameter] public EventCallback<int> OnEventEdit { get; set; }
+
+    private void EditEvent(int eventId)
+    {
+        OnEventEdit.InvokeAsync(eventId);
+    }
+
+    private double CalculateEventPosition(SBEvent evt)
+    {
+        // Calculate the vertical position based on start time minutes
+        return (evt.StartTime.Hour * 60 + evt.StartTime.Minute) / (24.0 * 60) * 100;
+    }
+
+    private double CalculateEventHeight(SBEvent evt)
+    {
+        // Calculate the height based on event duration
+        double duration = (evt.EndTime - evt.StartTime).TotalMinutes;
+        return (duration / (24.0 * 60)) * 100;
+    }
+}
+
+<style>
+    .event-summary {
+        position: absolute;
+        width: calc(100% - 10px);
+        background-color: #4299e1;
+        color: white;
+        border-radius: 6px;
+        padding: 8px;
+        margin: 5px;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .event-summary:hover {
+        transform: scale(1.02);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+    }
+
+    .event-time {
+        font-size: 0.7em;
+        margin-bottom: 4px;
+        opacity: 0.9;
+    }
+
+    .event-title {
+        font-weight: 600;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        font-size: 0.9em;
+    }
+
+    .event-participants {
+        font-size: 0.7em;
+        margin-top: 4px;
+        opacity: 0.8;
+    }
+
+    .edit-button {
+        position: absolute;
+        top: 4px;
+        right: 4px;
+        background: rgba(255, 255, 255, 0.2);
+        border: none;
+        color: white;
+        cursor: pointer;
+        font-size: 0.7em;
+        padding: 2px 5px;
+        border-radius: 3px;
+        transition: background 0.2s ease;
+    }
+
+    .edit-button:hover {
+        background: rgba(255, 255, 255, 0.3);
+    }
+</style>

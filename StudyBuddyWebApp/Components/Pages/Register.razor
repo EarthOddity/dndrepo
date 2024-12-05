@@ -2,6 +2,7 @@
 @inject IAuthService authService
 @inject NavigationManager navMgr
 @rendermode InteractiveServer
+@inject AcademicService academicService
 
 <h3>Register</h3>
 <h5>Please introduce the requiered information</h5>
@@ -31,6 +32,18 @@
     </div>
 
     <div class="form-group">
+        <label for="bachelor">Select Bachelor</label>
+        <InputSelect id="bachelor" @bind-Value="newStudent.bachelor.Id" class="form-control">
+            <option value="">Select a Bachelor</option>
+            @foreach (var bachelor in bachelors)
+            {
+                <option value="@bachelor.Id">@bachelor.ProgramName</option>
+            }
+        </InputSelect>
+        <ValidationMessage For="@(() => newStudent.bachelor.Id)" />
+    </div>
+
+    <div class="form-group">
         <label for="language">Language</label>
         <InputText id="language" @bind-Value="newStudent.language" class="form-control" />
     </div>
@@ -49,19 +62,21 @@
     <button type="button" class="btn btn-secondary" @onclick="GoToLogin">Already have an account?</button>
 </EditForm>
 
-      @if (!string.IsNullOrEmpty(errorMessage))
+@if (!string.IsNullOrEmpty(errorMessage))
 {
     <div class="alert alert-danger">@errorMessage</div>
-}  
+}
 @if (showModal)
 {
-    <div class="modal" style="display:block; position:fixed; top:0; left:0; width:100%; height:100%; background-color:rgba(0,0,0,0.5); z-index:1000;">
-        <div class="modal-dialog" style="background:white; margin:15% auto; padding:20px; max-width:400px; text-align:center; border-radius:10px;">
+    <div class="modal"
+        style="display:block; position:fixed; top:0; left:0; width:100%; height:100%; background-color:rgba(0,0,0,0.5); z-index:1000;">
+        <div class="modal-dialog"
+            style="background:white; margin:15% auto; padding:20px; max-width:400px; text-align:center; border-radius:10px;">
             <h4>Registration Successful!</h4>
             <p>Your student ID is <strong>@generatedId</strong>.</p>
             <p>Going top log in page in <strong>@countdown</strong> seconds...</p>
 
-            
+
         </div>
     </div>
 }
@@ -71,15 +86,20 @@
     private int generatedId;
     private bool showModal = false;
     private int countdown = 5; // Seconds before redirect
+    private List<Bachelor> bachelors = new List<Bachelor>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        bachelors = (await academicService.GetAllBachelors()).ToList();
+    }
 
     private async Task RegisterStudent()
     {
         try
         {
-            
             var registeredStudent = await authService.RegisterStudentAsync(newStudent);
             generatedId = registeredStudent.id;
-             // Show the success modal
+            // Show the success modal
             showModal = true;
             StartCountdown();
             // Clear the form

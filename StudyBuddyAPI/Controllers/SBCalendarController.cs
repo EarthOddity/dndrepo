@@ -1,26 +1,20 @@
 using Microsoft.AspNetCore.Mvc;
-
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 [ApiController]
 [Route("api/[controller]")]
-public class SBCalendarController : ControllerBase
+public class SBCalendarController(ISBCalendarService _calendarService) : ControllerBase
 {
-    private readonly SBCalendarService _calendarService; //injecting dependencies to access the methods of CalendarService without directly creating an instance in te controller -> easier to manage dependencies and test the controller
-
-    public SBCalendarController(SBCalendarService calendarService)
-    {
-        _calendarService = calendarService;
-    }
-
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<SBCalendar>>> GetCalendars()
+    public async Task<ActionResult<IEnumerable<SBCalendar>>> GetAllCalendars()
     {
         var calendars = await _calendarService.GetAllCalendars();
         return Ok(calendars);
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<SBCalendar>> GetCalendar(int id)
+    public async Task<ActionResult<SBCalendar>> GetCalendarById(int id)
     {
         var calendar = await _calendarService.GetCalendarById(id);
         if (calendar == null)
@@ -33,27 +27,19 @@ public class SBCalendarController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<SBCalendar>> CreateCalendar(SBCalendar calendar)
     {
-        var newCalendar = await _calendarService.CreateCalendar(calendar);
-        return CreatedAtAction(nameof(GetCalendar), new { id = newCalendar.id }, newCalendar);
-    }
-
-    [HttpPost("{calendarId}/event")]
-    public async Task<ActionResult<SBCalendar>> AddEvent(int calendarId, SBEvent @event) // need the @ to distinguish it from the event keyword
-    {
-        var calendar = await _calendarService.AddEventToCalendar(calendarId, @event);
         if (calendar == null)
         {
-            return NotFound();
+            return BadRequest("Calendar data is required.");
         }
-        return Ok(calendar);
+        await _calendarService.CreateCalendar(calendar);
+        return CreatedAtAction(nameof(GetCalendarById), new { id = calendar.Id }, calendar);
     }
 
-
-    [HttpDelete("{calendarId}/events/{eventId}")]
-    public async Task<IActionResult> DeleteEvent(int calendarId, int eventId)
+    [HttpPut("{id}")]
+    public async Task<IActionResult> UpdateCalendar(int id, SBCalendar updatedCalendar)
     {
-        var updatedCalendar = await _calendarService.DeleteEventFromCalendar(calendarId, eventId);
-        if (updatedCalendar == null)
+        var success = await _calendarService.UpdateCalendar(id, updatedCalendar) != null;
+        if (!success)
         {
             return NotFound();
         }
@@ -63,18 +49,44 @@ public class SBCalendarController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteCalendar(int id)
     {
-        var deleted = await _calendarService.DeleteCalendar(id);
-        if (!deleted)
+        var success = await _calendarService.DeleteCalendar(id);
+        if (!success)
         {
             return NotFound();
         }
         return NoContent();
     }
 
-    [HttpGet("{id}/events")]
-    public async Task<ActionResult<IEnumerable<SBEvent>>> GetEventsByCalendarId(int id)
+    [HttpPost("{calendarId}/event")]
+    public async Task<ActionResult<SBCalendar>> AddEventToCalendar(int calendarId, SBEvent eventToAdd)
     {
-        var events = await _calendarService.GetEventsByCalendarId(id);
-        return Ok(events);
+        var calendar = await _calendarService.AddEventToCalendar(calendarId, eventToAdd);
+        if (calendar == null)
+        {
+            return NotFound();
+        }
+        return Ok(calendar);
+    }
+
+    [HttpDelete("{calendarId}/events/{eventId}")]
+    public async Task<IActionResult> DeleteEventFromCalendar(int calendarId, int eventId)
+    {
+        var calendar = await _calendarService.DeleteEventFromCalendar(calendarId, eventId);
+        if (calendar == null)
+        {
+            return NotFound();
+        }
+        return NoContent();
+    }
+
+    [HttpGet("user/{userId}")]
+    public async Task<ActionResult<SBCalendar>> GetCalendarByUserId(int userId)
+    {
+        var calendar = await _calendarService.GetCalendarByUserId(userId);
+        if (calendar == null)
+        {
+            return NotFound();
+        }
+        return Ok(calendar);
     }
 }

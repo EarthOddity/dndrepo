@@ -1,6 +1,7 @@
 @page "/saved-materials"
 @inject ITeachingMaterialService TeachingMaterialService
 @inject IBachelorService BachelorService
+@inject AuthenticationStateProvider AuthenticationStateProvider
 @inject NavigationManager NavigationManager
 
 <h3>My Saved Materials</h3>
@@ -40,7 +41,7 @@
         var userBachelor = await BachelorService.GetBachelorByStudentId(currentUserId);
         if (userBachelor != null)
         {
-            userSubjects = (await BachelorService.GetSubjectsByBachelorId(userBachelor.id)).ToList();
+            userSubjects = (await BachelorService.GetSubjectsByBachelorId(userBachelor.Id)).ToList();
         }
     }
 

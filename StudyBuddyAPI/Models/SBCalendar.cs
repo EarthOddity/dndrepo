@@ -1,22 +1,23 @@
 public class SBCalendar
 {
+    public int Id { get; set; }
 
-    public int id { get; set; }
-
-    public int studentId { get; set; }
-
-    public List<SBEvent> events { get; set; }
+    [System.Text.Json.Serialization.JsonIgnore]
+    public Student Owner { get; set; }
+    public int OwnerId { get; set; }
+    public List<SBEvent> EventList { get; set; } = new List<SBEvent>();
 
     public SBCalendar()
     {
 
     }
 
-    public SBCalendar(int id, int studentId)
+    public SBCalendar(int id, Student owner)
     {
-        this.id = id;
-        this.studentId = studentId;
-        this.events = new List<SBEvent>(); // initialize to avoid null errors hiuhi
+        this.Id = id;
+        this.Owner = owner;
+        this.OwnerId = owner.id;
+
     }
 
 
