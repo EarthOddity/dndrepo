@@ -1,7 +1,9 @@
 using Microsoft.EntityFrameworkCore;
+
 public class SBCalendarService(DatabaseContext context) : ISBCalendarService
 {
     private readonly DatabaseContext _context = context;
+    static SBCalendarService(){}
 
     public Task<IEnumerable<SBCalendar>> GetAllCalendars()
     {
@@ -10,13 +12,14 @@ public class SBCalendarService(DatabaseContext context) : ISBCalendarService
 
     public async Task<SBCalendar> GetCalendarById(int id)
     {
-        var calendar = _context.Calendars.FirstOrDefault(c => c.id == id);
+        var calendar = await _context.Calendars.FirstOrDefaultAsync(c => c.id == id);
         return await Task.FromResult(calendar);
     }
 
-    public async Task<SBCalendar> CreateCalendar(SBCalendar calendar)
+    public async Task<SBCalendar> CreateCalendar(Student student)
     {
-        _context.Calendars.AddAsync(calendar);
+        var calendar = new SBCalendar(student);
+        await _context.Calendars.AddAsync(calendar);
         await _context.SaveChangesAsync();
         return calendar;
     }
@@ -35,21 +38,21 @@ public class SBCalendarService(DatabaseContext context) : ISBCalendarService
 
     public async Task<IEnumerable<SBEvent>> GetEventsByCalendarId(int calendarId)
     {
-        var calendar = await _context.Calendars.Include(c => c.events).FirstOrDefaultAsync(c => c.id == calendarId);
-        return calendar?.events ?? Enumerable.Empty<SBEvent>();
+        var calendar = _context.Calendars.FirstOrDefault(c => c.id == calendarId);
+        return await Task.FromResult(calendar?.events.AsEnumerable() ?? Enumerable.Empty<SBEvent>());
     }
 
 
-    public async Task<bool> AddEventToCalendar(int calendarId, SBEvent eventToAdd)
+    public async Task<SBCalendar> AddEventToCalendar(int calendarId, SBEvent eventToAdd)
     {
-        var calendar = _context.Calendars.Include(c => c.events).FirstOrDefault(c => c.id == calendarId);
-        if (calendar != null)
+        var calendar = _context.Calendars.FirstOrDefault(c => c.id == calendarId);
+        if (calendar != null && calendar.events != null)
         {
             calendar.events.Add(eventToAdd);
             await _context.SaveChangesAsync();
-            return true;
+
         }
-        return false;
+        return await Task.FromResult(calendar);
     }
 
     public async Task<SBCalendar> DeleteEventFromCalendar(int calendarId, int eventId)

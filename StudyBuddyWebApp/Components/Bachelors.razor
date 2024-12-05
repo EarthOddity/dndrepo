@@ -1,6 +1,7 @@
 @inject IAcademicService AcademicService
 
 
+
 @if (bachelors == null)
 {
     <p class="text-muted text-center">Loading bachelors...</p>
@@ -18,7 +19,12 @@ else
                             <h5 class="card-title">@bachelor.programName</h5>
                             <div class="d-flex justify-content-between">
                                 <button class="btn btn-primary btn-sm" @onclick="() => EditBachelor(bachelor)">Edit</button>
-                                <button class="btn btn-danger btn-sm" @onclick="() => DeleteBachelor(bachelor.id)">Delete</button>
+                                <button class="btn btn-danger btn-sm"
+                                    @onclick="() => DeleteBachelor(bachelor.id)">Delete</button>
+                                <button class="btn btn-primary btn-sm"
+                                    @onclick="() => OnBachelorSelected.InvokeAsync(bachelor)">
+                                    Select Subjects
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -46,7 +52,10 @@ else
     </div>
 }
 
-@code{
+@code {
+
+    [Parameter]
+    public EventCallback<Bachelor> OnBachelorSelected { get; set; }
     private List<Bachelor>? bachelors;
     private Bachelor bachelorForm = new();
     private Bachelor? editingBachelor;
@@ -64,10 +73,10 @@ else
     {
         editingBachelor = bachelor;
         bachelorForm = new Bachelor
-        {   
-            id = bachelor.id,
-            programName = bachelor.programName,
-        };
+            {
+                id = bachelor.id,
+                programName = bachelor.programName,
+            };
     }
     private async Task SaveBachelor()
     {

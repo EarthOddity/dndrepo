@@ -54,10 +54,10 @@ public class BachelorController : ControllerBase
         return NoContent();
     }
 
-    [HttpPost("{bachelorId}/subjects")]
-    public async Task<IActionResult> AddSubject(int bachelorId, Subject @subject)
+    [HttpPost("{bachelorId}/add-subject/{subjectId}")]
+    public async Task<IActionResult> AddSubject(int bachelorId, int subjectId)
     {
-        var added = await _bachelorService.AddSubjectToBachelor(bachelorId, @subject);
+        var added = await _bachelorService.AddSubjectToBachelor(bachelorId, subjectId);
         if (!added)
         {
             return NotFound();
