@@ -13,19 +13,24 @@ else
             {
                 <div class="col-md-4">
                     <div class="card shadow-lg h-100 @(SelectedBachelor != null ? "cursor-pointer" : "")"
+                     style="@(bachelorSubjects?.Any(s => s.id == subject.id) == true ? "pointer-events: none; opacity: 0.6;" : "")"
                         @onclick="() => OnSubjectClick(subject)">
                         <div class="card-body">
                             <h5 class="card-title">@subject.name</h5>
-                            @if (bachelorSubjects.Any(s => s.id == subject.id))
-                                {
-                                    <span class="badge bg-success">Associated</span>
-                                }
                             @if (SelectedBachelor == null)
                             {
                                 <div class="d-flex justify-content-between">
                                     <button class="btn btn-primary btn-sm" @onclick="() => Editsubject(subject)">Edit</button>
                                     <button class="btn btn-danger btn-sm" @onclick="() => Deletesubject(subject.id)">Delete</button>
                                 </div>
+                            }
+                            else
+                            {
+                                @if (bachelorSubjects?.Any(s => s.id == subject.id) == true)
+                                {
+                                    <span class="badge bg-success">Associated</span>
+                                }
+
                             }
                         </div>
                     </div>
@@ -48,7 +53,7 @@ else
                 <label for="description">Description</label>
                 <InputText id="description" @bind-Value="subjectForm.description" class="form-control" />
             </div>
-            
+
 
             <button type="submit" class="btn btn-success">@("Save")</button>
             @if (editingsubject != null)
@@ -71,22 +76,24 @@ else
     protected override async Task OnInitializedAsync()
     {
         await Loadsubjects();
-        await LoadBachelorSubjects();
     }
 
-    public async Task LoadBachelorSubjects()
+    protected override async Task OnParametersSetAsync()
     {
         if (SelectedBachelor != null)
         {
             bachelorSubjects = (await AcademicService.GetSubjectsByBachelorId(SelectedBachelor.id)).ToList();
         }
-        
+        else
+        {
+            bachelorSubjects = null;
+        }
     }
 
     private async Task Loadsubjects()
     {
         subjects = (await AcademicService.GetAllSubjects()).ToList();
-        
+
     }
     private void Editsubject(Subject subject)
     {

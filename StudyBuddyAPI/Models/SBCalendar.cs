@@ -7,6 +7,8 @@ public class SBCalendar
 
     public List<SBEvent> events { get; set; }
 
+    public Student student { get; set; }
+
     public SBCalendar()
     {
 

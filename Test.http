@@ -135,6 +135,10 @@ Content-Type: application/json
 GET http://localhost:5044/api/Bachelor
 Accept: application/json
 
+### Get Subjects in Bachelor 
+GET http://localhost:5044/api/Bachelor/1/subjects
+Accept: application/json
+
 ### Add a subject to a bachelor
 POST http://localhost:5044/api/Bachelor/1/add-subject/2
 ### Get all teaching materials

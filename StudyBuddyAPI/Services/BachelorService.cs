@@ -58,10 +58,11 @@ public class BachelorService(DatabaseContext context) : IBachelorService
 
     public async Task<List<Subject>> GetSubjectsByBachelorId(int bachelorId)
     {
-        var bachelor = await _context.Bachelors
-            .Include(b => b.associatedSubjects)
-            .FirstOrDefaultAsync(b => b.id == bachelorId);
-        return bachelor?.associatedSubjects.ToList() ?? new List<Subject>();
+        var subjects = await _context.Bachelors
+            .Where(b => b.id == bachelorId)
+            .SelectMany(b => b.associatedSubjects)
+            .ToListAsync();
+        return subjects;
     }
 
     public Task<Bachelor> GetBachelorByStudentId(int studentId)
