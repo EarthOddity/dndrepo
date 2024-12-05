@@ -1,15 +1,8 @@
-/* Scoped styles for Review Section */
-
-/* Ensure body styles don't affect the entire app */
 .review-section {
     font-family: 'Arial', sans-serif;
     background-color: #f4f4f9;
     margin: 0;
     padding: 0;
-}
-
-/* Styling for the review section container */
-.review-section {
     margin: 30px auto;
     max-width: 700px;
     padding: 20px;
