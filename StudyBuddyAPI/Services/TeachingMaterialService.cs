@@ -107,6 +107,13 @@ public class TeachingMaterialService : ITeachingMaterialService
         return true;
     }
 
+    public async Task<IEnumerable<TeachingMaterial>> GetMaterialsBySubjectId(int subjectId)
+    {
+        return await context.TeachingMaterials
+            .Where(m => m.subjectId == subjectId)
+            .ToListAsync();
+    }
+
     public async Task<IEnumerable<TeachingMaterial>> SearchTeachingMaterials(string searchTerm)
     {
         return await context.TeachingMaterials

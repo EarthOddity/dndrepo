@@ -61,6 +61,12 @@ public class AcademicService : IAcademicService
         return await response.Content.ReadFromJsonAsync<IEnumerable<TeachingMaterial>>();
     }
 
+    public async Task<IEnumerable<TeachingMaterial>> GetMaterialsBySubjectId(int subjectId)
+    {
+        var response = await _httpClient.GetAsync($"api/TeachingMaterial/subject/{subjectId}");
+        response.EnsureSuccessStatusCode();
+        return await response.Content.ReadFromJsonAsync<IEnumerable<TeachingMaterial>>();
+    }
     public async Task<IEnumerable<TeachingMaterial>> SearchMaterials(string searchTerm)
     {
         var response = await _httpClient.GetAsync($"api/TeachingMaterial/search/{searchTerm}");
