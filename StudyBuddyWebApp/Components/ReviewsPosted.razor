@@ -68,7 +68,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        try 
+        try
         {
             await LoadUserReview();
         }
@@ -95,7 +95,7 @@
                 loading = true;
                 var reviews = await AcademicService.GetReviewsByMaterialId(MaterialId);
                 userReview = reviews.FirstOrDefault(r => r.authorId == CurrentUserId);
-                
+
                 if (userReview != null && !isDisposed)
                 {
                     reviewText = userReview.reviewText;
@@ -123,12 +123,12 @@
         try
         {
             var newReview = new Review
-            {
-                reviewText = reviewText,
-                authorId = CurrentUserId,
-                materialId = MaterialId,
-                isApproved = false
-            };
+                {
+                    reviewText = reviewText,
+                    authorId = CurrentUserId,
+                    materialId = MaterialId,
+                    isApproved = false
+                };
 
             await AcademicService.AddReview(newReview);
             if (!isDisposed)
@@ -212,16 +212,19 @@
     .review-section {
         margin: 20px 0;
     }
+
     .existing-review {
         background-color: #f8f9fa;
         padding: 15px;
         border-radius: 5px;
     }
+
     .button-group {
         margin-top: 10px;
         display: flex;
         gap: 10px;
     }
+
     .error {
         color: red;
         padding: 10px;
@@ -229,6 +232,7 @@
         background-color: #ffe6e6;
         border-radius: 4px;
     }
+
     .success-message {
         color: #28a745;
         font-weight: bold;
