@@ -8,21 +8,33 @@
 @inject NavigationManager NavigationManager 
 @inject AuthenticationStateProvider AuthStateProvider
 @rendermode InteractiveServer
-@inject IAcademicService AcademicService
-@using Microsoft.AspNetCore.Components.Authorization
-@using System.Security.Claims
 
 <div class="study-buddy-container">
     <section class="introduction">
         <h2>Welcome to StudyBuddy!</h2>
         <p>Connect with your peers, discover study resources, and find the perfect tutor to help you excel in your
-            academic journey!</p>
+            academic
+            journey!</p>
     </section>
 
     <main class="content-grid">
         <div class="events-section">
             <h3>Upcoming Events</h3>
-            <CalendarDay Events="events"/>
+            @if (events == null)
+            {
+                <p>Loading events...</p>
+            }
+            else if (!events.Any())
+            {
+                <p>No Upcoming events.</p>
+            }
+            else
+            {
+                <CalendarDay Events="events" />
+            }
+            <div class="button-container">
+                <button class="create-event-button" @onclick ="CreateEvent" >Create A New Event</button>
+            </div>
         </div>
         @* CHECK OUT THE OVERVIEW MATERIALS COMPONENT TO USE HERE *@
         <div class="materials-section">
@@ -48,19 +60,14 @@
                 }
             </div>
         </div>
-        <div class="materials-section">
-            <OverviewMaterialsSaved Title="Saved Materials" Materials="@savedMaterials" SavingMethod="@ToggleSave"
-                SavedMaterialIds="@savedMaterialIds" />
-        </div>
     </main>
 </div>
 
 @code {
-    private List<TeachingMaterial> savedMaterials = new();
-    private HashSet<int> savedMaterialIds = new();
-    private int? currentUserId;
-    private bool loading = true;
-    private string error;
+    [Inject]
+    private ITeachingMaterialService? TeachingMaterialService { get; set; }
+
+    private List<TeachingMaterial> savedMaterials = new List<TeachingMaterial>();
     private List<SBEvent> events = new List<SBEvent>();
     private int calendarId;
     [CascadingParameter]
@@ -138,6 +145,18 @@
         min-height: fit-content;
         height: 800px;
     }
+
+    .materials-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+    }
+
+    .material-card {
+        background-color: #0f172a;
+        padding: 15px;
+        border-radius: 6px;
+    }
        .create-event-button {
         background: linear-gradient(135deg, #71b3e5 0%, #013faa 100%);
         color: #000000;
@@ -149,5 +168,5 @@
         border-radius: 8px;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         transition: background 0.3s ease, transform 0.2s ease;
-    }
+    }
 </style>
