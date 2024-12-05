@@ -7,5 +7,5 @@ public interface ISBCalendarService
    /*  Task<IEnumerable<SBEvent>> GetEventsByCalendarId(int calendarId);
     Task<SBCalendar> AddEventToCalendar(int calendarId, SBEvent eventToAdd);
     Task<SBCalendar> DeleteEventFromCalendar(int calendarId, int eventId);
- */
+ */ Task<int> getCalendarIdByStudentId(int studentId);
 }

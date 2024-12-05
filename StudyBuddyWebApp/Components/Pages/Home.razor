@@ -1,6 +1,13 @@
 ﻿@page "/"
 @using StudyBuddyWebApp.Components
 @inject ICalendarService eventService
+@using System.Security.Claims
+@using StudyBuddyWebApp.Components.Layout
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Authorization
+@inject NavigationManager NavigationManager 
+@inject AuthenticationStateProvider AuthStateProvider
+@rendermode InteractiveServer
 
 <div class="study-buddy-container">
     <section class="introduction">
@@ -13,7 +20,21 @@
     <main class="content-grid">
         <div class="events-section">
             <h3>Upcoming Events</h3>
-            <CalendarDay Events="events"/>
+            @if (events == null)
+            {
+                <p>Loading events...</p>
+            }
+            else if (!events.Any())
+            {
+                <p>No Upcoming events.</p>
+            }
+            else
+            {
+                <CalendarDay Events="events" />
+            }
+            <div class="button-container">
+                <button class="create-event-button" @onclick ="CreateEvent" >Create A New Event</button>
+            </div>
         </div>
         @* CHECK OUT THE OVERVIEW MATERIALS COMPONENT TO USE HERE *@
         <div class="materials-section">
@@ -48,10 +69,25 @@
 
     private List<TeachingMaterial> savedMaterials = new List<TeachingMaterial>();
     private List<SBEvent> events = new List<SBEvent>();
+    private int calendarId;
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthState { get; set; } = null!;
+    private int id;
+    private IEnumerable<Claim>? userClaims;
+    private bool isLoggedIn;
+
 
     protected override async Task OnInitializedAsync()
     {
-        events = (await eventService.GetEventsByCalendarId(1)).ToList();
+        AuthenticationState authState = await AuthState;
+        ClaimsPrincipal user = authState.User;
+        isLoggedIn = user.Identity != null;
+        if (!isLoggedIn) return;
+        userClaims = user.Claims;
+        id = int.Parse(user.Claims.First(claim => claim.Type.Equals("id")).Value);
+        calendarId = await eventService.GetCalendarIdByStudentId(id);
+        Console.WriteLine("Calendar id" + calendarId);
+        events = (await eventService.GetEventsByCalendarId(calendarId)).ToList();
     }
     @* protected override async Task OnInitializedAsync()
     {
@@ -68,9 +104,15 @@
         new Student { id = 1, name = "John Austin" },
         true
         );
+    using System.Security.Claims;
 
         savedMaterials.Add(mockedMaterial);
     } *@
+
+    private void CreateEvent()
+    {
+        NavigationManager.NavigateTo($"/calendar/{calendarId}/event");
+    }
 
 
 }
@@ -114,5 +156,17 @@
         background-color: #0f172a;
         padding: 15px;
         border-radius: 6px;
+    }
+       .create-event-button {
+        background: linear-gradient(135deg, #71b3e5 0%, #013faa 100%);
+        color: #000000;
+        border: none;
+        text-align: center;
+        padding: 10px 15px;
+        cursor: pointer;
+        margin-right: 30px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        transition: background 0.3s ease, transform 0.2s ease;
     }
 </style>

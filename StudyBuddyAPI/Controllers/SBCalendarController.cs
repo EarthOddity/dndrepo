@@ -18,6 +18,17 @@ public class SBCalendarController : ControllerBase
         var calendars = await _calendarService.GetAllCalendars();
         return Ok(calendars);
     }
+    [HttpGet("student/{studentId}")]
+    public async Task<ActionResult<SBCalendar>> GetCalendarByStudentId(int studentId)
+    {
+        var calendar = await _calendarService.getCalendarIdByStudentId(studentId);
+        if (calendar == null)
+        {
+            return NotFound();
+        }
+        return Ok(calendar);
+    }
+    
 
     [HttpGet("{id}")]
     public async Task<ActionResult<SBCalendar>> GetCalendar(int id)

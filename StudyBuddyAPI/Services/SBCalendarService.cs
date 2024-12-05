@@ -35,7 +35,11 @@ public class SBCalendarService(DatabaseContext context) : ISBCalendarService
         }
         return false;
     }
-
+    public async Task<int> getCalendarIdByStudentId(int studentId)
+    {
+        var calendar = await _context.Calendars.FirstOrDefaultAsync(c => c.studentId == studentId);
+        return calendar.id;
+    }
   /*   public async Task<IEnumerable<SBEvent>> GetEventsByCalendarId(int calendarId)
     {
         var calendar = _context.Calendars.FirstOrDefault(c => c.id == calendarId);

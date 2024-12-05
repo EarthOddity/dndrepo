@@ -403,3 +403,7 @@ DELETE http://localhost:5044/api/SBEvent/1
 ### Get events by calendar id
 GET http://localhost:5044/api/SBEvent/calendar/1
 Accept: application/json
+
+### Get calendar by student id
+GET http://localhost:5044/api/SBCalendar/student/3
+Accept: application/json
