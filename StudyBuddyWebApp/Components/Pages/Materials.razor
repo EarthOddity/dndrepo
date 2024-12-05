@@ -4,38 +4,52 @@
 @using System.Security.Claims
 @using Microsoft.AspNetCore.Components.Authorization
 
-<h3>Available Teaching Materials</h3>
+<div class="study-buddy-container">
+    <div class="content-grid">
+        <div class="materials-section">
+            <OverviewMaterialsSaved Title="Available Materials" Materials="@teachingMaterials"
+                SavingMethod="@ToggleSave" SavedMaterialIds="@savedMaterialIds" />
+        </div>
 
-<div class="materials-container">
-    <OverviewMaterialsSaved Title="Available Materials" Materials="@teachingMaterials" SavingMethod="@ToggleSave" SavedMaterialIds="@savedMaterialIds" />
-
-    <div class="bachelors-list">
-        <h3>Available Bachelors</h3>
-        @if (bachelors == null)
-        {
-            <p>Loading bachelors...</p>
-        }
-        else
-        {
-            @foreach (var bachelor in bachelors)
+        <div class="bachelors-section">
+            <h3>Available Bachelors</h3>
+            @if (bachelors == null)
             {
-                <div class="bachelor-item" @onclick="() => LoadSubjects(bachelor.id)">
-                    <h4>@bachelor.programName</h4>
+                <p>Loading bachelors...</p>
+            }
+            else
+            {
+                <div class="bachelors-grid">
+                    @foreach (var bachelor in bachelors)
+                    {
+                        <div class="material-card" @onclick="() => LoadSubjects(bachelor.id)">
+                            <h4>@bachelor.programName</h4>
+                        </div>
+                    }
+                </div>
+
+                <div class="subjects-section">
+                    @if (selectedSubjects != null)
+                    {
+                        <h4>Subjects</h4>
+                        <div class="materials-grid">
+                            @foreach (var subject in selectedSubjects)
+                            {
+                                <div class="material-card">
+                                    <p>@subject.name</p>
+                                </div>
+                            }
+                        </div>
+                    }
                 </div>
             }
-        }
-        <div class="subjects-list">
-            @if (selectedSubjects != null)
-            {
-                <h4>Subjects</h4>
-                @foreach (var subject in selectedSubjects)
-                {
-                    <p>@subject.name</p>
-                }
-            }
         </div>
+        <button class="create-button" @onclick="NavigateToCreate">
+            <i class="fas fa-plus"></i> Create Material
+        </button>
     </div>
 </div>
+
 
 @code {
     private List<TeachingMaterial> teachingMaterials = new();
@@ -46,6 +60,9 @@
 
     [CascadingParameter]
     private Task<AuthenticationState> AuthState { get; set; } = null!;
+
+    private string error;
+    private bool loading = true;
 
     protected override async Task OnInitializedAsync()
     {
@@ -123,29 +140,102 @@
     {
         try
         {
-            selectedSubjects = (await AcademicService.GetSubjectsByBachelorId(bachelorId)).ToList();
+            loading = true;
+            error = null;
+            selectedSubjects.Clear();
+
+            var subjects = await AcademicService.GetSubjectsByBachelorId(bachelorId);
+            selectedSubjects = subjects.ToList();
+
+            if (!selectedSubjects.Any())
+            {
+                error = "No subjects found for this bachelor";
+            }
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error loading subjects: {ex.Message}");
+            error = "Error loading subjects";
+            Console.WriteLine($"LoadSubjects error: {ex.Message}");
+            selectedSubjects = new List<Subject>();
         }
+        finally
+        {
+            loading = false;
+            StateHasChanged();
+        }
+    }
+
+    private void NavigateToCreate()
+    {
+        NavigationManager.NavigateTo("/create-material");
     }
 }
 
+
 <style>
-    .material-item {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 1rem;
-        margin-bottom: 1rem;
-        border: 1px solid #ddd;
-        border-radius: 4px;
+    .study-buddy-container {
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #0f172a;
+        color: #e2e8f0;
     }
 
-    .material-content {
-        flex-grow: 1;
+    .content-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+
+    .materials-section,
+    .bachelors-section {
+        background-color: #1e293b;
+        padding: 20px;
+        border-radius: 8px;
+    }
+
+    .bachelors-grid,
+    .materials-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+        margin-top: 15px;
+    }
+
+    .material-card {
+        background-color: #0f172a;
+        padding: 15px;
+        border-radius: 6px;
         cursor: pointer;
+        transition: transform 0.2s ease;
+    }
+
+    .material-card:hover {
+        transform: scale(1.02);
+    }
+
+    .create-button {
+        margin-left: auto;
+        background: linear-gradient(135deg, #71b3e5 0%, #013faa 100%);
+        color: #e2e8f0;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 8px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .create-button:hover {
+        background: linear-gradient(135deg, #53b5ff 0%, #002a74 100%);
+        transform: scale(1.05);
+    }
+
+    .subjects-section {
+        margin-top: 20px;
     }
 
     .heart-button {
@@ -153,8 +243,9 @@
         border: none;
         cursor: pointer;
         padding: 8px;
-        color: #888;
-        transition: color 0.3s ease;
+        font-size: 1.2rem;
+        color: #e2e8f0;
+        transition: all 0.3s ease;
     }
 
     .heart-button.saved {

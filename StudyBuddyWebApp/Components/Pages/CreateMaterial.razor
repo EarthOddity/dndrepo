@@ -1,0 +1,222 @@
+@page "/create-material"
+@inject IAcademicService AcademicService
+@inject NavigationManager NavigationManager
+@using Microsoft.AspNetCore.Components.Authorization
+@using System.Security.Claims
+@attribute [Authorize("MustBeStudent")]
+
+<div class="create-material-container">
+    <h2>Create Teaching Material</h2>
+
+    @if (error != null)
+    {
+        <div class="alert alert-danger">@error</div>
+    }
+
+    <div class="form-section">
+        <EditForm Model="@newMaterial" OnValidSubmit="HandleSubmit">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+
+            <div class="form-group">
+                <label for="title">Title</label>
+                <InputText id="title" @bind-Value="newMaterial.title" class="form-control" />
+            </div>
+
+            <div class="form-group">
+                <label for="description">Description</label>
+                <InputTextArea id="description" @bind-Value="newMaterial.description" class="form-control" rows="4" />
+            </div>
+
+            <div class="form-group">
+                <label for="subject">Subject</label>
+                <InputSelect id="subject" @bind-Value="newMaterial.subjectId" class="form-control">
+                    <option value="">Select a subject...</option>
+                    @if (subjects != null)
+                    {
+                        @foreach (var subject in subjects)
+                        {
+                            <option value="@subject.id">@subject.name</option>
+                        }
+                    }
+                </InputSelect>
+            </div>
+
+            <div class="button-group">
+                <button type="submit" class="btn btn-primary">Create Material</button>
+                <button type="button" class="btn btn-secondary" @onclick="Cancel">Cancel</button>
+            </div>
+        </EditForm>
+    </div>
+</div>
+
+@code {
+    private TeachingMaterial newMaterial = new();
+    private List<Subject> subjects;
+    private string error;
+    private int? currentUserId;
+
+    [CascadingParameter]
+    private Task<AuthenticationState> AuthState { get; set; } = null!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var authState = await AuthState;
+            var user = authState.User;
+
+            if (user.Identity?.IsAuthenticated ?? false)
+            {
+                var idClaim = user.Claims.FirstOrDefault(c => c.Type == "id");
+                if (idClaim != null && int.TryParse(idClaim.Value, out int userId))
+                {
+                    currentUserId = userId;
+                }
+            }
+
+            subjects = (await AcademicService.GetAllSubjects()).ToList();
+        }
+        catch (Exception ex)
+        {
+            error = "Error loading subjects";
+            Console.WriteLine($"Error: {ex.Message}");
+        }
+    }
+
+    private async Task HandleSubmit()
+    {
+        try
+        {
+            if (!currentUserId.HasValue)
+            {
+                error = "You must be logged in to create materials";
+                return;
+            }
+
+            // Initialize all required properties
+            newMaterial.author = new Student { id = currentUserId.Value };
+            newMaterial.isApproved = false;
+            newMaterial.savedMaterials = new List<SavedMaterial>();
+            newMaterial.reviews = new List<Review>();
+
+            // Log request payload for debugging
+            Console.WriteLine($"Creating material: {System.Text.Json.JsonSerializer.Serialize(newMaterial)}");
+
+            // Validate required fields
+            if (string.IsNullOrEmpty(newMaterial.title))
+            {
+                error = "Title is required";
+                return;
+            }
+            if (string.IsNullOrEmpty(newMaterial.description))
+            {
+                error = "Description is required";
+                return;
+            }
+            if (newMaterial.subjectId == 0)
+            {
+                error = "Subject is required";
+                return;
+            }
+
+            // Create material
+            var result = await AcademicService.CreateMaterial(newMaterial);
+            if (result != null)
+            {
+                NavigationManager.NavigateTo("/materials");
+            }
+            else
+            {
+                error = "Failed to create material";
+            }
+        }
+        catch (Exception ex)
+        {
+            error = $"Error creating material: {ex.Message}";
+            Console.WriteLine($"Error details: {ex}");
+        }
+    }
+
+    private void Cancel()
+    {
+        NavigationManager.NavigateTo("/materials");
+    }
+}
+
+<style>
+    .create-material-container {
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #0f172a;
+        color: #e2e8f0;
+        max-width: 800px;
+    }
+
+    .form-section {
+        background-color: #1e293b;
+        padding: 25px;
+        border-radius: 8px;
+        margin: 20px 0;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        color: #e2e8f0;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 8px 12px;
+        background-color: #0f172a;
+        border: 1px solid #2d3748;
+        border-radius: 4px;
+        color: #e2e8f0;
+    }
+
+    .form-control:focus {
+        border-color: #3182ce;
+        outline: none;
+    }
+
+    .button-group {
+        display: flex;
+        gap: 10px;
+        margin-top: 20px;
+    }
+
+    .btn {
+        padding: 8px 16px;
+        border-radius: 4px;
+        cursor: pointer;
+        border: none;
+        font-weight: 500;
+    }
+
+    .btn-primary {
+        background-color: #3182ce;
+        color: white;
+    }
+
+    .btn-secondary {
+        background-color: #4a5568;
+        color: white;
+    }
+
+    .btn:hover {
+        opacity: 0.9;
+    }
+
+    .alert-danger {
+        background-color: #742a2a;
+        color: #feb2b2;
+        padding: 12px;
+        border-radius: 4px;
+        margin-bottom: 20px;
+    }
+</style>

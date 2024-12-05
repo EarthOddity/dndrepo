@@ -1,7 +1,15 @@
 @page "/material/{id:int}"
 @inject IAcademicService AcademicService
+@inject NavigationManager NavigationManager
+@using Microsoft.AspNetCore.Components.Authorization
+@using System.Security.Claims
 
 <h3>Teaching Material Details</h3>
+
+@if (error != null)
+{
+    <div class="alert alert-danger">@error</div>
+}
 
 @if (teachingMaterial != null)
 {
@@ -26,12 +34,15 @@
     }
 
     <div class="reviews-section">
-        <ReviewsPosted MaterialId="@id" CurrentUserId="@currentUserId" />
+        @if (currentUserId.HasValue)
+        {
+            <ReviewsPosted MaterialId="@id" CurrentUserId="@currentUserId.Value" />
+        }
 
         <h4>All Reviews</h4>
         @if (reviews?.Any() == true)
         {
-            @foreach (var review in reviews.Where(r => r.authorId != currentUserId))
+            @foreach (var review in reviews.Where(r => !currentUserId.HasValue || r.authorId != currentUserId.Value))
             {
                 <div class="review-item">
                     <p><strong>@review.author?.name:</strong> @review.reviewText</p>
@@ -43,55 +54,109 @@
         {
             <p>No other reviews available.</p>
         }
-
     </div>
+}
+else if (loading)
+{
+    <p>Loading...</p>
 }
 else
 {
-    <p>Loading...</p>
-
+    <p>Material not found</p>
 }
 
 @code {
     [Parameter]
     public int id { get; set; }
 
-    private TeachingMaterial teachingMaterial { get; set; }
-    private Subject subject { get; set; }
-    private IEnumerable<global::Review> reviews;
-    private readonly int currentUserId = 1; // For future: Get actual user ID
+    private TeachingMaterial teachingMaterial;
+    private Subject subject;
+    private IEnumerable<Review> reviews;
+    private int? currentUserId;
     private bool isSaved;
+    private bool loading = true;
+    private string error;
 
+    [CascadingParameter]
+    private Task<AuthenticationState> AuthState { get; set; } = null!;
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
+            loading = true;
+            var authState = await AuthState;
+            var user = authState.User;
+
+            if (user.Identity?.IsAuthenticated ?? false)
+            {
+                var idClaim = user.Claims.FirstOrDefault(c => c.Type == "id");
+                if (idClaim != null && int.TryParse(idClaim.Value, out int userId))
+                {
+                    currentUserId = userId;
+                }
+            }
+
             teachingMaterial = await AcademicService.GetMaterialById(id);
             if (teachingMaterial != null)
             {
-                subject = await AcademicService.GetSubjectById(teachingMaterial.id);
-                reviews = await AcademicService.GetReviewsByMaterialId(teachingMaterial.id);
-                var savedMaterials = await AcademicService.GetSavedMaterialsByUserId(1); // Replace with actual user ID
-                isSaved = savedMaterials.Any(m => m.id == id);
+                await Task.WhenAll(
+                LoadSubject(),
+                LoadReviews(),
+                LoadSavedStatus()
+                );
             }
         }
         catch (Exception ex)
         {
+            error = "Error loading material details";
             Console.WriteLine($"Error loading material: {ex.Message}");
         }
-
+        finally
+        {
+            loading = false;
+        }
     }
+
+    private async Task LoadSubject()
+    {
+        if (teachingMaterial?.subjectId > 0)
+        {
+            subject = await AcademicService.GetSubjectById(teachingMaterial.subjectId);
+        }
+    }
+
+    private async Task LoadReviews()
+    {
+        reviews = await AcademicService.GetReviewsByMaterialId(teachingMaterial.id);
+    }
+
+    private async Task LoadSavedStatus()
+    {
+        if (currentUserId.HasValue)
+        {
+            var savedMaterials = await AcademicService.GetSavedMaterialsByUserId(currentUserId.Value);
+            isSaved = savedMaterials.Any(m => m.id == id);
+        }
+    }
+
     private async Task ToggleSave()
     {
+        if (!currentUserId.HasValue)
+        {
+            NavigationManager.NavigateTo("/login");
+            return;
+        }
+
         try
         {
-            await AcademicService.ToggleSaveMaterial(currentUserId, id);
+            await AcademicService.ToggleSaveMaterial(currentUserId.Value, id);
             isSaved = !isSaved;
             StateHasChanged();
         }
         catch (Exception ex)
         {
+            error = "Error saving material";
             Console.WriteLine($"Error toggling save state: {ex.Message}");
         }
     }

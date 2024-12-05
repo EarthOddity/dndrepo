@@ -1,65 +1,162 @@
 @page "/saved-materials"
 @inject IAcademicService AcademicService
 @inject NavigationManager NavigationManager
+@using Microsoft.AspNetCore.Components.Authorization
+@using System.Security.Claims
 
 <h3>My Saved Materials</h3>
 
-<OverviewMaterialsSaved Title="Saved Materials" Materials="@savedMaterials"
-    SavingMethod="EventCallback.Factory.Create<int>(this, ToggleSaveMaterial)" />
+@if (error != null)
+{
+    <div class="alert alert-danger">@error</div>
+}
 
-<div class="subjects-list">
-    <h4>My Subjects</h4>
-    @if (userSubjects == null)
-    {
-        <p>Loading subjects...</p>
-    }
-    else if (!userSubjects.Any())
-    {
-        <p>No subjects found for your bachelor program.</p>
-    }
-    else
-    {
-        @foreach (var subject in userSubjects)
+@if (loading)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <OverviewMaterialsSaved Title="Saved Materials" Materials="@savedMaterials"
+        SavingMethod="EventCallback.Factory.Create<int>(this, ToggleSaveMaterial)" SavedMaterialIds="@savedMaterialIds" />
+
+    <div class="subjects-list">
+        <h4>My Subjects</h4>
+        @if (userSubjects == null)
         {
-            <div class="subject-item" @onclick="() => NavigateToSubjectMaterials(subject.id)">
-                <h4>@subject.name</h4>
-            </div>
+            <p>Loading subjects...</p>
         }
-    }
-</div>
+        else if (!userSubjects.Any())
+        {
+            <p>No subjects found for your bachelor program.</p>
+        }
+        else
+        {
+            @foreach (var subject in userSubjects)
+            {
+                <div class="subject-item" @onclick="() => NavigateToSubjectMaterials(subject.id)">
+                    <h4>@subject.name</h4>
+                </div>
+            }
+        }
+    </div>
+}
 
 @code {
     private List<TeachingMaterial> savedMaterials;
     private List<Subject> userSubjects;
     private HashSet<int> savedMaterialIds = new();
-    private readonly int currentUserId = 1;
+    private int? currentUserId;
+    private bool loading = true;
+    private string error;
+
+    [CascadingParameter]
+    private Task<AuthenticationState> AuthState { get; set; } = null!;
 
     protected override async Task OnInitializedAsync()
     {
-        await LoadSavedMaterials();
-
-        var userBachelor = await AcademicService.GetBachelorByStudentId(currentUserId);
-        if (userBachelor != null)
+        try
         {
-            userSubjects = (await AcademicService.GetSubjectsByBachelorId(userBachelor.id)).ToList();
+            loading = true;
+            var authState = await AuthState;
+            var user = authState.User;
+
+            if (!user.Identity?.IsAuthenticated ?? false)
+            {
+                NavigationManager.NavigateTo("/login");
+                return;
+            }
+
+            var idClaim = user.Claims.FirstOrDefault(c => c.Type == "id");
+            if (idClaim == null || !int.TryParse(idClaim.Value, out int userId))
+            {
+                error = "User ID not found";
+                return;
+            }
+
+            currentUserId = userId;
+            await LoadUserData();
+        }
+        catch (Exception ex)
+        {
+            error = "Error loading saved materials";
+            Console.WriteLine($"Error: {ex.Message}");
+        }
+        finally
+        {
+            loading = false;
         }
     }
 
-    private async Task LoadSavedMaterials()
+    private async Task LoadUserData()
     {
-        savedMaterials = (await AcademicService.GetSavedMaterialsByUserId(currentUserId)).ToList();
-        savedMaterialIds = new HashSet<int>(savedMaterials.Select(m => m.id));
+        if (!currentUserId.HasValue) return;
 
+        try
+        {
+            // Load saved materials
+            try
+            {
+                savedMaterials = (await AcademicService.GetSavedMaterialsByUserId(currentUserId.Value)).ToList();
+                savedMaterialIds = new HashSet<int>(savedMaterials.Select(m => m.id));
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error loading saved materials: {ex.Message}");
+                savedMaterials = new List<TeachingMaterial>();
+                savedMaterialIds = new HashSet<int>();
+            }
+
+            // Load bachelor and subjects
+            try
+            {
+                var userBachelor = await AcademicService.GetBachelorByStudentId(currentUserId.Value);
+                if (userBachelor != null)
+                {
+                    userSubjects = (await AcademicService.GetSubjectsByBachelorId(userBachelor.id)).ToList();
+                }
+                else
+                {
+                    Console.WriteLine("No bachelor found for user");
+                    userSubjects = new List<Subject>();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error loading subjects: {ex.Message}");
+                userSubjects = new List<Subject>();
+            }
+        }
+        catch (Exception ex)
+        {
+            error = $"Error loading user data: {ex.Message}";
+            Console.WriteLine($"LoadUserData error: {ex.Message}");
+            savedMaterials = new List<TeachingMaterial>();
+            userSubjects = new List<Subject>();
+        }
     }
 
     private async Task ToggleSaveMaterial(int materialId)
     {
-        var success = await AcademicService.ToggleSaveMaterial(currentUserId, materialId);
-        if (success)
+        if (!currentUserId.HasValue)
         {
-            await LoadSavedMaterials();
-            StateHasChanged();
+            NavigationManager.NavigateTo("/login");
+            return;
+        }
 
+        try
+        {
+            var success = await AcademicService.ToggleSaveMaterial(currentUserId.Value, materialId);
+            if (success)
+            {
+                await LoadUserData();
+                StateHasChanged();
+            }
+        }
+        catch (Exception ex)
+        {
+            error = "Error updating saved materials";
+            Console.WriteLine($"Error: {ex.Message}");
         }
     }
 
