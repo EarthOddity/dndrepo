@@ -385,11 +385,10 @@ Content-Type: application/json
 }
 
 ### Update Event
-PUT http://localhost:5044/api/SBEvent/1
+PUT http://localhost:5044/api/SBEvent/2
 Content-Type: application/json
 
 {
-  "id": 1,
   "title": "Updated Study Session",
   "description": "Preparing for Database final exam",
   "startTime": "2024-03-20T15:00:00",
@@ -398,7 +397,7 @@ Content-Type: application/json
 }
 
 ### Delete Event
-DELETE http://localhost:5044/api/SBEvent/1
+DELETE http://localhost:5044/api/SBEvent/5
 
 ### Get events by calendar id
 GET http://localhost:5044/api/SBEvent/calendar/1
