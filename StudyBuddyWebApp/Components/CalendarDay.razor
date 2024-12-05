@@ -34,23 +34,23 @@
 
 <div class="calendar-day">
     <div class="day-header">
-        @Day.ToString("ddd dd", CultureInfo.CurrentCulture)
+        <p> Your day-slots</p>
     </div>
     <div class="day-slots">
-        @for (int hour = 0; hour < 24; hour++)
+       @foreach (var evt in Events.OrderByDescending(e => e.timestamp))
         {
-            var hourEvents = Events.Where(e => e.startTime.Hour == hour).ToList();
-            <div class="hour-slot @(hourEvents.Any() ? "has-events" : "")" @onclick="() => OpenEventModal(hour)">
-                @foreach (var evt in hourEvents)
-                {
-                    <Event Event="evt" />
-                }
+            <div class="event-card">
+                <h3>@evt.title</h3>
+                <p>@evt.description</p>
+                <p>@evt.timestamp</p>
+                <p>@evt.startTime.ToString("HH:mm") - @evt.endTime.ToString("HH:mm")</p>
             </div>
         }
     </div>
 </div>
 
 @code {
+
     [Parameter] public DateTime Day { get; set; }
     [Parameter] public List<SBEvent> Events { get; set; } = new();
     [Parameter] public EventCallback<(DateTime date, int hour)> OnBookEvent { get; set; }

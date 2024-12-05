@@ -1,5 +1,6 @@
 ﻿@page "/"
 @using StudyBuddyWebApp.Components
+@inject ICalendarService eventService
 
 <div class="study-buddy-container">
     <section class="introduction">
@@ -12,7 +13,7 @@
     <main class="content-grid">
         <div class="events-section">
             <h3>Upcoming Events</h3>
-            <CalendarDay />
+            <CalendarDay Events="events"/>
         </div>
         @* CHECK OUT THE OVERVIEW MATERIALS COMPONENT TO USE HERE *@
         <div class="materials-section">
@@ -46,7 +47,12 @@
     private ITeachingMaterialService? TeachingMaterialService { get; set; }
 
     private List<TeachingMaterial> savedMaterials = new List<TeachingMaterial>();
+    private List<SBEvent> events = new List<SBEvent>();
 
+    protected override async Task OnInitializedAsync()
+    {
+        events = (await eventService.GetEventsByCalendarId(1)).ToList();
+    }
     @* protected override async Task OnInitializedAsync()
     {
         if (TeachingMaterialService != null)

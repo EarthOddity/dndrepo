@@ -11,7 +11,7 @@ public class SBEvent
 
     public DateTime startTime { get; set; }
     public DateTime endTime { get; set; }
-    public DateTime timestamp { get; set; } 
+    public DateTime timestamp { get; set; } =DateTime.UtcNow;
 
     public SBEvent()
     {

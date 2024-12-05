@@ -37,7 +37,7 @@ public class SBCalendarController : ControllerBase
         return CreatedAtAction(nameof(GetCalendar), new { id = newCalendar.id }, newCalendar);
     }
 
-    [HttpPost("{calendarId}/event")]
+/*     [HttpPost("{calendarId}/event")]
     public async Task<ActionResult<SBCalendar>> AddEvent(int calendarId, SBEvent @event) // need the @ to distinguish it from the event keyword
     {
         var calendar = await _calendarService.AddEventToCalendar(calendarId, @event);
@@ -47,9 +47,9 @@ public class SBCalendarController : ControllerBase
         }
         return Ok(calendar);
     }
+ */
 
-
-    [HttpDelete("{calendarId}/events/{eventId}")]
+/*     [HttpDelete("{calendarId}/events/{eventId}")]
     public async Task<IActionResult> DeleteEvent(int calendarId, int eventId)
     {
         var updatedCalendar = await _calendarService.DeleteEventFromCalendar(calendarId, eventId);
@@ -58,7 +58,7 @@ public class SBCalendarController : ControllerBase
             return NotFound();
         }
         return NoContent();
-    }
+    } */
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteCalendar(int id)
@@ -71,10 +71,10 @@ public class SBCalendarController : ControllerBase
         return NoContent();
     }
 
-    [HttpGet("{id}/events")]
+/*     [HttpGet("{id}/events")]
     public async Task<ActionResult<IEnumerable<SBEvent>>> GetEventsByCalendarId(int id)
     {
         var events = await _calendarService.GetEventsByCalendarId(id);
         return Ok(events);
-    }
+    } */
 }

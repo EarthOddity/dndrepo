@@ -1,6 +1,6 @@
 @page "/calendar"
-@inject ISBCalendarService ISBCalendarService
-@inject NavigationManager NavigationManager
+@inject ICalendarService ISBCalendarService
+@inject NavigationManager NavigationManager 
 @rendermode InteractiveServer
 @using StudyBuddyWebApp.Components
 
@@ -37,14 +37,20 @@
     private SBCalendar? currentCalendar;
     private int calendarId = 1; // Placeholder for the owner ID
 
+    private List<SBEvent> curretCalendarEvents = new ();
     protected override async Task OnInitializedAsync()
     {
         await LoadCalendar();
+        await LoadCalendarEvents(currentCalendar.id);
     }
 
     private async Task LoadCalendar()
     {
         currentCalendar = await ISBCalendarService.GetCalendarById(calendarId);
+    }
+    private async Task LoadCalendarEvents(int calendarId)
+    {
+        curretCalendarEvents = (await ISBCalendarService.GetEventsByCalendarId(calendarId)).ToList();    
     }
 
     private string GetWeekTitle()
@@ -70,8 +76,10 @@
     }
 
     private List<SBEvent> GetDayEvents(DateTime day)
-    {
-        return currentCalendar?.events
+    {   
+        Console.WriteLine(curretCalendarEvents
+        .Where(e => e.startTime.Date == day.Date).ToList());
+        return curretCalendarEvents
         .Where(e => e.startTime.Date == day.Date)
         .ToList() ?? new List<SBEvent>();
     }
@@ -80,12 +88,12 @@
         var (date, hour) = args;
         var newEvent = new SBEvent
             {
-                id = currentCalendar.events.Count + 1,
                 title = "New Event",
                 startTime = new DateTime(date.Year, date.Month, date.Day, hour, 0, 0),
-                endTime = new DateTime(date.Year, date.Month, date.Day, hour + 1, 0, 0)
+                endTime = new DateTime(date.Year, date.Month, date.Day, hour + 1, 0, 0),
+                calendarId = calendarId
             };
-        currentCalendar = await ISBCalendarService.AddEventToCalendar(currentCalendar.id, newEvent);
+        await ISBCalendarService.CreateEvent(newEvent);
         StateHasChanged();
     }
 }
