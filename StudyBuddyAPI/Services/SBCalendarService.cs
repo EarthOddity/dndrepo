@@ -36,7 +36,7 @@ public class SBCalendarService(DatabaseContext context) : ISBCalendarService
         return false;
     }
 
-    public async Task<IEnumerable<SBEvent>> GetEventsByCalendarId(int calendarId)
+  /*   public async Task<IEnumerable<SBEvent>> GetEventsByCalendarId(int calendarId)
     {
         var calendar = _context.Calendars.FirstOrDefault(c => c.id == calendarId);
         return await Task.FromResult(calendar?.events.AsEnumerable() ?? Enumerable.Empty<SBEvent>());
@@ -69,6 +69,6 @@ public class SBCalendarService(DatabaseContext context) : ISBCalendarService
             }
         }
         return await Task.FromResult(calendar);
-    }
+    } */
 
 }

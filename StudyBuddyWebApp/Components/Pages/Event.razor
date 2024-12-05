@@ -1,6 +1,6 @@
 @page "/calendar/event"
 @inject NavigationManager NavigationManager
-@inject ISBEventService EventService
+@inject ICalendarService EventService
 
 <EditForm Model="@newEvent"> @*  OnValidSubmit="CreateNewEvent" *@
     <DataAnnotationsValidator />
@@ -53,12 +53,13 @@
 </div>
 
 @code {
+    [Parameter] public int calendarId { get; set; }
     private SBEvent newEvent = new SBEvent();
     private int selectedTutorId;
     private string errorMessage = "";
     private List<Student> Tutors = new();
 
-    protected override void OnInitialized()
+@*     protected override void OnInitialized()
     {
         var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
         var query = System.Web.HttpUtility.ParseQueryString(uri.Query);
@@ -70,7 +71,14 @@
             newEvent.endTime = newEvent.startTime.AddHours(1);
         }
     }
-
+ *@
+    private async Task CreateNewEvent()
+    {   
+        newEvent.calendarId = calendarId;
+        await EventService.CreateEvent(newEvent);
+            
+    }
+    
     @* private async Task CreateNewEvent()
     {
         errorMessage = "";
