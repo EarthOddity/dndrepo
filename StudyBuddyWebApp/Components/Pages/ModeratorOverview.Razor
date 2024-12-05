@@ -3,19 +3,16 @@
 @using StudyBuddyWebApp.Components
 @inject IAcademicService AcademicService;
 
-<h2 class="text-center">Moderator Overview</h2>
-
-<div class="container mt-4">
+<div class="container-fluid py-4">
+    <h2 class="text-center mb-4">Moderator Overview</h2>
     <div class="row">
-        <div class="col-md-12">
-            <h3>Bachelor Management</h3>
-                <Bachelors OnBachelorSelected="HandleBachelorSelected" />
-
+        <div class="col-md-6 border-end">
+            <h3 class="mb-4">Bachelor Management</h3>
+            <Bachelors OnBachelorSelected="HandleBachelorSelected" />
         </div>
-        <div class="col-md-12">
-            <h3>Subject management</h3>
-              <Subjects SelectedBachelor="selectedBachelor" OnSubjectSelected="HandleSubjectSelected" />
-
+        <div class="col-md-6">
+            <h3 class="mb-4">Subject Management</h3>
+            <Subjects SelectedBachelor="selectedBachelor" OnSubjectSelected="HandleSubjectSelected" />
         </div>
     </div>
 </div>
@@ -39,3 +36,18 @@
         selectedBachelor = null;
     }
 }
+
+<style>
+    .hover-shadow:hover {
+        box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;
+        transition: box-shadow .3s ease-in-out;
+    }
+    
+    .cursor-pointer {
+        cursor: pointer;
+    }
+    
+    .cursor-pointer:hover {
+        background-color: #f8f9fa;
+    }
+</style>
