@@ -27,7 +27,7 @@
 
     @if (subject != null)
     {
-        <div class="subject">
+        <div>
             <h4>Subject</h4>
             <p>@subject.name</p>
         </div>
@@ -163,20 +163,17 @@ else
 }
 
 <style>
+    
     h3 {
         text-align: center;
         margin: 15px;
-    }
-
-    .subject {
-        margin: 0 20px;
     }
 
     .material-header {
         display: flex;
         justify-content: space-between;
         align-items: flex-start;
-        margin: 0 20px;
+        margin-bottom: 2rem;
         padding: 20px;
         background-color: #f9f9f9;
         border-radius: 10px;
