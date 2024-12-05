@@ -1,6 +1,9 @@
-public class SBCalendarService(FileContext context) : ISBCalendarService
+using Microsoft.EntityFrameworkCore;
+
+public class SBCalendarService(DatabaseContext context) : ISBCalendarService
 {
-    private readonly FileContext _context = context;
+    private readonly DatabaseContext _context = context;
+    static SBCalendarService(){}
 
     public Task<IEnumerable<SBCalendar>> GetAllCalendars()
     {
@@ -9,13 +12,14 @@ public class SBCalendarService(FileContext context) : ISBCalendarService
 
     public async Task<SBCalendar> GetCalendarById(int id)
     {
-        var calendar = _context.Calendars.FirstOrDefault(c => c.id == id);
+        var calendar = await _context.Calendars.FirstOrDefaultAsync(c => c.id == id);
         return await Task.FromResult(calendar);
     }
 
-    public async Task<SBCalendar> CreateCalendar(SBCalendar calendar)
+    public async Task<SBCalendar> CreateCalendar(Student student)
     {
-        _context.Calendars.Add(calendar);
+        var calendar = new SBCalendar(student);
+        await _context.Calendars.AddAsync(calendar);
         await _context.SaveChangesAsync();
         return calendar;
     }

@@ -4,9 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 [Route("api/[controller]")]
 public class SBEventController : ControllerBase
 {
-    private readonly SBEventService _eventService;
+    private readonly ISBEventService _eventService;
 
-    public SBEventController(SBEventService eventService)
+    public SBEventController(ISBEventService eventService)
     {
         _eventService = eventService;
     }
@@ -28,7 +28,12 @@ public class SBEventController : ControllerBase
         }
         return Ok(@event);
     }
-
+    [HttpGet("calendar/{calendarId}")]
+    public async Task<ActionResult<IEnumerable<SBEvent>>> GetEventsByCalendarId(int calendarId)
+    {
+        var events = await _eventService.GetEventsByCalendarId(calendarId);
+        return Ok(events);
+    }
     [HttpPost]
     public async Task<ActionResult<SBEvent>> CreateEvent(SBEvent @event)
     {
