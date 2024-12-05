@@ -1,6 +1,13 @@
 ﻿@page "/"
 @using StudyBuddyWebApp.Components
 @inject ICalendarService eventService
+@using System.Security.Claims
+@using StudyBuddyWebApp.Components.Layout
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Authorization
+@inject NavigationManager NavigationManager 
+@inject AuthenticationStateProvider AuthStateProvider
+@rendermode InteractiveServer
 @inject IAcademicService AcademicService
 @using Microsoft.AspNetCore.Components.Authorization
 @using System.Security.Claims
@@ -17,6 +24,30 @@
             <h3>Upcoming Events</h3>
             <CalendarDay Events="events"/>
         </div>
+        @* CHECK OUT THE OVERVIEW MATERIALS COMPONENT TO USE HERE *@
+        <div class="materials-section">
+            <h3>Saved Materials</h3>
+            <div class="materials-grid">
+                @if (savedMaterials == null)
+                {
+                    <p>Loading materials...</p>
+                }
+                else if (!savedMaterials.Any())
+                {
+                    <p>No materials available.</p>
+                }
+                else
+                {
+                    @foreach (var material in savedMaterials)
+                    {
+                        <div class="material-card">
+                            <h4>@material.title</h4>
+                            <p>@material.description</p>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
         <div class="materials-section">
             <OverviewMaterialsSaved Title="Saved Materials" Materials="@savedMaterials" SavingMethod="@ToggleSave"
                 SavedMaterialIds="@savedMaterialIds" />
@@ -31,65 +62,52 @@
     private bool loading = true;
     private string error;
     private List<SBEvent> events = new List<SBEvent>();
-
+    private int calendarId;
     [CascadingParameter]
-    private Task<AuthenticationState> AuthState { get; set; } = null!;
+    public Task<AuthenticationState> AuthState { get; set; } = null!;
+    private int id;
+    private IEnumerable<Claim>? userClaims;
+    private bool isLoggedIn;
+
 
     protected override async Task OnInitializedAsync()
     {
-        try
-        {
-            var authState = await AuthState;
-            var user = authState.User;
-            events = (await eventService.GetEventsByCalendarId(1)).ToList();
-
-
-            if (user.Identity?.IsAuthenticated ?? false)
-            {
-                var idClaim = user.Claims.FirstOrDefault(c => c.Type == "id");
-                if (idClaim != null && int.TryParse(idClaim.Value, out int userId))
-                {
-                    currentUserId = userId;
-                    await LoadSavedMaterials();
-                }
-            }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error loading saved materials: {ex.Message}");
-        }
+        AuthenticationState authState = await AuthState;
+        ClaimsPrincipal user = authState.User;
+        isLoggedIn = user.Identity != null;
+        if (!isLoggedIn) return;
+        userClaims = user.Claims;
+        id = int.Parse(user.Claims.First(claim => claim.Type.Equals("id")).Value);
+        calendarId = await eventService.GetCalendarIdByStudentId(id);
+        Console.WriteLine("Calendar id" + calendarId);
+        events = (await eventService.GetEventsByCalendarId(calendarId)).ToList();
     }
-
-    private async Task LoadSavedMaterials()
+    @* protected override async Task OnInitializedAsync()
     {
-        if (!currentUserId.HasValue) return;
-
-        try
+        if (TeachingMaterialService != null)
         {
-            savedMaterials = (await AcademicService.GetSavedMaterialsByUserId(currentUserId.Value)).ToList();
-            savedMaterialIds = new HashSet<int>(savedMaterials.Select(m => m.id));
+            savedMaterials = (await TeachingMaterialService.GetAllMaterials()).ToList();
         }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error loading saved materials: {ex.Message}");
-        }
-    }
 
-    private async Task ToggleSave(int materialId)
+        // mock teaching material
+        var mockedMaterial = new TeachingMaterial(
+        3,
+        "Math 101 - Derivatives",
+        "Extra materials, notes and explanations to help on courses about Derivatives",
+        new Student { id = 1, name = "John Austin" },
+        true
+        );
+    using System.Security.Claims;
+
+        savedMaterials.Add(mockedMaterial);
+    } *@
+
+    private void CreateEvent()
     {
-        if (!currentUserId.HasValue) return;
-
-        try
-        {
-            await AcademicService.ToggleSaveMaterial(currentUserId.Value, materialId);
-            await LoadSavedMaterials();
-            StateHasChanged();
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error toggling save state: {ex.Message}");
-        }
+        NavigationManager.NavigateTo($"/calendar/{calendarId}/event");
     }
+
+
 }
 
 <style>
@@ -119,5 +137,17 @@
         border-radius: 8px;
         min-height: fit-content;
         height: 800px;
+    }
+       .create-event-button {
+        background: linear-gradient(135deg, #71b3e5 0%, #013faa 100%);
+        color: #000000;
+        border: none;
+        text-align: center;
+        padding: 10px 15px;
+        cursor: pointer;
+        margin-right: 30px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        transition: background 0.3s ease, transform 0.2s ease;
     }
 </style>

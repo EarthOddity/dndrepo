@@ -44,19 +44,19 @@ public class CalendarService : ICalendarService
         }
     }
 
-   /*  public async Task<SBCalendar> CreateCalendar(Student student)
-    {
-        try
-        {
-            var response = await _httpClient.PostAsJsonAsync("api/SBCalendar", student);
-            response.EnsureSuccessStatusCode();
-            return await response.Content.ReadFromJsonAsync<SBCalendar>(); ;
-        }
-        catch (Exception ex)
-        {
-            throw new HttpRequestException($"Failed to create calendar. {ex.Message}");
-        }
-    } */
+    /*  public async Task<SBCalendar> CreateCalendar(Student student)
+     {
+         try
+         {
+             var response = await _httpClient.PostAsJsonAsync("api/SBCalendar", student);
+             response.EnsureSuccessStatusCode();
+             return await response.Content.ReadFromJsonAsync<SBCalendar>(); ;
+         }
+         catch (Exception ex)
+         {
+             throw new HttpRequestException($"Failed to create calendar. {ex.Message}");
+         }
+     } */
 
     public async Task<SBCalendar> UpdateCalendar(int calendarId, SBCalendar updatedCalendar)
     {
@@ -216,13 +216,13 @@ public class CalendarService : ICalendarService
     }
 
     // Get calendar by user id
-    public async Task<SBCalendar> GetCalendarByUserId(int studentId)
+    public async Task<int> GetCalendarIdByStudentId(int studentId)
     {
         try
         {
-            var response = await _httpClient.GetAsync($"api/Student/{studentId}/calendar");
+            var response = await _httpClient.GetAsync($"api/SBCalendar/student/{studentId}");
             response.EnsureSuccessStatusCode();
-            var result = await response.Content.ReadFromJsonAsync<SBCalendar>();
+            var result = await response.Content.ReadFromJsonAsync<int>();
             if (result == null)
             {
                 throw new NullReferenceException("Failed to retrieve calendar for student. No calendar with that student id exists.");

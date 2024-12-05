@@ -11,7 +11,8 @@ public interface ICalendarService
     Task<bool> DeleteEvent(int id);
 /*     Task<SBCalendar> AddEventToCalendar(int calendarId, SBEvent eventToAdd);
     Task<SBCalendar> DeleteEventFromCalendar(int calendarId, int eventId); */
-    Task<SBCalendar> GetCalendarByUserId(int studentId);
+    //Task<SBCalendar> GetCalendarByUserId(int studentId);
     Task<IEnumerable<SBEvent>> GetEventsByCalendarId(int calendarId);
+    Task<int> GetCalendarIdByStudentId(int studentId);
 
 }

@@ -1,56 +1,70 @@
-@page "/calendar/event"
+@page "/calendar/{calendarId:int}/event"
 @inject NavigationManager NavigationManager
 @inject ICalendarService EventService
-
-<EditForm Model="@newEvent"> @*  OnValidSubmit="CreateNewEvent" *@
-    <DataAnnotationsValidator />
-
-    @if (!string.IsNullOrEmpty(errorMessage))
+@rendermode InteractiveServer
+<div>
+    @if (!string.IsNullOrEmpty(successMessage))
     {
-        <div class="alert alert-danger">@errorMessage</div>
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @successMessage
+            <button type="button" class="btn-close" @onclick="() => successMessage = string.Empty"></button>
+        </div>
     }
+    <EditForm Model="@newEvent" OnValidSubmit="CreateNewEvent">
+        <DataAnnotationsValidator />
 
-    <div class="event-creation-container">
-        <h2>Create A New Event</h2>
+        @if (!string.IsNullOrEmpty(errorMessage))
+        {
+            <div class="alert alert-danger">@errorMessage</div>
+        }
 
-        <div class="form-group">
-            <label>Title</label>
-            <InputText @bind-Value="newEvent.title" class="form-control" />
-            <ValidationMessage For="@(() => newEvent.title)" />
+
+        <div class="event-creation-container">
+            <h2>Create A New Event</h2>
+
+            <div class="form-group">
+                <label>Title</label>
+                <InputText @bind-Value="newEvent.title" class="form-control" />
+                <ValidationMessage For="@(() => newEvent.title)" />
+            </div>
+
+            <div class="form-group">
+                <label>Description</label>
+                <InputTextArea @bind-Value="newEvent.description" class="form-control" />
+            </div>
+
+            <div class="form-group">
+                <label>Start Time</label>
+                <InputDate TValue="DateTime" @bind-Value="newEvent.startTime" class="form-control" />
+                <ValidationMessage For="@(() => newEvent.startTime)" />
+            </div>
+
+            <div class="form-group">
+                <label>End Time</label>
+                <InputDate TValue="DateTime" @bind-Value="newEvent.endTime" class="form-control" />
+                <ValidationMessage For="@(() => newEvent.endTime)" />
+            </div>
+
+            @* still need to incorporate adding a tutor *@
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Create Event</button>
+                <button type="button" class="btn btn-secondary" @onclick="Cancel">Cancel</button>
+            </div>
         </div>
+    </EditForm>
 
-        <div class="form-group">
-            <label>Description</label>
-            <InputTextArea @bind-Value="newEvent.description" class="form-control" />
-        </div>
-
-        <div class="form-group">
-            <label>Start Time</label>
-            <InputDate TValue="DateTime" @bind-Value="newEvent.startTime" class="form-control" />
-            <ValidationMessage For="@(() => newEvent.startTime)" />
-        </div>
-
-        <div class="form-group">
-            <label>End Time</label>
-            <InputDate TValue="DateTime" @bind-Value="newEvent.endTime" class="form-control" />
-            <ValidationMessage For="@(() => newEvent.endTime)" />
-        </div>
-
-        @* still need to incorporate adding a tutor *@
-
-        <div class="form-actions">
-            <button type="submit" class="btn btn-primary">Create Event</button>
-            <button type="button" class="btn btn-secondary" @onclick="Cancel">Cancel</button>
+    <div class="event-item" style="background-color: @GetEventColor()">
+        <div class="event-title">@newEvent.title</div>
+        <div class="event-time">
+            @newEvent.startTime.ToString("HH:mm") - @newEvent.endTime.ToString("HH:mm")
         </div>
     </div>
-</EditForm>
 
-<div class="event-item" style="background-color: @GetEventColor()">
-    <div class="event-title">@newEvent.title</div>
-    <div class="event-time">
-        @newEvent.startTime.ToString("HH:mm") - @newEvent.endTime.ToString("HH:mm")
-    </div>
+
+
 </div>
+
 
 @code {
     [Parameter] public int calendarId { get; set; }
@@ -58,8 +72,10 @@
     private int selectedTutorId;
     private string errorMessage = "";
     private List<Student> Tutors = new();
+    private string successMessage = string.Empty;
 
-@*     protected override void OnInitialized()
+
+    @*     protected override void OnInitialized()
     {
         var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
         var query = System.Web.HttpUtility.ParseQueryString(uri.Query);
@@ -73,12 +89,26 @@
     }
  *@
     private async Task CreateNewEvent()
-    {   
-        newEvent.calendarId = calendarId;
-        await EventService.CreateEvent(newEvent);
-            
+    {
+        try
+        {
+            newEvent.calendarId = calendarId;
+            await EventService.CreateEvent(newEvent);
+            successMessage = "Event created successfully!";
+            StateHasChanged();
+
+            // Wait 2 seconds before redirecting
+            await Task.Delay(2000);
+            NavigationManager.NavigateTo("/");
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Error creating event: {ex.Message}";
+            StateHasChanged();
+
+        }
     }
-    
+
     @* private async Task CreateNewEvent()
     {
         errorMessage = "";
@@ -172,6 +202,24 @@ name = selectedTutor.name
 
     .week-grid::-webkit-scrollbar-thumb:hover {
         background: #555;
+    }
+
+    .alert {
+        margin-top: 1rem;
+        padding: 1rem;
+        border-radius: 0.25rem;
+    }
+
+    .alert-success {
+        background-color: #d4edda;
+        border-color: #c3e6cb;
+        color: #155724;
+    }
+
+    .alert-danger {
+        background-color: #f8d7da;
+        border-color: #f5c6cb;
+        color: #721c24;
     }
 
     /* Responsive Adjustments */
