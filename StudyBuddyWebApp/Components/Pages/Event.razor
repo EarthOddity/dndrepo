@@ -153,22 +153,26 @@ name = selectedTutor.name
         return colors[Math.Abs(newEvent.id) % colors.Length];
     }
 }
-
 <style>
     .event-item {
-        position: absolute;
-        width: calc(100% - 10px);
-        left: 5px;
-        margin-top: 2px;
-        padding: 5px;
-        border-radius: 4px;
+        width: 100%;
+        /* Ensure the box takes full width of the container */
+        margin: 10px 0;
+        /* Add vertical margin between events */
+        padding: 10px;
+        /* Increase padding for a cleaner look */
+        border-radius: 10px;
+        /* Rounded edges */
+        background-color: #444;
+        /* Ensure background color is consistent */
         color: white;
-        font-size: 0.8em;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        /* Soft shadow */
         transition: transform 0.2s ease;
+        box-sizing: border-box;
+        /* Include padding and border in width calculation */
+        position: relative;
+        /* Avoid absolute positioning unless necessary */
     }
 
     .event-item:hover {
@@ -177,64 +181,39 @@ name = selectedTutor.name
     }
 
     .event-title {
-        font-weight: 600;
-        margin-bottom: 2px;
+        font-weight: bold;
+        margin-bottom: 8px;
+        /* Add spacing below the title */
     }
 
     .event-time {
-        font-size: 0.7em;
-        opacity: 0.9;
+        font-size: 0.9em;
+        opacity: 0.8;
     }
 
-    .week-grid::-webkit-scrollbar {
-        width: 10px;
-        height: 10px;
+    /* Container adjustments to avoid white lines */
+    .event-creation-container,
+    .event-list-container {
+        padding: 20px;
+        box-sizing: border-box;
     }
 
-    .week-grid::-webkit-scrollbar-track {
-        background: #f1f1f1;
-    }
-
-    .week-grid::-webkit-scrollbar-thumb {
-        background: #888;
-        border-radius: 5px;
-    }
-
-    .week-grid::-webkit-scrollbar-thumb:hover {
-        background: #555;
-    }
-
-    .alert {
-        margin-top: 1rem;
-        padding: 1rem;
-        border-radius: 0.25rem;
-    }
-
-    .alert-success {
-        background-color: #d4edda;
-        border-color: #c3e6cb;
-        color: #155724;
-    }
-
-    .alert-danger {
-        background-color: #f8d7da;
-        border-color: #f5c6cb;
-        color: #721c24;
+    /* Remove unwanted scrollbar overflow */
+    body {
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden;
     }
 
     /* Responsive Adjustments */
-    @* @media
-    (max-width: 768px) {
-        .week-calendar {
-            font-size: 14px;
+    @@media (max-width: 768px) {
+        .event-item {
+            padding: 8px;
+            margin: 8px 0;
         }
 
-        .time-labels {
-            width: 50px;
+        .event-title {
+            font-size: 1em;
         }
-
-        .hour-label {
-            padding-right: 10px;
-        }
-    } *@
+    }
 </style>
