@@ -14,10 +14,9 @@
     else
     {
         <div class="container-fluid px-0">
-          
             <div class="row mb-4">
                 <div class="col-12">
-                    <div class="card shadow-sm">
+                    <div class="card mt-4 shadow-sm">
                         <div class="card-body">
                             <h5 class="card-title mb-3">@(editingBachelor != null ? "Edit Bachelor" : "Add New Bachelor")
                             </h5>
@@ -34,15 +33,13 @@
                                     {
                                         <button type="button" class="btn btn-outline-secondary"
                                             @onclick="CancelEdit">Cancel</button>
-                                    }
+                                    }b
                                 </div>
                             </EditForm>
                         </div>
                     </div>
                 </div>
             </div>
-
-          
             <div class="row g-4">
                 @foreach (var bachelor in bachelors)
                 {
@@ -57,12 +54,17 @@
                                     <button class="btn btn-outline-danger btn-sm" @onclick="() => DeleteBachelor(bachelor.id)">
                                         <i class="bi bi-trash"></i> Delete
                                     </button>
+                                    <button class="btn btn-primary btn-sm ms-auto"
+                                        @onclick="() => OnBachelorSelected.InvokeAsync(bachelor)">
+                                        <i class="bi bi-plus-circle"></i> Select Subjects
+                                    </button>
                                 </div>
                             </div>
                         </div>
                     </div>
                 }
             </div>
+
         </div>
     }
 </div>
