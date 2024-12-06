@@ -12,3 +12,6 @@ Sergio Quesada Berdonce - @sergioqueber
 
 ### Check out our first post! -> 
 https://github.com/EarthOddity/dndrepo/blob/main/Project%20Formulation%20%26%20Requirements.md
+
+### Check out our post about Web Services! -> 
+https://github.com/EarthOddity/dndrepo/blob/MartynaNew/Web%20Service%20Design%20and%20Implementation.md
