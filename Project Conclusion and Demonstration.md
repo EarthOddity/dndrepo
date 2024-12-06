@@ -9,7 +9,7 @@ We wanted StudyBuddy to feel inviting and easy to navigate, so we focused on enh
 
 ### **Consistent Color Scheme:** We chose soft, student-friendly colors to create a comfortable browsing environment.  
  ```css
-.nav-menu { 
+.nav-menu {
     width: 100%;
     height: 100px;
     background-color: rgb(59, 78, 127);
@@ -24,6 +24,40 @@ We wanted StudyBuddy to feel inviting and easy to navigate, so we focused on enh
     padding: 15px 20px;
     margin: 0;
     box-sizing: border-box;
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+    color: #3b82f6;
+    margin-right: 40px;
+}
+
+.nav-links {
+    display: flex;
+    gap: 20px;
+}
+
+.nav-links a {
+    color: #fcfcfc;
+    text-decoration: none !important;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: color 0.3s ease;
+}
+
+.nav-links a:hover {
+    color: #3b82f6;
+}
+
+.nav-links a.active {
+    color: #3b82f6;
+    font-weight: bold;
+}
+
+.nav-icon {
+    font-size: 18px;
 }
 ```
 ### **Ensuring Smooth Functionality: Testing 🧪 **
