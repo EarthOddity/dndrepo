@@ -22,8 +22,8 @@ The front-end started to be developed by splitting the work into components and 
 Snippet from Event.razor:
 
 @code 
-
 {
+
     [Parameter] public int calendarId { get; set; }
     [Parameter] public int? eventId { get; set; }
     private SBEvent newEvent = new SBEvent();
