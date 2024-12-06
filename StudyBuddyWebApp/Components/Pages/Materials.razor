@@ -8,7 +8,7 @@
     <SearchBar />
     <div class="content-grid">
         <div class="materials-section">
-            <OverviewMaterialsSaved Title="Available Materials" Materials="@teachingMaterials"
+            <OverviewMaterialsSaved Title="Available Materials" Materials="@filteredMaterials"
                 SavingMethod="@ToggleSave" SavedMaterialIds="@savedMaterialIds" />
         </div>
 
@@ -23,7 +23,8 @@
                 <div class="bachelors-grid">
                     @foreach (var bachelor in bachelors)
                     {
-                        <div class="material-card" @onclick="() => LoadSubjects(bachelor.Id)">
+                        <div class="material-card @(selectedBachelor?.Id == bachelor.Id ? "selected" : "")"
+                            @onclick="() => SelectBachelor(bachelor)">
                             <h4>@bachelor.ProgramName</h4>
                         </div>
                     }
@@ -36,7 +37,8 @@
                         <div class="materials-grid">
                             @foreach (var subject in selectedSubjects)
                             {
-                                <div class="material-card">
+                                <div class="material-card @(selectedSubject?.Id == subject.Id ? "selected" : "")"
+                                    @onclick="() => SelectSubject(subject)">
                                     <p>@subject.Name</p>
                                 </div>
                             }
@@ -51,13 +53,15 @@
     </div>
 </div>
 
-
 @code {
     private List<TeachingMaterial> teachingMaterials = new();
+    private List<TeachingMaterial> filteredMaterials = new();
     private List<Bachelor> bachelors = new();
     private List<Subject> selectedSubjects = new();
     private HashSet<int> savedMaterialIds = new();
     private int? currentUserId;
+    private Bachelor? selectedBachelor;
+    private Subject? selectedSubject;
 
     [CascadingParameter]
     private Task<AuthenticationState> AuthState { get; set; } = null!;
@@ -83,7 +87,7 @@
             }
 
             await LoadMaterials();
-            await LoadBachelor();
+            await LoadBachelors();
         }
         catch (Exception ex)
         {
@@ -94,6 +98,7 @@
     private async Task LoadMaterials()
     {
         teachingMaterials = (await AcademicService.GetAllMaterials()).ToList();
+        FilterMaterials();
     }
 
     private async Task LoadSavedMaterials()
@@ -105,34 +110,7 @@
         }
     }
 
-    private async Task ToggleSave(int materialId)
-    {
-        if (!currentUserId.HasValue)
-        {
-            NavigationManager.NavigateTo("/login");
-            return;
-        }
-
-        try
-        {
-            await AcademicService.ToggleSaveMaterial(currentUserId.Value, materialId);
-            if (savedMaterialIds.Contains(materialId))
-            {
-                savedMaterialIds.Remove(materialId);
-            }
-            else
-            {
-                savedMaterialIds.Add(materialId);
-            }
-            StateHasChanged();
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error toggling save state: {ex.Message}");
-        }
-    }
-
-    private async Task LoadBachelor()
+    private async Task LoadBachelors()
     {
         bachelors = (await AcademicService.GetAllBachelors()).ToList();
     }
@@ -166,12 +144,67 @@
         }
     }
 
+    private void SelectBachelor(Bachelor bachelor)
+    {
+        if (selectedBachelor?.Id == bachelor.Id)
+        {
+            selectedBachelor = null;
+            selectedSubjects.Clear();
+        }
+        else
+        {
+            selectedBachelor = bachelor;
+            selectedSubject = null;
+            LoadSubjects(bachelor.Id);
+        }
+        FilterMaterials();
+    }
+
+    private void SelectSubject(Subject subject)
+    {
+        selectedSubject = selectedSubject?.Id == subject.Id ? null : subject;
+        FilterMaterials();
+    }
+
+    private void FilterMaterials()
+    {
+        filteredMaterials = teachingMaterials.Where(m =>
+        (selectedSubject == null || m.SubjectId == selectedSubject.Id)
+        ).ToList();
+    }
+
+    private async Task ToggleSave(int materialId)
+    {
+        if (!currentUserId.HasValue)
+        {
+            NavigationManager.NavigateTo("/login");
+            return;
+        }
+
+        try
+        {
+            await AcademicService.ToggleSaveMaterial(currentUserId.Value, materialId);
+            if (savedMaterialIds.Contains(materialId))
+            {
+                savedMaterialIds.Remove(materialId);
+            }
+            else
+            {
+                savedMaterialIds.Add(materialId);
+            }
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error toggling save state: {ex.Message}");
+        }
+    }
+
     private void NavigateToCreate()
     {
         NavigationManager.NavigateTo("/create-material");
     }
 }
-
 
 <style>
     .study-buddy-container {
@@ -255,5 +288,13 @@
 
     .heart-button:hover {
         transform: scale(1.1);
+    }
+
+    .material-card:hover {
+        background-color: #4a5568;
+    }
+
+    .material-card.selected {
+        background-color: #3182ce;
     }
 </style>

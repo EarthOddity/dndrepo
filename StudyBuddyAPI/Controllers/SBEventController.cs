@@ -44,12 +44,12 @@ public class SBEventController : ControllerBase
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateEvent(int id, SBEvent @event)
     {
-        var updated = await _eventService.UpdateEvent(id, @event);
-        if (!updated)
+        var updatedEvent = await _eventService.UpdateEvent(id, @event);
+        if (updatedEvent == null)
         {
             return NotFound();
         }
-        return NoContent();
+        return Ok(updatedEvent);
     }
 
     [HttpGet("range")]
@@ -69,4 +69,5 @@ public class SBEventController : ControllerBase
         }
         return NoContent();
     }
+
 }

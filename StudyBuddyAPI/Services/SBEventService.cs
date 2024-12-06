@@ -23,7 +23,7 @@ public class SBEventService(DatabaseContext context) : ISBEventService
     {
         var events = _context.Events.Where(e => e.CalendarId == calendarId);
         return await Task.FromResult(events.AsEnumerable());
-    }   
+    }
     public async Task<SBEvent> CreateEvent(SBEvent @event)
     {
         await _context.Events.AddAsync(@event);
@@ -31,7 +31,7 @@ public class SBEventService(DatabaseContext context) : ISBEventService
         return @event;
     }
 
-    public async Task<bool> UpdateEvent(int id, SBEvent updatedEvent)
+    public async Task<SBEvent> UpdateEvent(int id, SBEvent updatedEvent)
     {
         var eventToUpdate = await _context.Events.FirstOrDefaultAsync(e => e.Id == id);
         if (eventToUpdate != null)
@@ -42,9 +42,9 @@ public class SBEventService(DatabaseContext context) : ISBEventService
             eventToUpdate.EndTime = updatedEvent.EndTime;
             eventToUpdate.Timestamp = DateTime.UtcNow;
             await _context.SaveChangesAsync();
-            return true;
+            return updatedEvent;
         }
-        return false;
+        return null;
     }
 
     public async Task<bool> DeleteEvent(int id)

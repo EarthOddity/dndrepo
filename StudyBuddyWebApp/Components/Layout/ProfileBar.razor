@@ -1,4 +1,3 @@
-
 @inject NavigationManager NavigationManager
 @inject IProfileService ProfileService
 @inject IAuthService authService
@@ -10,17 +9,17 @@
 
 <div class="user-icon-dropdown">
     <button class="user-icon" @onclick="ToggleDropdown">
-        <img src="images/profilepic.jpg" alt="" class="user-avatar" width="10px"  height="10px" >
+        <img src="images/profilepic.jpg" alt="" class="user-avatar" width="10px" height="10px">
     </button>
 
     @if (user1 != null && !string.IsNullOrEmpty(user1.Name))
-        {
-            <span>Hello, @user1.Name</span>
-        }
+    {
+        <span>Hello, @user1.Name</span>
+    }
     else
-        {
-            <span>Hello, User</span>
-        }
+    {
+        <span>Hello, User</span>
+    }
 
     <div class="dropdown-menu @(isDropdownOpen ? "show" : "")">
         <AuthorizeView>
@@ -31,12 +30,10 @@
             <Authorized>
                 <a class="dropdown-item" @onclick="GoToProfile">Profile</a>
                 <a class="dropdown-item" @onclick="GoToSaveMaterials">My Materials</a>
-                <a class="dropdown-item" @onclick="GoToSettings">Settings</a>
                 <a class="dropdown-item" @onclick="Logout">Log Out</a>
             </Authorized>
         </AuthorizeView>
     </div>
-        
 
 </div>
 
@@ -56,25 +53,28 @@
     private bool isLoggedIn;
 
     protected override async Task OnInitializedAsync()
-    {   
+    {
         AuthStateProvider.AuthenticationStateChanged += OnAuthenticationStateChanged;
         await LoadUserInfo();
- 
+
     }
-    private async Task LoadUserInfo(){
+    private async Task LoadUserInfo()
+    {
         AuthenticationState authState = await AuthState;
         ClaimsPrincipal user = authState.User;
         isLoggedIn = user.Identity != null;
 
         if (!isLoggedIn) return;
         userClaims = user.Claims;
-        id  = int.Parse(user.Claims.First(claim => claim.Type.Equals("id")).Value);
+        id = int.Parse(user.Claims.First(claim => claim.Type.Equals("id")).Value);
         Console.WriteLine("Id is : " + id);
         role = user.Claims.FirstOrDefault(c => c.Type == "Role")?.Value;
-        if(role == "Student"){
+        if (role == "Student")
+        {
             user1 = await ProfileService.GetStudentProfile(id);
         }
-        else if(role == "Moderator"){
+        else if (role == "Moderator")
+        {
             user1 = await ProfileService.GetModeratorProfile(id);
             Console.WriteLine("User is authenticated with role: " + role);
         }
@@ -91,9 +91,9 @@
     private void GoToProfile()
     {
         isDropdownOpen = false;
-        if(role == "Student")
+        if (role == "Student")
             NavigationManager.NavigateTo("/user-profile");
-        else if(role == "Moderator")
+        else if (role == "Moderator")
             NavigationManager.NavigateTo("/moderator-profile");
     }
 
@@ -135,7 +135,7 @@
         await LoadUserInfo();
         StateHasChanged(); // Notify Blazor to re-render the component
     }
-    
+
 }
 
 <style>

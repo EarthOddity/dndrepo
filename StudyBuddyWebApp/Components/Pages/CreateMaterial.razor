@@ -1,5 +1,6 @@
 @page "/create-material"
 @inject IAcademicService AcademicService
+@inject IProfileService ProfileService
 @inject NavigationManager NavigationManager
 @using Microsoft.AspNetCore.Components.Authorization
 @using System.Security.Claims
@@ -66,13 +67,16 @@
             var authState = await AuthState;
             var user = authState.User;
 
-            if (user.Identity?.IsAuthenticated ?? false)
+            if (user.Identity?.IsAuthenticated == false)
             {
-                var idClaim = user.Claims.FirstOrDefault(c => c.Type == "id");
-                if (idClaim != null && int.TryParse(idClaim.Value, out int userId))
-                {
-                    currentUserId = userId;
-                }
+                NavigationManager.NavigateTo("/login");
+                return;
+            }
+
+            var idClaim = user.Claims.FirstOrDefault(c => c.Type == "id");
+            if (idClaim != null && int.TryParse(idClaim.Value, out int userId))
+            {
+                currentUserId = userId;
             }
 
             subjects = (await AcademicService.GetAllSubjects()).ToList();
@@ -94,8 +98,16 @@
                 return;
             }
 
+            // Fetch the logged-in user's details
+            var user = await ProfileService.GetStudentProfile(currentUserId.Value);
+            if (user == null)
+            {
+                error = "Failed to fetch user details";
+                return;
+            }
+
             // Initialize all required properties
-            newMaterial.Author = new Student { Id = currentUserId.Value };
+            newMaterial.Author = user;
             newMaterial.IsApproved = false;
             newMaterial.SavedMaterials = new List<SavedMaterial>();
             newMaterial.Reviews = new List<Review>();
