@@ -20,24 +20,24 @@ public class ReviewService(DatabaseContext context) : IReviewService
 
     public Task<Review> GetReviewById(int id)
     {
-        var review = context.Reviews.FirstOrDefault(r => r.id == id);
+        var review = context.Reviews.FirstOrDefault(r => r.Id == id);
         return Task.FromResult(review);
     }
 
     public Task<List<Review>> GetReviewsByAuthor(int authorId) // Simplified
     {
         var reviews = context.Reviews;
-        var filteredReviews = reviews.Where(r => r.authorId == authorId).ToList();
+        var filteredReviews = reviews.Where(r => r.AuthorId == authorId).ToList();
         return Task.FromResult(filteredReviews);
     }
 
     public async Task<bool> UpdateReview(int id, string reviewText, bool isApproved)
     {
-        var reviewToUpdate = context.Reviews.FirstOrDefault(r => r.id == id);
+        var reviewToUpdate = context.Reviews.FirstOrDefault(r => r.Id == id);
         if (reviewToUpdate != null)
         {
-            reviewToUpdate.reviewText = reviewText;
-            reviewToUpdate.isApproved = isApproved;
+            reviewToUpdate.ReviewText = reviewText;
+            reviewToUpdate.IsApproved = isApproved;
             await context.SaveChangesAsync();
             return true;
         }
@@ -46,7 +46,7 @@ public class ReviewService(DatabaseContext context) : IReviewService
 
     public async Task<bool> DeleteReview(int id)
     {
-        var review = context.Reviews.FirstOrDefault(review => review.id == id);
+        var review = context.Reviews.FirstOrDefault(review => review.Id == id);
         if (review != null)
         {
             context.Reviews.Remove(review);
@@ -58,7 +58,7 @@ public class ReviewService(DatabaseContext context) : IReviewService
 
     public Task<IEnumerable<Review>> GetReviewsByMaterialId(int materialId)
     {
-        var reviews = context.Reviews.Where(r => r.materialId == materialId).AsEnumerable();
+        var reviews = context.Reviews.Where(r => r.MaterialId == materialId).AsEnumerable();
         return Task.FromResult(reviews);
     }
 

@@ -46,7 +46,7 @@ public class StudentController(IStudentService _studentService, ISBCalendarServi
     {
         var newStudent = await _studentService.RegisterStudent(student);
         var newCalendar = await _calendarService.CreateCalendar(student);
-        return CreatedAtAction(nameof(GetStudent), new { id = newStudent.id }, newStudent);
+        return CreatedAtAction(nameof(GetStudent), new { Id = newStudent.Id }, newStudent);
     }
 
     [HttpPut("{id}")]

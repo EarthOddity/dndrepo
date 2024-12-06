@@ -24,13 +24,13 @@ else
     <div class="materials-list">
         @foreach (var material in materials)
         {
-            <div class="material-item" @onclick="() => NavigateToMaterial(material.id)">
+            <div class="material-item" @onclick="() => NavigateToMaterial(material.Id)">
                 <div class="material-content">
-                    <h4>@material.title</h4>
-                    <p>@material.description</p>
+                    <h4>@material.Title</h4>
+                    <p>@material.Description</p>
                 </div>
-                <button class="heart-button @(savedMaterialIds.Contains(material.id) ? "saved" : "")"
-                        @onclick="() => ToggleSave(material.id)">
+                <button class="heart-button @(savedMaterialIds.Contains(material.Id) ? "saved" : "")"
+                        @onclick="() => ToggleSave(material.Id)">
                     <i class="fas fa-heart"></i>
                 </button>
             </div>
@@ -92,7 +92,7 @@ else
         {
             materials = (await AcademicService.GetMaterialsBySubjectId(subjectId)).ToList();
             var savedMaterials = await AcademicService.GetSavedMaterialsByUserId(currentUserId.Value);
-            savedMaterialIds = new HashSet<int>(savedMaterials.Select(m => m.id));
+            savedMaterialIds = new HashSet<int>(savedMaterials.Select(m => m.Id));
         }
         catch (Exception ex)
         {

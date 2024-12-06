@@ -15,7 +15,8 @@
     <section class="introduction">
         <h2>Welcome to StudyBuddy!</h2>
         <p>Connect with your peers, discover study resources, and find the perfect tutor to help you excel in your
-            academic journey!</p>
+            academic
+            journey!</p>
     </section>
 
     <main class="content-grid">
@@ -39,8 +40,27 @@
         </div>
 
         <div class="materials-section">
-            <OverviewMaterialsSaved Title="Saved Materials" Materials="@savedMaterials" SavingMethod="@ToggleSave"
-                SavedMaterialIds="@savedMaterialIds" />
+            <h3>Saved Materials</h3>
+            <div class="materials-grid">
+                @if (savedMaterials == null)
+                {
+                    <p>Loading materials...</p>
+                }
+                else if (!savedMaterials.Any())
+                {
+                    <p>No materials available.</p>
+                }
+                else
+                {
+                    @foreach (var material in savedMaterials)
+                    {
+                        <div class="material-card">
+                            <h4>@material.Title</h4>
+                            <p>@material.Description</p>
+                        </div>
+                    }
+                }
+            </div>
         </div>
     </main>
 </div>

@@ -28,20 +28,20 @@
                 <h4>Teaching Materials</h4>
                 @foreach (var material in materials)
                 {
-                    <div class="result-item" @onclick="() => NavigateToMaterial(material.id)">
+                    <div class="result-item" @onclick="() => NavigateToMaterial(material.Id)">
                         <div class="result-content">
                             <div class="result-title">
                                 <i class="fas fa-book"></i>
-                                <span>@material.title</span>
+                                <span>@material.Title</span>
                             </div>
                             <div class="result-details">
-                                @if (material.subject != null)
+                                @if (material.Subject != null)
                                 {
-                                    <span class="badge subject-badge">@material.subject.name</span>
+                                    <span class="badge subject-badge">@material.Subject.Name</span>
                                 }
-                                @if (material.author != null)
+                                @if (material.Author != null)
                                 {
-                                    <span class="badge author-badge">@material.author.name</span>
+                                    <span class="badge author-badge">@material.Author.Name</span>
                                 }
                             </div>
                         </div>
@@ -138,7 +138,7 @@
     }
 
     .search-button {
-        background-color: #007bff;
+        background: linear-gradient(135deg, #71b3e5 0%, #013faa 100%);
         color: white;
     }
 
@@ -148,7 +148,8 @@
     }
 
     .search-button:hover {
-        background-color: #0056b3;
+        background: linear-gradient(135deg, #53b5ff 0%, #002a74 100%);
+        transform: scale(1.05);
     }
 
     .clear-button:hover {

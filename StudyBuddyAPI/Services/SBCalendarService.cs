@@ -26,7 +26,7 @@ public class SBCalendarService(DatabaseContext context) : ISBCalendarService
 
     public async Task<bool> DeleteCalendar(int id)
     {
-        var calendar = await _context.Calendars.FindAsync(id);
+        var calendar = await _context.Calendars.FindAsync(Id);
         if (calendar != null)
         {
             _context.Calendars.Remove(calendar);

@@ -27,10 +27,10 @@
     private async Task HandleSubjectSelected(Subject subject)
     {
         if (selectedBachelor == null) return;
-        selectedSubject = selectedSubject?.id == subject.id ? null : subject;
+        selectedSubject = selectedSubject?.Id == subject.Id ? null : subject;
         Console.WriteLine(selectedBachelor.Id);
-        Console.WriteLine(selectedSubject.id);
-        await AcademicService.AddSubjectToBachelor(selectedBachelor.Id, selectedSubject.id);
+        Console.WriteLine(selectedSubject.Id);
+        await AcademicService.AddSubjectToBachelor(selectedBachelor.Id, selectedSubject.Id);
         Console.WriteLine("Subject added to bachelor");
         selectedSubject = null;
         selectedBachelor = null;

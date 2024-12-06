@@ -10,13 +10,13 @@ public class Moderator : User
         this.BannedReviews = new List<Review>();
     }
 
-    public Moderator(int id, string name, string surname, string email, int phoneNumber, string accessLevel, List<string> assignedSections, List<Review> bannedReviews, string password) : base(id, name, surname, email, phoneNumber, password)
+    public Moderator(int Id, string Name, string Surname, string Email, int PhoneNumber, string AccessLevel, List<string> AssignedSections, List<Review> BannedReviews, string Password) : base(Id, Name, Surname, Email, PhoneNumber, Password)
     {
-        this.AccessLevel = accessLevel;
-        this.AssignedSections = assignedSections;
-        this.BannedReviews = bannedReviews;
+        this.AccessLevel = AccessLevel;
+        this.AssignedSections = AssignedSections;
+        this.BannedReviews = BannedReviews;
     }
-    public Moderator(int id, string password) : base(id, password)
+    public Moderator(int Id, string Password) : base(Id, Password)
     {
         this.AccessLevel = string.Empty;
         this.AssignedSections = new List<string>();

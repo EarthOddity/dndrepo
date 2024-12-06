@@ -29,7 +29,7 @@ public class ModeratorController (IModeratorService _moderatorService) : Control
     public async Task<ActionResult<Moderator>> AddModerator(Moderator moderator)
     {
         await _moderatorService.AddModerator(moderator);
-        return CreatedAtAction(nameof(GetModerator), new { id = moderator.id }, moderator);
+        return CreatedAtAction(nameof(GetModerator), new { id = moderator.Id }, moderator);
     }
 
     /*[HttpPost("{moderatorId}/ban-review/{reviewId}")]

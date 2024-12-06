@@ -17,12 +17,12 @@
             @foreach (var material in Materials)
             {
                 <div class="material-item">
-                    <div class="material-content" @onclick="() => NavigateToMaterial(material.id)">
-                        <h4>@material.title</h4>
-                        <p>@material.description</p>
+                    <div class="material-content" @onclick="() => NavigateToMaterial(material.Id)">
+                        <h4>@material.Title</h4>
+                        <p>@material.Description</p>
                     </div>
-                    <button class="heart-button @(SavedMaterialIds?.Contains(material.id) == true ? "saved" : "")"
-                        @onclick="() => SavingMethod.InvokeAsync(material.id)">
+                    <button class="heart-button @(SavedMaterialIds?.Contains(material.Id) == true ? "saved" : "")"
+                        @onclick="() => SavingMethod.InvokeAsync(material.Id)">
                         <i class="fas fa-heart"></i>
                     </button>
                 </div>

@@ -22,13 +22,13 @@ public class ModeratorService(DatabaseContext context) : IModeratorService
 
     public async Task UpdateModerator(int id, Moderator updatedModerator)
     {
-        var moderator = context.Moderators.FirstOrDefault(m => m.id == id);
+        var moderator = context.Moderators.FirstOrDefault(m => m.Id == id);
         if (moderator != null)
         {
-            moderator.name = updatedModerator.name;
-            moderator.surname = updatedModerator.surname;
-            moderator.email = updatedModerator.email;
-            moderator.phoneNumber = updatedModerator.phoneNumber;
+            moderator.Name = updatedModerator.Name;
+            moderator.Surname = updatedModerator.Surname;
+            moderator.Email = updatedModerator.Email;
+            moderator.PhoneNumber = updatedModerator.PhoneNumber;
             moderator.AssignedSections = updatedModerator.AssignedSections;
             await context.SaveChangesAsync();
         }
@@ -48,7 +48,7 @@ public class ModeratorService(DatabaseContext context) : IModeratorService
 
     public async Task AssignSection(int id, string section)
     {
-        var moderator = context.Moderators.FirstOrDefault(m => m.id == id);
+        var moderator = context.Moderators.FirstOrDefault(m => m.Id == id);
         if (moderator != null && !moderator.AssignedSections.Contains(section))
         {
             moderator.AssignedSections.Add(section);
@@ -58,13 +58,13 @@ public class ModeratorService(DatabaseContext context) : IModeratorService
 
     public Task<Moderator> GetModeratorById(int id)
     {
-        var moderator = context.Moderators.FirstOrDefault(m => m.id == id);
+        var moderator = context.Moderators.FirstOrDefault(m => m.Id == id);
         return Task.FromResult(moderator);
     }
 
     public async Task DeleteModerator(int id)
     {
-        var moderator = context.Moderators.FirstOrDefault(m => m.id == id);
+        var moderator = context.Moderators.FirstOrDefault(m => m.Id == id);
         context.Moderators.Remove(moderator);
         await context.SaveChangesAsync();
     }

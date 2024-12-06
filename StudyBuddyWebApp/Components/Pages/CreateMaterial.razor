@@ -21,23 +21,23 @@
 
             <div class="form-group">
                 <label for="title">Title</label>
-                <InputText id="title" @bind-Value="newMaterial.title" class="form-control" />
+                <InputText id="title" @bind-Value="newMaterial.Title" class="form-control" />
             </div>
 
             <div class="form-group">
                 <label for="description">Description</label>
-                <InputTextArea id="description" @bind-Value="newMaterial.description" class="form-control" rows="4" />
+                <InputTextArea id="description" @bind-Value="newMaterial.Description" class="form-control" rows="4" />
             </div>
 
             <div class="form-group">
                 <label for="subject">Subject</label>
-                <InputSelect id="subject" @bind-Value="newMaterial.subjectId" class="form-control">
+                <InputSelect id="subject" @bind-Value="newMaterial.SubjectId" class="form-control">
                     <option value="">Select a subject...</option>
                     @if (subjects != null)
                     {
                         @foreach (var subject in subjects)
                         {
-                            <option value="@subject.id">@subject.name</option>
+                            <option value="@subject.Id">@subject.Name</option>
                         }
                     }
                 </InputSelect>
@@ -107,26 +107,26 @@
             }
 
             // Initialize all required properties
-            newMaterial.author = user;
-            newMaterial.isApproved = false;
-            newMaterial.savedMaterials = new List<SavedMaterial>();
-            newMaterial.reviews = new List<Review>();
+            newMaterial.Author = user;
+            newMaterial.IsApproved = false;
+            newMaterial.SavedMaterials = new List<SavedMaterial>();
+            newMaterial.Reviews = new List<Review>();
 
             // Log request payload for debugging
             Console.WriteLine($"Creating material: {System.Text.Json.JsonSerializer.Serialize(newMaterial)}");
 
             // Validate required fields
-            if (string.IsNullOrEmpty(newMaterial.title))
+            if (string.IsNullOrEmpty(newMaterial.Title))
             {
                 error = "Title is required";
                 return;
             }
-            if (string.IsNullOrEmpty(newMaterial.description))
+            if (string.IsNullOrEmpty(newMaterial.Description))
             {
                 error = "Description is required";
                 return;
             }
-            if (newMaterial.subjectId == 0)
+            if (newMaterial.SubjectId == 0)
             {
                 error = "Subject is required";
                 return;

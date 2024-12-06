@@ -3,7 +3,7 @@ GET http://localhost:5044/api/Student
 Accept: application/json
 
 ### Get student by id
-GET http://localhost:5044/api/Student/3
+GET http://localhost:5044/api/Student/2
 Accept: application/json
 
 ###Get student by name
@@ -19,7 +19,7 @@ Content-Type: application/json
       "isTutor": true,
       "language": "string",
       "name": "Jos\u00E9",
-      "surname": "aaaaaaaaaaaaaa",
+      "surname": "Papa",
       "email": "string",
       "phoneNumber": 123456,
       "password": "abc"
@@ -135,12 +135,6 @@ Content-Type: application/json
 GET http://localhost:5044/api/Bachelor
 Accept: application/json
 
-### Get Subjects in Bachelor 
-GET http://localhost:5044/api/Bachelor/1/subjects
-Accept: application/json
-
-### Add a subject to a bachelor
-POST http://localhost:5044/api/Bachelor/1/add-subject/2
 ### Get all teaching materials
 GET http://localhost:5044/api/TeachingMaterial
 Accept: application/json
@@ -161,7 +155,6 @@ Content-Type: application/json
     "title": "c Basics",
     "description": "Introduction to differential calculus",
     "isApproved": false
-
     }
 
 ### Update teaching material
@@ -381,11 +374,11 @@ Content-Type: application/json
   "description": "Group study for Database exam",
   "startTime": "2024-03-20T14:00:00",
   "endTime": "2024-03-20T16:00:00",
-  "calendarId": 1
+  "calendarId": 1
 }
 
-### Update Event
-PUT http://localhost:5044/api/SBEvent/2
+###
+POST http://localhost:5044/api/Student
 Content-Type: application/json
 
 {

@@ -106,7 +106,7 @@
         if (currentUserId.HasValue)
         {
             var savedMaterials = await AcademicService.GetSavedMaterialsByUserId(currentUserId.Value);
-            savedMaterialIds = new HashSet<int>(savedMaterials.Select(m => m.id));
+            savedMaterialIds = new HashSet<int>(savedMaterials.Select(m => m.Id));
         }
     }
 

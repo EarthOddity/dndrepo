@@ -15,10 +15,10 @@
 {
     <div class="material-header">
         <div class="material-info">
-            <h4>@teachingMaterial.title</h4>
-            <p>@teachingMaterial.description</p>
-            <p><strong>Author:</strong> @teachingMaterial.author?.name</p>
-            <p><strong>Approved:</strong> @(teachingMaterial.isApproved ? "Yes" : "No")</p>
+            <h4>@teachingMaterial.Title</h4>
+            <p>@teachingMaterial.Description</p>
+            <p><strong>Author:</strong> @teachingMaterial.Author?.Name</p>
+            <p><strong>Approved:</strong> @(teachingMaterial.IsApproved ? "Yes" : "No")</p>
         </div>
         <button class="heart-button @(isSaved ? "saved" : "")" @onclick="ToggleSave">
             <i class="@(isSaved ? "fas" : "far") fa-heart"></i>
@@ -29,7 +29,7 @@
     {
         <div>
             <h4>Subject</h4>
-            <p>@subject.name</p>
+            <p id="subject-name">@subject.Name</p>
         </div>
     }
 
@@ -42,11 +42,11 @@
         <h4>All Reviews</h4>
         @if (reviews?.Any() == true)
         {
-            @foreach (var review in reviews.Where(r => !currentUserId.HasValue || r.authorId != currentUserId.Value))
+            @foreach (var review in reviews.Where(r => !currentUserId.HasValue || r.AuthorId != currentUserId.Value))
             {
                 <div class="review-item">
-                    <p><strong>@review.author?.name:</strong> @review.reviewText</p>
-                    <p><strong>Approved:</strong> @(review.isApproved ? "Yes" : "No")</p>
+                    <p><strong>@review.Author?.Name:</strong> @review.ReviewText</p>
+                    <p><strong>Approved:</strong> @(review.IsApproved ? "Yes" : "No")</p>
                 </div>
             }
         }
@@ -120,15 +120,15 @@ else
 
     private async Task LoadSubject()
     {
-        if (teachingMaterial?.subjectId > 0)
+        if (teachingMaterial?.SubjectId > 0)
         {
-            subject = await AcademicService.GetSubjectById(teachingMaterial.subjectId);
+            subject = await AcademicService.GetSubjectById(teachingMaterial.SubjectId);
         }
     }
 
     private async Task LoadReviews()
     {
-        reviews = await AcademicService.GetReviewsByMaterialId(teachingMaterial.id);
+        reviews = await AcademicService.GetReviewsByMaterialId(teachingMaterial.Id);
     }
 
     private async Task LoadSavedStatus()
@@ -136,7 +136,7 @@ else
         if (currentUserId.HasValue)
         {
             var savedMaterials = await AcademicService.GetSavedMaterialsByUserId(currentUserId.Value);
-            isSaved = savedMaterials.Any(m => m.id == id);
+            isSaved = savedMaterials.Any(m => m.Id == id);
         }
     }
 
@@ -163,37 +163,58 @@ else
 }
 
 <style>
+    .review-item {
+        margin-left: 20px;
+    }
+
+    h3 {
+        text-align: center;
+        margin: 15px;
+    }
+
+    h4 {
+        margin-left: 20px;
+    }
+
+    #subject-name {
+        margin-left: 20px;
+    }
+
     .material-header {
         display: flex;
         justify-content: space-between;
         align-items: flex-start;
-        margin-bottom: 2rem;
+        margin: 0 20px 20px 20px;
+        /* top, right, bottom, left */
+        padding: 20px;
+        background-color: #1e293b;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
 
-    .material-info {
-        flex-grow: 1;
+    .material-info h4 {
+        font-size: 1.5rem;
+        color: #e2e8f0;
+        margin-bottom: 10px;
     }
 
-    .heart-container {
-        display: flex;
-        align-items: center;
-        margin-left: 15px;
+    .material-info p {
+        font-size: 1rem;
+        color: #e2e8f0;
+        margin: 5px 0;
     }
 
     .heart-button {
         background: none;
         border: none;
         cursor: pointer;
-        padding: 12px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        padding: 10px;
     }
 
     .heart-button i {
-        font-size: 1.5rem;
-        color: #888;
-        transition: all 0.3s ease;
+        font-size: 1.8rem;
+        color: #ccc;
+        transition: color 0.3s ease;
     }
 
     .heart-button.saved i {
@@ -201,6 +222,7 @@ else
     }
 
     .heart-button:hover i {
+        color: #ff6666;
         transform: scale(1.1);
     }
 </style>

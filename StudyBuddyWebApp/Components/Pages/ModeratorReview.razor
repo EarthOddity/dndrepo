@@ -33,16 +33,16 @@
                     <div class="reviews-grid">
                 @foreach (var review in allReviews)
                 {
-                                    <div class="review-card @(selectedReview?.id == review.id ? "selected" : "")" 
+                                    <div class="review-card @(selectedReview?.Id == review.Id ? "selected" : "")" 
                                          @onclick="() => SelectReview(review)">
                                         <div class="review-content">
-                                            <p><strong>@review.author?.name:</strong></p>
-                                            <p>@review.reviewText</p>
-                                            <p><small>Approved: @(review.isApproved ? "Yes" : "No")</small></p>
+                                            <p><strong>@review.Author?.Name:</strong></p>
+                                            <p>@review.ReviewText</p>
+                                            <p><small>Approved: @(review.IsApproved ? "Yes" : "No")</small></p>
                                         </div>
                                         <div class="button-group">
                                             <button class="btn btn-warning" @onclick="() => EnableEdit(review)">Edit</button>
-                                            <button class="btn btn-danger" @onclick="() => HandleDelete(review.id)">Delete</button>
+                                            <button class="btn btn-danger" @onclick="() => HandleDelete(review.Id)">Delete</button>
                                         </div>
                                     </div>
                 }
@@ -80,13 +80,13 @@
     private void SelectReview(Review review)
     {
         selectedReview = review;
-        editText = review.reviewText;
+        editText = review.ReviewText;
     }
 
     private void EnableEdit(Review review)
     {
         selectedReview = review;
-        editText = review.reviewText;
+        editText = review.ReviewText;
         isEditing = true;
     }
 
@@ -103,7 +103,7 @@
         {
             if (selectedReview != null)
             {
-                var success = await AcademicService.UpdateReview(selectedReview.id, editText, selectedReview.isApproved);
+                var success = await AcademicService.UpdateReview(selectedReview.Id, editText, selectedReview.IsApproved);
                 if (success)
                 {
                     allReviews = (await AcademicService.GetAllReviews()).ToList();
@@ -126,7 +126,7 @@
             if (success)
             {
                 allReviews = (await AcademicService.GetAllReviews()).ToList();
-                if (selectedReview?.id == reviewId)
+                if (selectedReview?.Id == reviewId)
                 {
                     CancelEdit();
                 }

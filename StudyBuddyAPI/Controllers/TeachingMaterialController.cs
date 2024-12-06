@@ -42,13 +42,13 @@ public class TeachingMaterialController(ITeachingMaterialService _teachingMateri
             return BadRequest("Teaching material data is required.");
         }
         await _teachingMaterialService.CreateTeachingMaterial(material);
-        return CreatedAtAction(nameof(GetMaterialById), new { id = material.id }, material);
+        return CreatedAtAction(nameof(GetMaterialById), new { id = material.Id }, material);
     }
 
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateMaterial(int id, TeachingMaterial updatedMaterial)
     {
-        var success = await _teachingMaterialService.UpdateMaterial(id, updatedMaterial.title, updatedMaterial.description, updatedMaterial.isApproved, updatedMaterial.author);
+        var success = await _teachingMaterialService.UpdateMaterial(id, updatedMaterial.Title, updatedMaterial.Description, updatedMaterial.IsApproved, updatedMaterial.Author);
         if (!success)
             return NotFound();
 

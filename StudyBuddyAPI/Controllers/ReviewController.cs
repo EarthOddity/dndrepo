@@ -42,14 +42,14 @@ public class ReviewController(IReviewService _reviewService) : ControllerBase
     public async Task<ActionResult<Review>> AddReview(Review review)
     {
         await _reviewService.AddReview(review);
-        return CreatedAtAction(nameof(GetReviewById), new { id = review.id }, review);
+        return CreatedAtAction(nameof(GetReviewById), new { id = review.Id }, review);
     }
 
     [HttpPut("{id}")]
 
     public async Task<ActionResult> UpdateReview(int id, Review updatedReview)
     {
-        var success = await _reviewService.UpdateReview(id, updatedReview.reviewText, updatedReview.isApproved);
+        var success = await _reviewService.UpdateReview(id, updatedReview.ReviewText, updatedReview.IsApproved);
         if (!success) return NotFound();
 
         return NoContent();

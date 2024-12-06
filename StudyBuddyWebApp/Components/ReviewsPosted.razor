@@ -24,7 +24,7 @@
                     else
                     {
                         <div class="review-content">
-                            <p>@userReview.reviewText</p>
+                            <p>@userReview.ReviewText</p>
                             <div class="button-group">
                                 <button type="button" class="btn btn-warning" @onclick="EnableEdit">Edit</button>
                                 <button type="button" class="btn btn-danger" @onclick="HandleDelete">Delete</button>
@@ -94,11 +94,12 @@
             {
                 loading = true;
                 var reviews = await AcademicService.GetReviewsByMaterialId(MaterialId);
-                userReview = reviews.FirstOrDefault(r => r.authorId == CurrentUserId);
+                userReview = reviews.FirstOrDefault(r => r.AuthorId == CurrentUserId);
+
 
                 if (userReview != null && !isDisposed)
                 {
-                    reviewText = userReview.reviewText;
+                    reviewText = userReview.ReviewText;
                 }
             }
         }
@@ -124,10 +125,10 @@
         {
             var newReview = new Review
                 {
-                    reviewText = reviewText,
-                    authorId = CurrentUserId,
-                    materialId = MaterialId,
-                    isApproved = false
+                    ReviewText = reviewText,
+                    AuthorId = CurrentUserId,
+                    MaterialId = MaterialId,
+                    IsApproved = false
                 };
 
             await AcademicService.AddReview(newReview);
@@ -148,7 +149,7 @@
         if (!isDisposed)
         {
             isEditing = true;
-            reviewText = userReview.reviewText;
+            reviewText = userReview.ReviewText;
         }
     }
 
@@ -157,7 +158,7 @@
         if (!isDisposed)
         {
             isEditing = false;
-            reviewText = userReview.reviewText;
+            reviewText = userReview.ReviewText;
         }
     }
 
@@ -167,7 +168,7 @@
 
         try
         {
-            bool success = await AcademicService.UpdateReview(userReview.id, reviewText, userReview.isApproved);
+            bool success = await AcademicService.UpdateReview(userReview.Id, reviewText, userReview.IsApproved);
             if (success && !isDisposed)
             {
                 await LoadUserReview();
@@ -186,7 +187,7 @@
 
         try
         {
-            bool success = await AcademicService.DeleteReview(userReview.id);
+            bool success = await AcademicService.DeleteReview(userReview.Id);
             if (success && !isDisposed)
             {
                 userReview = null;
@@ -210,31 +211,120 @@
 
 <style>
     .review-section {
-        margin: 20px 0;
+        font-family: 'Arial', sans-serif;
+        color: #e2e8f0;
+        background-color: #1e293b;
+        margin: 30px auto;
+        max-width: 700px;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     }
 
-    .existing-review {
-        background-color: #f8f9fa;
-        padding: 15px;
-        border-radius: 5px;
+    .review-section .existing-review {
+        background-color: #1e293b;
+        padding: 20px;
+        border-radius: 8px;
     }
 
-    .button-group {
-        margin-top: 10px;
+    .review-section .review-content p {
+        font-size: 1.1em;
+        line-height: 1.5;
+        color: #e2e8f0;
+        margin-bottom: 15px;
+    }
+
+    .review-section textarea {
+        width: 100%;
+        padding: 12px;
+        margin-bottom: 20px;
+        font-size: 1em;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        resize: vertical;
+        box-sizing: border-box;
+    }
+
+    .review-section textarea:focus {
+        outline: none;
+        border-color: #007bff;
+        box-shadow: 0 0 5px rgba(0, 123, 255, 0.4);
+    }
+
+    .review-section .button-group {
         display: flex;
-        gap: 10px;
+        justify-content: flex-start;
+        gap: 15px;
     }
 
-    .error {
-        color: red;
-        padding: 10px;
-        margin: 10px 0;
-        background-color: #ffe6e6;
-        border-radius: 4px;
+    .review-section button {
+        padding: 10px 20px;
+        border: none;
+        font-size: 1em;
+        cursor: pointer;
+        border-radius: 6px;
+        transition: background-color 0.3s ease, box-shadow 0.3s ease;
     }
 
-    .success-message {
+    .review-section button:hover {
+        opacity: 0.9;
+    }
+
+    .review-section button:focus {
+        outline: none;
+    }
+
+    .review-section button.btn-primary {
+        background: linear-gradient(135deg, #71b3e5 0%, #013faa 100%);
+        color: white;
+    }
+
+    .review-section button.btn-primary:hover {
+        background: linear-gradient(135deg, #53b5ff 0%, #002a74 100%);
+        transform: scale(1.05);
+    }
+
+    .review-section button.btn-warning {
+        background-color: #ffc107;
+        color: white;
+    }
+
+    .review-section button.btn-warning:hover {
+        background-color: #e0a800;
+    }
+
+    .review-section button.btn-danger {
+        background-color: #dc3545;
+        color: white;
+    }
+
+    .review-section button.btn-danger:hover {
+        background-color: #c82333;
+    }
+
+    .review-section .error {
+        color: #dc3545;
+        background-color: #f8d7da;
+        padding: 15px;
+        margin: 20px 0;
+        border-radius: 5px;
+        font-size: 1.1em;
+    }
+
+    .review-section .success-message {
         color: #28a745;
+        background-color: #d4edda;
+        padding: 15px;
+        margin: 20px 0;
+        border-radius: 5px;
         font-weight: bold;
+        font-size: 1.1em;
+    }
+
+    .review-section .loading {
+        text-align: center;
+        padding: 20px;
+        font-size: 1.2em;
+        color: #007bff;
     }
 </style>
