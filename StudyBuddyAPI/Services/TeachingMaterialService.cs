@@ -24,31 +24,31 @@ public class TeachingMaterialService : ITeachingMaterialService
 
     public Task<TeachingMaterial> GetMaterialById(int id)
     {
-        return Task.FromResult(context.TeachingMaterials.FirstOrDefault(m => m.id == id));
+        return Task.FromResult(context.TeachingMaterials.FirstOrDefault(m => m.Id == id));
     }
 
     public async Task<IEnumerable<TeachingMaterial>> GetMaterialByAuthor(Student author)
     {
         return await context.TeachingMaterials
-            .Include(m => m.author)
-            .Where(m => m.author != null && m.author.id == author.id)
+            .Include(m => m.Author)
+            .Where(m => m.Author != null && m.Author.Id == author.Id)
             .ToListAsync();
     }
     public Task<IEnumerable<TeachingMaterial>> GetMaterialByTitle(string title)
     {
-        var material = context.TeachingMaterials.Where(m => m.title == title).AsEnumerable();
+        var material = context.TeachingMaterials.Where(m => m.Title == title).AsEnumerable();
         return Task.FromResult(material);
     }
     public async Task<bool> UpdateMaterial(int id, string title, string description, bool isApproved, Student author)
     {
 
-        var material = context.TeachingMaterials.FirstOrDefault(r => r.id == id);
+        var material = context.TeachingMaterials.FirstOrDefault(r => r.Id == id);
         if (material != null)
         {
-            material.title = title;
-            material.description = description;
-            material.isApproved = isApproved;
-            material.author = author;
+            material.Title = title;
+            material.Description = description;
+            material.IsApproved = isApproved;
+            material.Author = author;
             await context.SaveChangesAsync();
             return true;
         }
@@ -58,7 +58,7 @@ public class TeachingMaterialService : ITeachingMaterialService
     public async Task<bool> DeleteMaterial(int id)
     {
         Console.WriteLine("Deleting material with id: " + id);
-        var material = context.TeachingMaterials.FirstOrDefault(material => material.id == id);
+        var material = context.TeachingMaterials.FirstOrDefault(material => material.Id == id);
         if (material == null)
         {
             return false;
@@ -97,8 +97,8 @@ public class TeachingMaterialService : ITeachingMaterialService
                 Id: context.SavedMaterials.Any() ? context.SavedMaterials.Max(sm => sm.Id) + 1 : 1,
                 UserId: userId,
                 MaterialId: materialId,
-                Material: context.TeachingMaterials.FirstOrDefault(m => m.id == materialId),
-                User: context.Students.FirstOrDefault(s => s.id == userId)
+                Material: context.TeachingMaterials.FirstOrDefault(m => m.Id == materialId),
+                User: context.Students.FirstOrDefault(s => s.Id == userId)
             );
             await context.SavedMaterials.AddAsync(savedMaterial);
         }
@@ -110,19 +110,19 @@ public class TeachingMaterialService : ITeachingMaterialService
     public async Task<IEnumerable<TeachingMaterial>> GetMaterialsBySubjectId(int subjectId)
     {
         return await context.TeachingMaterials
-            .Where(m => m.subjectId == subjectId)
+            .Where(m => m.SubjectId == subjectId)
             .ToListAsync();
     }
 
     public async Task<IEnumerable<TeachingMaterial>> SearchTeachingMaterials(string searchTerm)
     {
         return await context.TeachingMaterials
-         .Include(m => m.author)
-         .Include(m => m.subject)
-         .Where(m => m.title.Contains(searchTerm) ||
-                     m.description.Contains(searchTerm) ||
-                     m.subject.name.Contains(searchTerm) ||
-                     m.author.name.Contains(searchTerm))
+         .Include(m => m.Author)
+         .Include(m => m.Subject)
+         .Where(m => m.Title.Contains(searchTerm) ||
+                     m.Description.Contains(searchTerm) ||
+                     m.Subject.Name.Contains(searchTerm) ||
+                     m.Author.Name.Contains(searchTerm))
          .ToListAsync();
     }
 

@@ -14,7 +14,7 @@ public class AuthController(IConfiguration config, IAuthServiceAPI authService) 
     {
         try
         {
-            Student studentLog = await authService.ValidateStudent(student.id, student.password);
+            Student studentLog = await authService.ValidateStudent(student.Id, student.Password);
             string token = GenerateJwt(studentLog);
 
             return Ok(token);
@@ -29,7 +29,7 @@ public class AuthController(IConfiguration config, IAuthServiceAPI authService) 
     {
         try
         {
-            Moderator moderatorLog = await authService.ValidateModerator(moderator.id, moderator.password);
+            Moderator moderatorLog = await authService.ValidateModerator(moderator.Id, moderator.Password);
             string token = GenerateJwt(moderatorLog);
 
             return Ok(token);
@@ -68,11 +68,11 @@ public class AuthController(IConfiguration config, IAuthServiceAPI authService) 
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString()),
             new Claim(ClaimTypes.Role, user is Student ? "Student" : "Moderator"),
-            new Claim("id", user.id.ToString()),
-            new Claim("name", user.name),                                // First name
-            new Claim("surname", user.surname),                          // Last name
-            new Claim("email", user.email),        // Email
-            new Claim("phoneNumber", user.phoneNumber.ToString()),      // Phone number
+            new Claim("id", user.Id.ToString()),
+            new Claim("name", user.Name),                                // First name
+            new Claim("surname", user.Surname),                          // Last name
+            new Claim("email", user.Email),        // Email
+            new Claim("phoneNumber", user.PhoneNumber.ToString()),      // Phone number
             new Claim("Role", user is Student ? "Student" : "Moderator" )
         };
         return [.. claims];

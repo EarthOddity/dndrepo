@@ -8,20 +8,20 @@ public class AuthService : IAuthServiceAPI
     {
         _context = context;
     }
-    public Task<Student> ValidateStudent(int id, string password)
+    public Task<Student> ValidateStudent(int Id, string Password)
     {
-        Student? existingStudent = _context.Students.FirstOrDefault(s => s.id == id) ?? throw new Exception("Student not found");
-        if (!existingStudent.password.Equals(password))
+        Student? existingStudent = _context.Students.FirstOrDefault(s => s.Id == Id) ?? throw new Exception("Student not found");
+        if (!existingStudent.Password.Equals(Password))
         {
             throw new Exception("Password mismatch");
         }
 
         return Task.FromResult(existingStudent);
     }
-    public Task<Moderator> ValidateModerator(int id, string password)
+    public Task<Moderator> ValidateModerator(int Id, string Password)
     {
-        Moderator? existingModerator = _context.Moderators.FirstOrDefault(m => m.id == id) ?? throw new Exception("Moderator not found");
-        if (!existingModerator.password.Equals(password))
+        Moderator? existingModerator = _context.Moderators.FirstOrDefault(m => m.Id == Id) ?? throw new Exception("Moderator not found");
+        if (!existingModerator.Password.Equals(Password))
         {
             throw new Exception("Password mismatch");
         }

@@ -3,28 +3,28 @@ using System.Text.Json.Serialization;
 public class SBCalendar
 {
 
-    public int id { get; set; }
+    public int Id { get; set; }
 
-    public int studentId { get; set; }
+    public int StudentId { get; set; }
 
-    public List<SBEvent>? events { get; set; }
+    public List<SBEvent>? Events { get; set; }
     [JsonIgnore]
-    public Student? student { get; set; }
+    public Student? Student { get; set; }
 
     public SBCalendar()
     {
 
     }
 
-    public SBCalendar(int id, int studentId)
+    public SBCalendar(int Id, int StudentId)
     {
-        this.id = id;
-        this.studentId = studentId;
-        this.events = new List<SBEvent>(); // initialize to avoid null errors hiuhi
+        this.Id = Id;
+        this.StudentId = StudentId;
+        this.Events = new List<SBEvent>(); // initialize to avoid null errors hiuhi
     }
-    public SBCalendar(Student student){
-        this.student = student;
-        studentId = student.id;
+    public SBCalendar(Student Student){
+        this.Student = Student;
+        StudentId = Student.Id;
     }
 
 }

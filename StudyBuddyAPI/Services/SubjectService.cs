@@ -16,12 +16,12 @@ public class SubjectService(DatabaseContext context) : ISubjectService
 
     public Task<Subject> GetSubjectById(int id)
     {
-        var subject = context.Subjects.FirstOrDefault(s => s.id == id);
+        var subject = context.Subjects.FirstOrDefault(s => s.Id == id);
         return Task.FromResult(subject);
     }
     public Task<Subject> GetSubjectByName(string name)
     {
-        var subject = context.Subjects.FirstOrDefault(s => s.name == name);
+        var subject = context.Subjects.FirstOrDefault(s => s.Name == name);
         return Task.FromResult(subject);
     }
 
@@ -31,18 +31,18 @@ public class SubjectService(DatabaseContext context) : ISubjectService
     }
     public async Task UpdateSubject(Subject updatedSubject)
     {
-        var subjectToUpdate = context.Subjects.FirstOrDefault(s => s.id == updatedSubject.id);
+        var subjectToUpdate = context.Subjects.FirstOrDefault(s => s.Id == updatedSubject.Id);
         if (subjectToUpdate != null)
         {
-            subjectToUpdate.name = updatedSubject.name;
-            subjectToUpdate.description = updatedSubject.description;
+            subjectToUpdate.Name = updatedSubject.Name;
+            subjectToUpdate.Description = updatedSubject.Description;
             await context.SaveChangesAsync();
         }
     }
 
     public async Task<bool> DeleteSubject(int id)
     {
-        var subject = context.Subjects.FirstOrDefault(subject => subject.id == id);
+        var subject = context.Subjects.FirstOrDefault(subject => subject.Id == id);
         if (subject != null)
         {
             context.Subjects.Remove(subject);
@@ -55,7 +55,7 @@ public class SubjectService(DatabaseContext context) : ISubjectService
     public async Task<IEnumerable<Subject>> SearchSubjectsByName(string searchTerm)
     {
         var subjects = context.Subjects
-            .Where(s => s.name.ToLower().Contains(searchTerm.ToLower()));
+            .Where(s => s.Name.ToLower().Contains(searchTerm.ToLower()));
         return await Task.FromResult(subjects);
     }
 

@@ -12,7 +12,7 @@ public class SBCalendarService(DatabaseContext context) : ISBCalendarService
 
     public async Task<SBCalendar> GetCalendarById(int id)
     {
-        var calendar = await _context.Calendars.FirstOrDefaultAsync(c => c.id == id);
+        var calendar = await _context.Calendars.FirstOrDefaultAsync(c => c.Id == id);
         return await Task.FromResult(calendar);
     }
 
@@ -26,7 +26,7 @@ public class SBCalendarService(DatabaseContext context) : ISBCalendarService
 
     public async Task<bool> DeleteCalendar(int id)
     {
-        var calendar = _context.Calendars.FirstOrDefault(c => c.id == id);
+        var calendar = _context.Calendars.FirstOrDefault(c => c.Id == id);
         if (calendar != null)
         {
             _context.Calendars.Remove(calendar);
@@ -37,8 +37,8 @@ public class SBCalendarService(DatabaseContext context) : ISBCalendarService
     }
     public async Task<int> getCalendarIdByStudentId(int studentId)
     {
-        var calendar = await _context.Calendars.FirstOrDefaultAsync(c => c.studentId == studentId);
-        return calendar.id;
+        var calendar = await _context.Calendars.FirstOrDefaultAsync(c => c.StudentId == studentId);
+        return calendar.Id;
     }
   /*   public async Task<IEnumerable<SBEvent>> GetEventsByCalendarId(int calendarId)
     {

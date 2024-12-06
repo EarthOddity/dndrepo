@@ -1,26 +1,26 @@
 public class Review
 {
-    public int id { get; set; }
-    public string reviewText { get; set; }
-    public int authorId { get; set; }
-    public Student? author { get; set; }
-    public bool isApproved { get; set; }
-    public int materialId { get; set; }
-    public TeachingMaterial? material { get; set; }
+    public int Id { get; set; }
+    public string ReviewText { get; set; }
+    public int AuthorId { get; set; }
+    public Student? Author { get; set; }
+    public bool IsApproved { get; set; }
+    public int MaterialId { get; set; }
+    public TeachingMaterial? Material { get; set; }
 
     public Review() // Default constructor
     {
     }
 
     // Parameterized constructor without duplicate assignments
-    public Review(int id, string reviewText, Student author, bool isApproved, int authorId, int materialId, TeachingMaterial material)
+    public Review(int Id, string ReviewText, Student Author, bool IsApproved, int AuthorId, int MaterialId, TeachingMaterial Material)
     {
-        this.id = id;
-        this.reviewText = reviewText;
-        this.author = author;
-        this.authorId = authorId;
-        this.isApproved = isApproved;
-        this.materialId = materialId;
-        this.material = material;
+        this.Id = Id;
+        this.ReviewText = ReviewText;
+        this.Author = Author;
+        this.AuthorId = AuthorId;
+        this.IsApproved = IsApproved;
+        this.MaterialId = MaterialId;
+        this.Material = Material;
     }
 }

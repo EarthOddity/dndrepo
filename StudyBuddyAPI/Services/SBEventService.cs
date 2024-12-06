@@ -12,7 +12,7 @@ public class SBEventService(DatabaseContext context) : ISBEventService
 
     public async Task<SBEvent> GetEventById(int id)
     {
-        var @event = await _context.Events.FirstOrDefaultAsync(e => e.id == id);
+        var @event = await _context.Events.FirstOrDefaultAsync(e => e.Id == id);
         if (@event == null)
         {
             throw new KeyNotFoundException($"Event with id {id} not found.");
@@ -21,7 +21,7 @@ public class SBEventService(DatabaseContext context) : ISBEventService
     }
     public async Task<IEnumerable<SBEvent>> GetEventsByCalendarId(int calendarId)
     {
-        var events = _context.Events.Where(e => e.calendarId == calendarId);
+        var events = _context.Events.Where(e => e.CalendarId == calendarId);
         return await Task.FromResult(events.AsEnumerable());
     }   
     public async Task<SBEvent> CreateEvent(SBEvent @event)
@@ -33,14 +33,14 @@ public class SBEventService(DatabaseContext context) : ISBEventService
 
     public async Task<bool> UpdateEvent(int id, SBEvent updatedEvent)
     {
-        var eventToUpdate = await _context.Events.FirstOrDefaultAsync(e => e.id == id);
+        var eventToUpdate = await _context.Events.FirstOrDefaultAsync(e => e.Id == id);
         if (eventToUpdate != null)
         {
-            eventToUpdate.title = updatedEvent.title;
-            eventToUpdate.description = updatedEvent.description;
-            eventToUpdate.startTime = updatedEvent.startTime;
-            eventToUpdate.endTime = updatedEvent.endTime;
-            eventToUpdate.timestamp = DateTime.UtcNow;
+            eventToUpdate.Title = updatedEvent.Title;
+            eventToUpdate.Description = updatedEvent.Description;
+            eventToUpdate.StartTime = updatedEvent.StartTime;
+            eventToUpdate.EndTime = updatedEvent.EndTime;
+            eventToUpdate.Timestamp = DateTime.UtcNow;
             await _context.SaveChangesAsync();
             return true;
         }
@@ -49,7 +49,7 @@ public class SBEventService(DatabaseContext context) : ISBEventService
 
     public async Task<bool> DeleteEvent(int id)
     {
-        var @event = _context.Events.FirstOrDefault(b => b.id == id);
+        var @event = _context.Events.FirstOrDefault(b => b.Id == id);
         if (@event != null)
         {
             _context.Events.Remove(@event);
@@ -61,7 +61,7 @@ public class SBEventService(DatabaseContext context) : ISBEventService
 
     public async Task<IEnumerable<SBEvent>> GetEventsInRange(DateTime start, DateTime end)
     {
-        var eventsInRange = _context.Events.Where(e => e.startTime >= start && e.endTime <= end);
+        var eventsInRange = _context.Events.Where(e => e.StartTime >= start && e.EndTime <= end);
         return await Task.FromResult(eventsInRange.AsEnumerable());
     }
 

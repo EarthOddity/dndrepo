@@ -1,26 +1,26 @@
 public class TeachingMaterial
 {
-    public int id { get; set; }
-    public string title { get; set; }
-    public string description { get; set; }
+    public int Id { get; set; }
+    public string Title { get; set; }
+    public string Description { get; set; }
 
-    public Student? author { get; set; }
+    public Student? Author { get; set; }
 
-    public bool isApproved { get; set; }
-    public int subjectId { get; set; }
-    public Subject? subject { get; set; }
-    public List<SavedMaterial> savedMaterials { get; set; } = [];
-    public List<Review> reviews { get; set; } = [];
+    public bool IsApproved { get; set; }
+    public int SubjectId { get; set; }
+    public Subject? Subject { get; set; }
+    public List<SavedMaterial> SavedMaterials { get; set; } = [];
+    public List<Review> Reviews { get; set; } = [];
 
     public TeachingMaterial()
     {
     }
-    public TeachingMaterial(int id, string title, string description, Student author, bool isApproved)
+    public TeachingMaterial(int Id, string Title, string Description, Student Author, bool IsApproved)
     {
-        this.id = id;
-        this.title = title;
-        this.description = description;
-        this.author = author;
-        this.isApproved = isApproved;
+        this.Id = Id;
+        this.Title = Title;
+        this.Description = Description;
+        this.Author = Author;
+        this.IsApproved = IsApproved;
     }
 }

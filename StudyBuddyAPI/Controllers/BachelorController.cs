@@ -33,13 +33,13 @@ public class BachelorController : ControllerBase
     public async Task<ActionResult<Bachelor>> CreateBachelor(Bachelor bachelor)
     {
         var newBachelor = await _bachelorService.CreateBachelor(bachelor);
-        return CreatedAtAction(nameof(GetBachelor), new { id = newBachelor.id }, newBachelor);
+        return CreatedAtAction(nameof(GetBachelor), new { id = newBachelor.Id }, newBachelor);
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateBachelor(int id, Bachelor bachelor)
+    public async Task<IActionResult> UpdateBachelor(int Id, Bachelor Bachelor)
     {
-        await _bachelorService.UpdateBachelor(id, bachelor);
+        await _bachelorService.UpdateBachelor(Id, Bachelor);
         return NoContent();
     }
 
