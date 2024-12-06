@@ -68,7 +68,9 @@ These final touches—both in design and testing—ensure StudyBuddy is not only
 ### **Summary of our project outcome **
 
 ### **Update on Requirements **
+Considering the workload of this semester, the following requirements have not been met. We started with an overly ambitious approach and some tasks turned out to be irrelevant or out of reach along the way considering the scale of the project. Nevertheless, most of the general functionality has been implemented, and the app works as intended.
 -	As a moderator I want to be able to manage the educational institution/communities so that students can join them.
+-	As a tutor, I want to be able to upload material so that students can download them.
 
 
 
