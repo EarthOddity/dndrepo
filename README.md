@@ -27,3 +27,6 @@ https://github.com/EarthOddity/dndrepo/blob/MartynaNew/Data%20Access.md
 
 ### Lastly, Project Conclusion and Demonstration -> 
 https://github.com/EarthOddity/dndrepo/blob/MartynaNew/Project%20Conclusion%20and%20Demonstration.md
+
+### Link to the video presenting how our app works:
+https://www.youtube.com/watch?v=xBeU7ad8YJM
