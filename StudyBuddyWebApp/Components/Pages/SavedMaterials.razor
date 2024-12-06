@@ -100,7 +100,7 @@ else
             var userBachelor = await AcademicService.GetBachelorByStudentId(currentUserId.Value);
             if (userBachelor != null)
             {
-                userSubjects = (await AcademicService.GetSubjectsByBachelorId(userBachelor.id)).ToList();
+                userSubjects = (await AcademicService.GetSubjectsByBachelorId(userBachelor.Id)).ToList();
             }
             else
             {

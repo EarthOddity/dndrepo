@@ -23,9 +23,9 @@
                 <div class="bachelors-grid">
                     @foreach (var bachelor in bachelors)
                     {
-                        <div class="material-card @(selectedBachelor?.id == bachelor.id ? "selected" : "")"
+                        <div class="material-card @(selectedBachelor?.Id == bachelor.Id ? "selected" : "")"
                             @onclick="() => SelectBachelor(bachelor)">
-                            <h4>@bachelor.programName</h4>
+                            <h4>@bachelor.ProgramName</h4>
                         </div>
                     }
                 </div>
@@ -146,7 +146,7 @@
 
     private void SelectBachelor(Bachelor bachelor)
     {
-        if (selectedBachelor?.id == bachelor.id)
+        if (selectedBachelor?.Id == bachelor.Id)
         {
             selectedBachelor = null;
             selectedSubjects.Clear();
@@ -155,7 +155,7 @@
         {
             selectedBachelor = bachelor;
             selectedSubject = null;
-            LoadSubjects(bachelor.id);
+            LoadSubjects(bachelor.Id);
         }
         FilterMaterials();
     }
