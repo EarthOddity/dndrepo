@@ -67,7 +67,8 @@ These final touches—both in design and testing—ensure StudyBuddy is not only
 
 ### **Summary of our project outcome **
 
-### **Updated Requirements **
+### **Update on Requirements **
+-	As a moderator I want to be able to manage the educational institution/communities so that students can join them.
 
 
 
