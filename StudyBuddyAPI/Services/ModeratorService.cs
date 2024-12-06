@@ -1,5 +1,6 @@
 
-public class ModeratorService(DatabaseContext context): IModeratorService{
+public class ModeratorService(DatabaseContext context) : IModeratorService
+{
     //private static List<Moderator> moderatorsList = new List<Moderator>();
     private static List<Review> reviews = new List<Review>();
 
@@ -28,10 +29,10 @@ public class ModeratorService(DatabaseContext context): IModeratorService{
             moderator.surname = updatedModerator.surname;
             moderator.email = updatedModerator.email;
             moderator.phoneNumber = updatedModerator.phoneNumber;
-            moderator.assignedSections = updatedModerator.assignedSections;
+            moderator.AssignedSections = updatedModerator.AssignedSections;
             await context.SaveChangesAsync();
         }
-        
+
     }
 
     /*public Task BanReview(int id, Review review){
@@ -48,9 +49,9 @@ public class ModeratorService(DatabaseContext context): IModeratorService{
     public async Task AssignSection(int id, string section)
     {
         var moderator = context.Moderators.FirstOrDefault(m => m.id == id);
-        if (moderator != null && !moderator.assignedSections.Contains(section))
+        if (moderator != null && !moderator.AssignedSections.Contains(section))
         {
-            moderator.assignedSections.Add(section);
+            moderator.AssignedSections.Add(section);
             await context.SaveChangesAsync();
         }
     }

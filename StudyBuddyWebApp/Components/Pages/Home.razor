@@ -5,10 +5,10 @@
 @using StudyBuddyWebApp.Components.Layout
 @using Microsoft.AspNetCore.Components.Authorization
 @using Microsoft.AspNetCore.Authorization
-@inject NavigationManager NavigationManager 
+@inject NavigationManager NavigationManager
 @inject AuthenticationStateProvider AuthStateProvider
 @rendermode InteractiveServer
-@attribute [Authorize ("MustBeStudent")]
+@attribute [Authorize("MustBeStudent")]
 
 <div class="study-buddy-container">
     <section class="introduction">
@@ -31,13 +31,12 @@
             }
             else
             {
-                <CalendarDay Events="events" />
+                <CalendarDay Events="events" CalendarId="calendarId" />
             }
             <div class="button-container">
-                <button class="create-event-button" @onclick ="CreateEvent" >Create A New Event</button>
+                <button class="create-event-button" @onclick="CreateEvent">Create A New Event</button>
             </div>
         </div>
-        @* CHECK OUT THE OVERVIEW MATERIALS COMPONENT TO USE HERE *@
         <div class="materials-section">
             <h3>Saved Materials</h3>
             <div class="materials-grid">
@@ -158,16 +157,28 @@
         padding: 15px;
         border-radius: 6px;
     }
-       .create-event-button {
+
+    .button-container {
+        display: flex;
+        justify-content: flex-end;
+        width: 100%;
+        padding: 10px;
+    }
+
+    .create-event-button {
         background: linear-gradient(135deg, #71b3e5 0%, #013faa 100%);
         color: #000000;
         border: none;
         text-align: center;
         padding: 10px 15px;
         cursor: pointer;
-        margin-right: 30px;
         border-radius: 8px;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         transition: background 0.3s ease, transform 0.2s ease;
+    }
+
+    .create-event-button:hover {
+        background: linear-gradient(135deg, #53b5ff 0%, #002a74 100%);
+        transform: scale(1.05);
     }
 </style>

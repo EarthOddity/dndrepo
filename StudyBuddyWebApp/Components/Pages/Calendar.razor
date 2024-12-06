@@ -1,216 +1,143 @@
-@* @page "/calendar"
-@inject ICalendarService ISBCalendarService
-@inject NavigationManager NavigationManager 
-@rendermode InteractiveServer
+@page "/calendar/{calendarId:int}"
+@using System.Globalization
 @using StudyBuddyWebApp.Components
+@inject ICalendarService eventService
+@inject NavigationManager NavigationManager
+@inject AuthenticationStateProvider AuthStateProvider
+@using System.Security.Claims
 
+@attribute [Authorize("MustBeStudent")]
 
-<h2>Calendar</h2>
+<div class="calendar-container">
+    <section class="introduction">
+        <h2>Calendar</h2>
+        <p>View and manage your upcoming events for the week.</p>
+    </section>
 
-@if (!string.IsNullOrEmpty(errorMessage))
-{
-    <div class="alert alert-danger">@errorMessage</div>
-}
-<div class="button-container">
-    <button class="create-event-button" @onclick="NavigateToCreateEvent">Create A New Event</button>
-</div>
-<div class="week-calendar">
-    <div class="calendar-header">
-        <button class="nav-button" @onclick="PreviousWeek">❮</button>
-        <span class="week-title">@GetWeekTitle()</span>
-        <button class="nav-button" @onclick="NextWeek">❯</button>
-    </div>
-
-    <div class="week-grid">
-        <div class="time-labels">
-            @for (int hour = 0; hour < 24; hour++)
-            {
-                <div class="hour-label">@hour:00</div>
-            }
+    <main class="calendar-grid">
+        <div class="calendar-section">
+            <h3>Upcoming Events</h3>
+            <div class="calendar-week">
+                @foreach (var day in GetDaysInCurrentWeek())
+                {
+                    <CalendarDay Day="day" Events="GetEventsForDay(day)" CalendarId="calendarId" />
+                }
+            </div>
+            <div class="button-container">
+                <button class="create-event-button" @onclick="CreateEvent">Create A New Event</button>
+            </div>
         </div>
-        <div class="days-container">
-            @for (int i = 0; i < 7; i++)
-            {
-                <CalendarDay Day="@currentWeek.AddDays(i)" Events="GetDayEvents(currentWeek.AddDays(i))"
-                    OnEventEdit="NavigateToEventDetails" />
-            }
-        </div>
-    </div>
+    </main>
 </div>
 
 @code {
-    private DateTime currentWeek = DateTime.Today.AddDays(-(int)DateTime.Today.DayOfWeek);
-    private SBCalendar? currentCalendar;
-    private int calendarId = 1; // Placeholder for the owner ID
+        [CascadingParameter]
+        public Task<AuthenticationState> AuthState { get; set; } = null!;
 
-    private List<SBEvent> curretCalendarEvents = new ();
+        [Parameter]
+        public int calendarId { get; set; }
+
+private bool isLoggedIn;
+    private List<SBEvent> events = [];
+
     protected override async Task OnInitializedAsync()
     {
-        await LoadCalendar();
-        await LoadCalendarEvents(currentCalendar.id);
-    }
+        var authState = await AuthState;
+        var user = authState.User;
 
-    private async Task LoadCalendar()
-    {
-        currentCalendar = await ISBCalendarService.GetCalendarById(calendarId);
-    }
-    private async Task LoadCalendarEvents(int calendarId)
-    {
-        curretCalendarEvents = (await ISBCalendarService.GetEventsByCalendarId(calendarId)).ToList();    
-    }
-
-    private string GetWeekTitle()
-    {
-        return $"{currentWeek:MMM dd} - {currentWeek.AddDays(6):MMM dd, yyyy}";
-    }
-    private async Task PreviousWeek()
-    {
-        currentWeek = currentWeek.AddDays(-7);
-        currentCalendar = await ICalendarService.GetCalendarByUserId(userId);
-        StateHasChanged();
-    }
-
-    private async Task NextWeek()
-    {
-        currentWeek = currentWeek.AddDays(7);
-        currentCalendar = await ICalendarService.GetCalendarByUserId(userId);
-        StateHasChanged();
-    }
-
-    private async Task NavigateToCreateEvent()
-    {
-        if (currentCalendar != null)
+        if (user.Identity != null && user.Identity.IsAuthenticated)
         {
-            NavigationManager.NavigateTo("/event/0");
+            isLoggedIn = true;
+            try
+            {
+                events = (await eventService.GetEventsByCalendarId(calendarId)).ToList();
+        }
+        catch (Exception ex)
+        {
+        Console.WriteLine($"Error loading events: {ex.Message}");
+        }
         }
         else
         {
-            errorMessage = "Unable to create event. Calendar not loaded.";
-            StateHasChanged();
+        isLoggedIn = false;
         }
-    }
+        }
 
-    private List<SBEvent> GetDayEvents(DateTime day)
-    {   
-        Console.WriteLine(curretCalendarEvents
-        .Where(e => e.startTime.Date == day.Date).ToList());
-        return curretCalendarEvents
-        .Where(e => e.StartTime.Date == day.Date)
-        .ToList() ?? new List<SBEvent>();
-    }
-
-    private void NavigateToEventDetails(int eventId)
-    {
-        var (date, hour) = args;
-        var newEvent = new SBEvent
+        private List<DateTime> GetDaysInCurrentWeek()
             {
-                Title = "New Event",
-                StartTime = new DateTime(date.Year, date.Month, date.Day, hour, 0, 0),
-                EndTime = new DateTime(date.Year, date.Month, date.Day, hour + 1, 0, 0),
-                CalendarId = calendarId
-            };
-        await ISBCalendarService.CreateEvent(newEvent);
-        StateHasChanged();
-    }
-}
+            var daysInWeek = new List<DateTime>();
+                var currentDate = DateTime.Now;
+                var diff = currentDate.DayOfWeek - DayOfWeek.Monday;
+                var startOfWeek = currentDate.AddDays(-diff).Date;
 
-<style>
-    h2 {
-        font-size: 1.5em;
-        margin-left: 20px;
-    }
+                for (int i = 0; i < 7; i++) { daysInWeek.Add(startOfWeek.AddDays(i)); } return daysInWeek; } private
+                    List<SBEvent> GetEventsForDay(DateTime day)
+                    {
+                    return events.Where(e => e.StartTime.Date == day.Date).ToList();
+                    }
 
-    .week-calendar {
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        background-color: #f4f7f9;
-        border-radius: 8px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        overflow: hidden;
-        margin: 20px;
-    }
+                    private void CreateEvent()
+                    {
+                    NavigationManager.NavigateTo($"/calendar/{calendarId}/event");
+                    }
 
-    .calendar-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 15px 20px;
-        background-color: #ffffff;
-        border-bottom: 1px solid #e0e6ed;
-    }
+                    }
 
-    .nav-button {
-        background: none;
-        border: none;
-        color: #4a5568;
-        font-size: 1.5em;
-        cursor: pointer;
-        transition: color 0.3s ease;
-    }
+                    <style>
+                        .calendar-container {
+                            margin: 0 auto;
+                            padding: 20px;
+                            color: #e2e8f0;
+                        }
 
-    .nav-button:hover {
-        color: #3182ce;
-    }
+                        .introduction {
+                            background-color: #1e293b;
+                            padding: 20px;
+                            border-radius: 8px;
+                            margin: 30px 0;
+                        }
 
-    .week-title {
-        font-size: 1.2em;
-        font-weight: 600;
-        color: #2d3748;
-    }
+                        .calendar-grid {
+                            display: grid;
+                            grid-template-columns: 1fr;
+                            gap: 20px;
+                        }
 
-    .week-grid {
-        display: grid;
-        grid-template-columns: 70px 1fr;
-        height: calc(100vh - 70px);
-        background-color: #f4f7f9;
-        padding: 20px;
-    }
+                        .calendar-section {
+                            background-color: #1e293b;
+                            padding: 20px;
+                            border-radius: 8px;
+                            min-height: fit-content;
+                        }
 
-    .time-labels {
-        width: 100%;
-        background-color: #ffffff;
-        border-right: 1px solid #e0e6ed;
-        padding-top: 20px;
-    }
+                        .calendar-week {
+                            display: grid;
+                            grid-template-columns: repeat(7, 1fr);
+                            grid-gap: 5px;
+                            margin-top: 20px;
+                        }
 
-    .hour-label {
-        height: 40px;
-        display: flex;
-        align-items: center;
-        justify-content: flex-end;
-        padding-right: 15px;
-        font-size: 0.9em;
-        color: #202833;
-        !important
-    }
+                        .button-container {
+                            display: flex;
+                            justify-content: flex-end;
+                            width: 100%;
+                            padding: 10px;
+                        }
 
-    .days-container {
-        display: flex;
-        flex-grow: 1;
-        overflow-x: auto;
-    }
+                        .create-event-button {
+                            background: linear-gradient(135deg, #71b3e5 0%, #013faa 100%);
+                            color: #000000;
+                            border: none;
+                            text-align: center;
+                            padding: 10px 15px;
+                            cursor: pointer;
+                            border-radius: 8px;
+                            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                            transition: background 0.3s ease, transform 0.2s ease;
+                        }
 
-    .button-container {
-        display: flex;
-        justify-content: flex-end;
-        width: 100%;
-        padding: 10px;
-    }
-
-    .create-event-button {
-        background: linear-gradient(135deg, #71b3e5 0%, #013faa 100%);
-        color: #000000;
-        border: none;
-        text-align: center;
-        padding: 10px 15px;
-        cursor: pointer;
-        margin-right: 30px;
-        border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        transition: background 0.3s ease, transform 0.2s ease;
-    }
-
-    .create-event-button:hover {
-        background: linear-gradient(135deg, #53b5ff 0%, #002a74 100%);
-        transform: scale(1.05);
-    }
-</style> *@
+                        .create-event-button:hover {
+                            background: linear-gradient(135deg, #53b5ff 0%, #002a74 100%);
+                            transform: scale(1.05);
+                        }
+                    </style>

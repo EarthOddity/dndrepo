@@ -94,7 +94,7 @@
     {
         if (SelectedBachelor != null)
         {
-            bachelorSubjects = (await AcademicService.GetSubjectsByBachelorId(SelectedBachelor.id)).ToList();
+            bachelorSubjects = (await AcademicService.GetSubjectsByBachelorId(SelectedBachelor.Id)).ToList();
         }
         else
         {

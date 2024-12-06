@@ -39,26 +39,5 @@ public class DatabaseContext : DbContext
             .WithMany()
             .HasForeignKey(t => t.subjectId);
 
-        modelBuilder.Entity<Student>()
-            .HasOne(s => s.calendar)
-            .WithOne(c => c.Owner)
-            .HasForeignKey<SBCalendar>(c => c.OwnerId)
-            .IsRequired(true)
-            .OnDelete(DeleteBehavior.Cascade);
-
-        modelBuilder.Entity<SBEvent>()
-            .Property(e => e.Timestamp)
-            .IsRequired()
-            .HasDefaultValueSql("CURRENT_TIMESTAMP")
-            .ValueGeneratedOnAddOrUpdate();
-
-        // Configure many-to-many relationship between SBCalendar and SBEvent
-        modelBuilder.Entity<SBCalendar>()
-            .HasMany(c => c.EventList)
-            .WithMany(e => e.Calendars)
-            .UsingEntity<Dictionary<string, object>>(
-                "SBCalendarSBEvent",
-                j => j.HasOne<SBEvent>().WithMany().HasForeignKey("EventListId"),
-                j => j.HasOne<SBCalendar>().WithMany().HasForeignKey("CalendarsId"));
     }
 }

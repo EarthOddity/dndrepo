@@ -1,7 +1,9 @@
-@page "/calendar/{calendarId:int}/event"
+@page "/calendar/{calendarId:int}/event/{eventId:int?}"
 @inject NavigationManager NavigationManager
 @inject ICalendarService EventService
 @rendermode InteractiveServer
+@using Microsoft.AspNetCore.Components.Web
+
 <div>
     @if (!string.IsNullOrEmpty(successMessage))
     {
@@ -10,7 +12,7 @@
             <button type="button" class="btn-close" @onclick="() => successMessage = string.Empty"></button>
         </div>
     }
-    <EditForm Model="@newEvent" OnValidSubmit="CreateNewEvent">
+    <EditForm Model="@newEvent" OnValidSubmit="CreateOrUpdateEvent">
         <DataAnnotationsValidator />
 
         @if (!string.IsNullOrEmpty(errorMessage))
@@ -18,83 +20,86 @@
             <div class="alert alert-danger">@errorMessage</div>
         }
 
-
         <div class="event-creation-container">
-            <h2>Create A New Event</h2>
+            <h2>@(eventId.HasValue ? "Edit Event" : "Create A New Event")</h2>
 
             <div class="form-group">
-                <label>Title</label>
-                <InputText @bind-Value="newEvent.Title" class="form-control" />
-                <ValidationMessage For="@(() => newEvent.Title)" />
+                <label for="EventTitle">Event Title</label>
+                <InputText id="EventTitle" class="form-control" @bind-Value="newEvent.Title" />
             </div>
 
             <div class="form-group">
-                <label>Description</label>
-                <InputTextArea @bind-Value="newEvent.Description" class="form-control" />
+                <label for="EventDescription">Event Description</label>
+                <InputTextArea id="EventDescription" class="form-control" @bind-Value="newEvent.Description" />
             </div>
 
             <div class="form-group">
-                <label>Start Time</label>
-                <InputDate TValue="DateTime" @bind-Value="newEvent.StartTime" class="form-control" />
-                <ValidationMessage For="@(() => newEvent.StartTime)" />
+                <label for="EventStartDate">Start Date</label>
+                <InputDate id="EventStartDate" class="form-control" @bind-Value="newEvent.StartTime" />
             </div>
 
             <div class="form-group">
-                <label>End Time</label>
-                <InputDate TValue="DateTime" @bind-Value="newEvent.EndTime" class="form-control" />
-                <ValidationMessage For="@(() => newEvent.EndTime)" />
+                <input type="time" id="EventStartTime" class="form-control" @bind="newEvent.StartTime" />
             </div>
 
-            @* still need to incorporate adding a tutor *@
+            <div class="form-group">
+                <label for="EventEndDate">End Date</label>
+                <InputDate id="EventEndDate" class="form-control" @bind-Value="newEvent.EndTime" />
+            </div>
+
+            <div class="form-group">
+                <label for="EventEndTime">End Time</label>
+                <input type="time" id="EventEndTime" class="form-control" @bind="newEvent.EndTime" />
+            </div>
 
             <div class="form-actions">
-                <button type="submit" class="btn btn-primary">Create Event</button>
+                <button type="submit" class="btn btn-primary">@((eventId.HasValue) ? "Update" : "Create") Event</button>
                 <button type="button" class="btn btn-secondary" @onclick="Cancel">Cancel</button>
             </div>
         </div>
     </EditForm>
-
-    <div class="event-item">
-        <div class=" event-title">@newEvent.Title</div>
-        <div class="event-time">
-            @newEvent.StartTime.ToString("HH:mm") - @newEvent.EndTime.ToString("HH:mm")
-        </div>
-    </div>
-
-
-
 </div>
-
 
 @code {
     [Parameter] public int calendarId { get; set; }
+    [Parameter] public int? eventId { get; set; } // optional eventId for editing
     private SBEvent newEvent = new SBEvent();
-    private int selectedTutorId;
     private string errorMessage = "";
-    private List<Student> Tutors = new();
     private string successMessage = string.Empty;
 
-
-    @*     protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
-        var query = System.Web.HttpUtility.ParseQueryString(uri.Query);
-
-        if (DateTime.TryParse(query["date"], out DateTime selectedDate) &&
-        int.TryParse(query["hour"], out int hour))
+        if (eventId.HasValue)
         {
-            newEvent.startTime = new DateTime(selectedDate.Year, selectedDate.Month, selectedDate.Day, hour, 0, 0);
-            newEvent.endTime = newEvent.startTime.AddHours(1);
+            newEvent = await EventService.GetEventById(eventId.Value);
+            if (newEvent == null)
+            {
+                errorMessage = "Event not found!";
+            }
+        }
+        else
+        {
+            newEvent.CalendarId = calendarId;
         }
     }
- *@
-    private async Task CreateNewEvent()
+
+    private async Task CreateOrUpdateEvent()
     {
         try
         {
-            newEvent.CalendarId = calendarId;
-            await EventService.CreateEvent(newEvent);
-            successMessage = "Event created successfully!";
+            if (eventId.HasValue)
+            {
+                // Update the existing event
+                await EventService.UpdateEvent(newEvent);
+                successMessage = "Event updated successfully!";
+            }
+            else
+            {
+                // Create a new event
+                await EventService.CreateEvent(newEvent);
+                successMessage = "Event created successfully!";
+            }
+
             StateHasChanged();
 
             // Wait 2 seconds before redirecting
@@ -103,128 +108,86 @@
         }
         catch (Exception ex)
         {
-            errorMessage = $"Error creating event: {ex.Message}";
+            errorMessage = $"Error: {ex.Message}";
             StateHasChanged();
-
         }
     }
-
-    @* private async Task CreateNewEvent()
-    {
-        errorMessage = "";
-        try
-        {
-            if (string.IsNullOrWhiteSpace(newEvent.title))
-            {
-                errorMessage = "Title is required.";
-                return;
-            }
-            newEvent.ownerId = 1; // Placeholder
-            var selectedTutor = Tutors.FirstOrDefault(t => t.id == selectedTutorId);
-            if (selectedTutor != null)
-            {
-                newEvent.participants = new List<Student> {
-new Student {
-id = selectedTutor.id,
-name = selectedTutor.name
-}
-};
-            }
-            var createdEvent = await EventService.CreateEvent(newEvent);
-            NavigationManager.NavigateTo("/calendar");
-        }
-        catch (Exception ex)
-        {
-            errorMessage = $"Error creating event: {ex.Message}";
-        }
-    } *@
 
     private void Cancel()
     {
-        NavigationManager.NavigateTo("/calendar");
+        NavigationManager.NavigateTo("/");
     }
 }
+
 <style>
-    .event-item {
-        position: absolute;
-        width: calc(100% - 10px);
-        left: 5px;
-        margin-top: 2px;
-        padding: 5px;
-        border-radius: 4px;
-        color: white;
-        font-size: 0.8em;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    .event-creation-container {
+        background-color: #1e293b;
+        padding: 20px;
+        border-radius: 8px;
+        color: #e2e8f0;
+        margin: 20px 0;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .form-group label {
+        font-weight: 600;
+        color: #f0f0f0;
+    }
+
+    .form-group .form-control {
+        background-color: #0f172a;
+        color: #e2e8f0;
+        border: 1px solid #4b5563;
+        border-radius: 5px;
+        padding: 10px;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .form-group .form-control:focus {
+        border-color: #71b3e5;
+        outline: none;
+    }
+
+    .form-actions {
+        margin-top: 20px;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .form-actions button {
+        padding: 10px 20px;
+        border-radius: 8px;
         transition: transform 0.2s ease;
     }
 
-    .event-item:hover {
-        transform: scale(1.02);
-        z-index: 10;
+    .form-actions .btn-primary {
+        background-color: #53b5ff;
+        border: none;
+        color: #0f172a;
+        font-weight: bold;
     }
 
-    .event-title {
-        font-weight: 600;
-        margin-bottom: 2px;
+    .form-actions .btn-primary:hover {
+        transform: scale(1.05);
     }
 
-    .event-time {
-        font-size: 0.7em;
-        opacity: 0.9;
+    .form-actions .btn-secondary {
+        background-color: #6c757d;
+        color: #ffffff;
     }
 
-    .week-grid::-webkit-scrollbar {
-        width: 10px;
-        height: 10px;
-    }
-
-    .week-grid::-webkit-scrollbar-track {
-        background: #f1f1f1;
-    }
-
-    .week-grid::-webkit-scrollbar-thumb {
-        background: #888;
-        border-radius: 5px;
-    }
-
-    .week-grid::-webkit-scrollbar-thumb:hover {
-        background: #555;
+    .form-actions .btn-secondary:hover {
+        background-color: #5a6268;
     }
 
     .alert {
-        margin-top: 1rem;
-        padding: 1rem;
-        border-radius: 0.25rem;
+        margin-bottom: 15px;
     }
-
-    .alert-success {
-        background-color: #d4edda;
-        border-color: #c3e6cb;
-        color: #155724;
-    }
-
-    .alert-danger {
-        background-color: #f8d7da;
-        border-color: #f5c6cb;
-        color: #721c24;
-    }
-
-    /* Responsive Adjustments */
-    @* @media
-    (max-width: 768px) {
-        .week-calendar {
-            font-size: 14px;
-        }
-
-        .time-labels {
-            width: 50px;
-        }
-
-        .hour-label {
-            padding-right: 10px;
-        }
-    } *@
 </style>
