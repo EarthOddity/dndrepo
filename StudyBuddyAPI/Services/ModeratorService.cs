@@ -1,5 +1,6 @@
 
-public class ModeratorService(DatabaseContext context): IModeratorService{
+public class ModeratorService(DatabaseContext context) : IModeratorService
+{
     //private static List<Moderator> moderatorsList = new List<Moderator>();
     private static List<Review> reviews = new List<Review>();
 
@@ -31,7 +32,7 @@ public class ModeratorService(DatabaseContext context): IModeratorService{
             moderator.AssignedSections = updatedModerator.AssignedSections;
             await context.SaveChangesAsync();
         }
-        
+
     }
 
     /*public Task BanReview(int id, Review review){

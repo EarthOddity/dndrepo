@@ -1,63 +1,58 @@
-@* @using System.Globalization
-
-<div class="calendar-day">
-    <div class="day-header">
-        @Day.ToString("ddd dd", CultureInfo.CurrentCulture)
-    </div>
-    <div class="day-slots">
-        @for (int hour = 0; hour < 24; hour++)
-        {
-            var hourEvents = Events.Where(e => e.startTime.Hour == hour).ToList();
-                <div class="hour-slot @(hourEvents.Any() ? "has-events" : "")" @onclick="() => OpenEventModal(hour)">
-                @foreach (var evt in hourEvents)
-                {
-                            <SBEvent Event="evt" />
-                }
-                </div>
-        }
-    </div>
-</div>
-
-@code {
-    [Parameter] public DateTime Day { get; set; }
-    [Parameter] public List<SBEvent> Events { get; set; } = new();
-    [Parameter] public EventCallback<(DateTime date, int hour)> OnBookEvent { get; set; }
-
-    private async Task OpenEventModal(int hour)
-    {
-        await OnBookEvent.InvokeAsync((Day, hour));
-    }
-} *@
-
 @inject NavigationManager NavigationManager
+@inject ICalendarService CalendarService
 @using System.Globalization
 
-<div class="calendar-day">
+<div class="calendar-day ">
     <div class="day-header">
-        <p> Your day-slots</p>
+        <p>Your day</p>
     </div>
     <div class="day-slots">
-       @foreach (var evt in Events.OrderByDescending(e => e.Timestamp))
+        @foreach (var evt in Events.OrderByDescending(e => e.StartTime))
         {
             <div class="event-card">
-                <h3>@evt.Title</h3>
-                <p>@evt.Description</p>
-                <p>@evt.Timestamp</p>
-                <p>@evt.StartTime.ToString("HH:mm") - @evt.EndTime.ToString("HH:mm")</p>
+                <div class="event-title">
+                    <h3>@evt.Title</h3>
+                </div>
+
+                <div class="event-description">
+                    <p>@evt.Description</p>
+                </div>
+
+                <div class="event-time">
+                    <p>@evt.Timestamp</p>
+                    <p>@evt.StartTime.ToString("HH:mm") - @evt.EndTime.ToString("HH:mm")</p>
+                </div>
+
+                <div class="event-actions">
+                    <button class="btn btn-primary" @onclick="() => EditEvent(evt.Id)">Edit</button>
+                    <button class="btn btn-danger" @onclick="() => DeleteEvent(evt.Id)">Delete</button>
+                </div>
             </div>
         }
     </div>
 </div>
 
 @code {
-
     [Parameter] public DateTime Day { get; set; }
     [Parameter] public List<SBEvent> Events { get; set; } = new();
     [Parameter] public EventCallback<(DateTime date, int hour)> OnBookEvent { get; set; }
+    [Parameter] public int CalendarId { get; set; }
 
     private async Task OpenEventModal(int hour)
     {
         await OnBookEvent.InvokeAsync((Day, hour));
+    }
+
+    private async Task EditEvent(int eventId)
+    {
+        NavigationManager.NavigateTo($"calendar/{CalendarId}/event/{eventId}");
+    }
+
+    private async Task DeleteEvent(int eventId)
+    {
+        await CalendarService.DeleteEvent(eventId);
+        Events = Events.Where(e => e.Id != eventId).ToList();
+        StateHasChanged();
     }
 }
 
@@ -65,36 +60,101 @@
     .calendar-day {
         min-width: 150px;
         flex-grow: 1;
-        border-right: 1px solid #e0e6ed;
         position: relative;
     }
 
     .day-header {
         text-align: center;
-        padding: 10px;
-        background-color: #f8fafc;
-        border-bottom: 1px solid #e0e6ed;
+        height: 30px;
+        padding: 5px;
+        background-color: #ffffff;
         font-weight: 600;
-        color: #4a5568;
+        color: rgb(50, 61, 91);
+        border-radius: 5px;
     }
 
     .day-slots {
         position: relative;
     }
 
-    .hour-slot {
-        height: 60px;
-        border-bottom: 1px solid #e0e6ed;
-        background-color: #ffffff;
-        position: relative;
-        transition: background-color 0.2s ease;
+    .event-card {
+        background-color: rgb(24, 29, 44);
+        color: #ffffff;
+        padding: 15px;
+        border-radius: 8px;
+        margin: 10px 0;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        transition: background 0.3s ease, transform 0.2s ease;
     }
 
-    .hour-slot:hover {
-        background-color: rgba(66, 153, 225, 0.05);
+    .event-card:hover {
+        background-color: #465a7b;
+        transform: scale(1.02);
     }
 
-    .hour-slot.has-events {
-        background-color: #f0f4f8;
+    .event-title {
+        margin-bottom: 10px;
+    }
+
+    .event-title h3 {
+        margin: 0;
+        font-size: 1.2em;
+        font-weight: bold;
+        color: #e2e8f0;
+    }
+
+    .event-description {
+        margin-bottom: 10px;
+    }
+
+    .event-description p {
+        font-size: 0.9em;
+        color: #cbd5e1;
+    }
+
+    .event-time {
+        margin-bottom: 15px;
+    }
+
+    .event-time p {
+        font-size: 0.9em;
+        color: #e2e8f0;
+    }
+
+    /* action buttons */
+    .event-actions {
+        display: flex;
+        gap: 10px;
+        justify-content: flex-start;
+    }
+
+    .event-actions button {
+        padding: 8px 15px;
+        border-radius: 6px;
+        font-weight: bold;
+        text-transform: uppercase;
+        font-size: 0.8em;
+    }
+
+    .event-actions .btn-primary {
+        background-color: #2da2fb;
+        border: none;
+        color: #0f172a;
+        transition: background-color 0.3s ease;
+    }
+
+    .event-actions .btn-primary:hover {
+        background-color: #3a8ebd;
+    }
+
+    .event-actions .btn-danger {
+        background-color: #ea3939;
+        border: none;
+        color: #ffffff;
+        transition: background-color 0.3s ease;
+    }
+
+    .event-actions .btn-danger:hover {
+        background-color: #ea5c5c;
     }
 </style>

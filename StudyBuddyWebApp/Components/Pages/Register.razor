@@ -3,9 +3,10 @@
 @inject NavigationManager navMgr
 @inject IAcademicService AcademicService
 @rendermode InteractiveServer
+@inject AcademicService academicService
 
 <h3>Register</h3>
-<h5>Please introduce the requiered information</h5>
+<h5>Please introduce the required information</h5>
 
 <EditForm Model="newStudent" OnValidSubmit="RegisterStudent">
     <DataAnnotationsValidator />
@@ -29,6 +30,18 @@
     <div class="form-group">
         <label for="phoneNumber">Phone Number</label>
         <InputNumber id="phoneNumber" @bind-Value="newStudent.PhoneNumber" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label for="bachelor">Select Bachelor</label>
+        <InputSelect id="bachelor" @bind-Value="newStudent.Bachelor.Id" class="form-control">
+            <option value="">Select a Bachelor</option>
+            @foreach (var bachelor in bachelors)
+            {
+                <option value="@bachelor.Id">@bachelor.ProgramName</option>
+            }
+        </InputSelect>
+        <ValidationMessage For="@(() => newStudent.Bachelor.Id)" />
     </div>
 
     <div class="form-group">

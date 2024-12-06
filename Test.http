@@ -315,96 +315,55 @@ Content-Type: application/json
 DELETE http://localhost:5044/api/Review/1
 Accept: application/json
 
-### Get all calendars
-GET http://localhost:5044/api/SBCalendar
+### Get All Calendars
+GET http://localhost:5044/api/Calendar
 Accept: application/json
 
-### Get calendar by id
-GET http://localhost:5044/api/SBCalendar/1
+### Get Calendar by ID
+GET http://localhost:5044/api/SBCalendar/3
 Accept: application/json
 
-### Create a new calendar
+### Get events 
+GET http://localhost:5044/api/SBCalendar/1/events
+Accept: application/json
+
+### Create New Calendar
 POST http://localhost:5044/api/SBCalendar
 Content-Type: application/json
 
 {
-    "studentId": 2,
-    "events": []
+  "id": 1,
+  "studentId": 3,
+  "events": [
+  ]
 }
 
-### Delete calendar
-DELETE http://localhost:5044/api/SBCalendar/2
-Accept: application/json
-
-### Get events by calendar id
-GET http://localhost:5044/api/SBCalendar/1/events
-Accept: application/json
-
-### Add an event to a calendar
-POST http://localhost:5044/api/SBCalendar/1/events
+### Update Calendar
+PUT http://localhost:5044/api/SBCalendar/3
 Content-Type: application/json
 
 {
-    "ownerId": 1,
-    "title": "New Event",
-    "description": "This is a new event.",
-    "participants": [],
-    "materials": [],
-    "calendars": [],
-    "startTime": "2023-10-01T10:00:00",
-    "endTime": "2023-10-01T12:00:00"
+  "events": [
+    {
+      "id": 1,
+      "title": "Updated Study Session",
+      "description": "Prepare for exam",
+      "startTime": "2024-03-20T15:00:00",
+      "endTime": "2024-03-20T17:00:00"
+    }
+  ]
 }
 
-### Delete an event from a calendar
-DELETE http://localhost:5044/api/SBCalendar/1/events/3
-Accept: application/json
+### Delete Calendar
+DELETE http://localhost:5044/api/SBCalendar/3
 
-### Get all events
+### Get All Events
 GET http://localhost:5044/api/SBEvent
 Accept: application/json
 
-### Get event by id
+### Get Event by ID
 GET http://localhost:5044/api/SBEvent/1
 Accept: application/json
-
-### Create a new event
-POST http://localhost:5044/api/SBEvent
-Content-Type: application/json
-
-{
-    "ownerId": 1,
-    "title": "New Event",
-    "description": "This is a new event.",
-    "participants": [],
-    "materials": [],
-    "calendars": [],
-    "startTime": "2023-10-01T10:00:00",
-    "endTime": "2023-10-01T12:00:00"
-}
-
-### Update event
-PUT http://localhost:5044/api/SBEvent/1
-Content-Type: application/json
-
-{
-    "ownerId": 1,
-    "title": "Updated Event",
-    "description": "This is an updated event.",
-    "participants": [],
-    "materials": [],
-    "calendars": [],
-    "startTime": "2023-10-01T11:00:00",
-    "endTime": "2023-10-01T13:00:00"
-}
-
-### Delete event
-DELETE http://localhost:5044/api/SBEvent/1
-Accept: application/json
-
-### Get events in range
-GET http://localhost:5044/api/SBEvent/range?start=2023-10-01T00:00:00&end=2023-10-31T23:59:59
-Accept: application/json
-
 
 ### Create New Event
 POST http://localhost:5044/api/SBEvent
@@ -423,11 +382,20 @@ POST http://localhost:5044/api/Student
 Content-Type: application/json
 
 {
-      "isTutor": true,
-      "language": "string",
-      "name": "Jos\u00E9",
-      "surname": "aaaaaaaaaaaaaa",
-      "email": "string",
-      "phoneNumber": 123456,
-      "password": "abc"
-    }
+  "title": "Updated Study Session",
+  "description": "Preparing for Database final exam",
+  "startTime": "2024-03-20T15:00:00",
+  "endTime": "2024-03-20T17:00:00",
+  "calendarId": 1
+}
+
+### Delete Event
+DELETE http://localhost:5044/api/SBEvent/5
+
+### Get events by calendar id
+GET http://localhost:5044/api/SBEvent/calendar/1
+Accept: application/json
+
+### Get calendar by student id
+GET http://localhost:5044/api/SBCalendar/student/3
+Accept: application/json

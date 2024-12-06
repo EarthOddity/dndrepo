@@ -2,7 +2,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 
-public class StudentService (DatabaseContext context) : IStudentService{
+public class StudentService(DatabaseContext context) : IStudentService
+{
     //private static List<Student> studentsList = new List<Student>();
     private readonly DatabaseContext context = context;
     static StudentService()
@@ -11,7 +12,7 @@ public class StudentService (DatabaseContext context) : IStudentService{
     public Task<IEnumerable<Student>> GetAllStudents()
     {
         return Task.FromResult(context.Students.AsEnumerable());
-        
+
     }
 
     public Task<Student> GetStudentById(int id)
@@ -51,7 +52,7 @@ public class StudentService (DatabaseContext context) : IStudentService{
         await context.SaveChangesAsync();
         return student;
     }
-    public async Task UpdateStudent(int id, [FromBody]Student student)
+    public async Task UpdateStudent(int id, [FromBody] Student student)
     {
         var studentToUpdate = context.Students.FirstOrDefault(s => s.Id == id);
         if (studentToUpdate != null)

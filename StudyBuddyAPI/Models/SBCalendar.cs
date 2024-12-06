@@ -2,7 +2,6 @@ using System.Text.Json.Serialization;
 
 public class SBCalendar
 {
-
     public int Id { get; set; }
 
     public int StudentId { get; set; }

@@ -1,8 +1,15 @@
-﻿<nav class="nav-menu">
+﻿@inject NavigationManager NavigationManager
+
+<nav class="nav-menu">
     <div class="logo">
         <img src="images/studybuddylogo.png" alt="StudyBuddy Logo" width="220px" />
     </div>
-    <div class="nav-links">
+    <div class="hamburger" @onclick="ToggleMenu">
+        <div></div>
+        <div></div>
+        <div></div>
+    </div>
+    <div class="nav-links @(isMenuOpen ? "show" : "")">
         <AuthorizeView Policy="MustBeStudent">
             <Authorized>
                 <NavLink href="/" Match="NavLinkMatch.All">
@@ -15,15 +22,18 @@
             <span class="nav-icon">📚</span>
             Materials
         </NavLink>
+
+        @* <NavLink href="@($"/calendar/{calendarId}")">
+            <span class="nav-icon">📅</span>
+            Calendar
+        </NavLink> *@
+
         <NavLink href="/tutors">
             <span class="nav-icon">👥</span>
             Tutors
         </NavLink>
-        <NavLink href="/moderator-reviews">
-            <span class="nav-icon">📝</span>
-            Review Management
-        </NavLink>
-        <AuthorizeView Policy= "MustBeModerator">
+
+        <AuthorizeView Policy="MustBeModerator">
             <Authorized>
                 <NavLink href="/moderator-overview" Match="NavLinkMatch.All">
                     <span class="nav-icon">🏠</span>
@@ -31,27 +41,49 @@
                 </NavLink>
             </Authorized>
         </AuthorizeView>
+        <NavLink href="/moderator-reviews">
+            <span class="nav-icon">📝</span>
+            Review Management
+        </NavLink>
     </div>
     <div class="profile-bar">
         <ProfileBar />
     </div>
 </nav>
+
+@code {
+    private int calendarId;
+
+    private void NavigateToCalendar(int calendarId)
+    {
+        NavigationManager.NavigateTo($"/calendar/{calendarId}");
+    }
+
+    private bool isMenuOpen = false;
+
+    private void ToggleMenu()
+    {
+        isMenuOpen = !isMenuOpen;
+    }
+}
+
 <style>
     .nav-menu {
+        position: relative;
         width: 100%;
         height: 100px;
         background: rgb(58, 78, 127);
         background: -moz-radial-gradient(circle, rgba(58, 78, 127, 1) 0%, rgba(15, 23, 42, 1) 65%, rgba(0, 0, 0, 1) 100%);
         background: -webkit-radial-gradient(circle, rgba(58, 78, 127, 1) 0%, rgba(15, 23, 42, 1) 65%, rgba(0, 0, 0, 1) 100%);
         background: radial-gradient(circle, rgba(58, 78, 127, 1) 0%, rgba(15, 23, 42, 1) 65%, rgba(0, 0, 0, 1) 100%);
-        filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#3a4e7f", endColorstr="#000000", GradientType=1);
         color: #e2e8f0;
         display: flex;
-        justify-content: flex-start;
+        justify-content: space-between;
         align-items: center;
         padding: 15px 20px;
         margin: 0;
         box-sizing: border-box;
+        position: relative;
     }
 
     .logo {
@@ -89,29 +121,61 @@
     }
 
     .profile-bar {
-        margin-left: 20px;
+        margin-left: auto;
+        display: flex;
+        align-items: center;
+        margin-right: 30px;
+    }
+
+    .hamburger {
+        display: none;
+        flex-direction: column;
+        position: relative;
+    }
+
+    .hamburger div {
+        width: 25px;
+        height: 3px;
+        background-color: #333;
+        margin: 4px;
     }
 
     @@media (max-width: 768px) {
+
+        .hamburger {
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
         .nav-links {
             display: none;
             flex-direction: column;
             gap: 10px;
             background-color: #1e293b;
             position: absolute;
-            top: 60px;
-            right: 20px;
-            width: 200px;
+            top: calc(100% + 5px);
+            left: 55%;
+            transform: translateX(-50%);
             padding: 10px;
             border-radius: 8px;
+            z-index: 1000;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            width: auto;
         }
 
         .nav-links.show {
             display: flex;
         }
 
-        .nav-toggle {
-            display: block;
+        .nav-menu {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
         }
     }
 </style>
