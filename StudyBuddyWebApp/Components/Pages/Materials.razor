@@ -23,8 +23,8 @@
                 <div class="bachelors-grid">
                     @foreach (var bachelor in bachelors)
                     {
-                        <div class="material-card" @onclick="() => LoadSubjects(bachelor.id)">
-                            <h4>@bachelor.programName</h4>
+                        <div class="material-card" @onclick="() => LoadSubjects(bachelor.Id)">
+                            <h4>@bachelor.ProgramName</h4>
                         </div>
                     }
                 </div>
@@ -37,7 +37,7 @@
                             @foreach (var subject in selectedSubjects)
                             {
                                 <div class="material-card">
-                                    <p>@subject.name</p>
+                                    <p>@subject.Name</p>
                                 </div>
                             }
                         </div>
@@ -101,7 +101,7 @@
         if (currentUserId.HasValue)
         {
             var savedMaterials = await AcademicService.GetSavedMaterialsByUserId(currentUserId.Value);
-            savedMaterialIds = new HashSet<int>(savedMaterials.Select(m => m.id));
+            savedMaterialIds = new HashSet<int>(savedMaterials.Select(m => m.Id));
         }
     }
 

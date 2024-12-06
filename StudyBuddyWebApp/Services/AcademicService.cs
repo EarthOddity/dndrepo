@@ -49,7 +49,7 @@ public class AcademicService : IAcademicService
 
     public async Task<IEnumerable<TeachingMaterial>> GetMaterialByAuthor(Student author)
     {
-        var response = await _httpClient.GetAsync($"api/TeachingMaterial/author/{author.id}");
+        var response = await _httpClient.GetAsync($"api/TeachingMaterial/author/{author.Id}");
         response.EnsureSuccessStatusCode();
         return await response.Content.ReadFromJsonAsync<IEnumerable<TeachingMaterial>>();
     }
@@ -228,7 +228,7 @@ public class AcademicService : IAcademicService
 
     public async Task UpdateSubject(Subject updatedSubject)
     {
-        var response = await _httpClient.PutAsJsonAsync($"api/Subject/{updatedSubject.id}", updatedSubject);
+        var response = await _httpClient.PutAsJsonAsync($"api/Subject/{updatedSubject.Id}", updatedSubject);
         if (!response.IsSuccessStatusCode)
         {
             throw new HttpRequestException($"Failed to update subject. Status code: {response.StatusCode}");

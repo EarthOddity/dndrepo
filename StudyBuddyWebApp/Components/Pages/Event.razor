@@ -24,25 +24,25 @@
 
             <div class="form-group">
                 <label>Title</label>
-                <InputText @bind-Value="newEvent.title" class="form-control" />
-                <ValidationMessage For="@(() => newEvent.title)" />
+                <InputText @bind-Value="newEvent.Title" class="form-control" />
+                <ValidationMessage For="@(() => newEvent.Title)" />
             </div>
 
             <div class="form-group">
                 <label>Description</label>
-                <InputTextArea @bind-Value="newEvent.description" class="form-control" />
+                <InputTextArea @bind-Value="newEvent.Description" class="form-control" />
             </div>
 
             <div class="form-group">
                 <label>Start Time</label>
-                <InputDate TValue="DateTime" @bind-Value="newEvent.startTime" class="form-control" />
-                <ValidationMessage For="@(() => newEvent.startTime)" />
+                <InputDate TValue="DateTime" @bind-Value="newEvent.StartTime" class="form-control" />
+                <ValidationMessage For="@(() => newEvent.StartTime)" />
             </div>
 
             <div class="form-group">
                 <label>End Time</label>
-                <InputDate TValue="DateTime" @bind-Value="newEvent.endTime" class="form-control" />
-                <ValidationMessage For="@(() => newEvent.endTime)" />
+                <InputDate TValue="DateTime" @bind-Value="newEvent.EndTime" class="form-control" />
+                <ValidationMessage For="@(() => newEvent.EndTime)" />
             </div>
 
             @* still need to incorporate adding a tutor *@
@@ -55,9 +55,9 @@
     </EditForm>
 
     <div class="event-item" style="background-color: @GetEventColor()">
-        <div class="event-title">@newEvent.title</div>
+        <div class="event-title">@newEvent.Title</div>
         <div class="event-time">
-            @newEvent.startTime.ToString("HH:mm") - @newEvent.endTime.ToString("HH:mm")
+            @newEvent.StartTime.ToString("HH:mm") - @newEvent.EndTime.ToString("HH:mm")
         </div>
     </div>
 
@@ -92,7 +92,7 @@
     {
         try
         {
-            newEvent.calendarId = calendarId;
+            newEvent.CalendarId = calendarId;
             await EventService.CreateEvent(newEvent);
             successMessage = "Event created successfully!";
             StateHasChanged();
@@ -150,7 +150,7 @@ name = selectedTutor.name
 "#3788d8", "#28a745", "#dc3545", "#ffc107",
 "#17a2b8", "#6c757d", "#343a40"
 };
-        return colors[Math.Abs(newEvent.id) % colors.Length];
+        return colors[Math.Abs(newEvent.Id) % colors.Length];
     }
 }
 <style>

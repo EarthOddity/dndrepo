@@ -37,13 +37,13 @@
         <p> Your day-slots</p>
     </div>
     <div class="day-slots">
-       @foreach (var evt in Events.OrderByDescending(e => e.timestamp))
+       @foreach (var evt in Events.OrderByDescending(e => e.Timestamp))
         {
             <div class="event-card">
-                <h3>@evt.title</h3>
-                <p>@evt.description</p>
-                <p>@evt.timestamp</p>
-                <p>@evt.startTime.ToString("HH:mm") - @evt.endTime.ToString("HH:mm")</p>
+                <h3>@evt.Title</h3>
+                <p>@evt.Description</p>
+                <p>@evt.Timestamp</p>
+                <p>@evt.StartTime.ToString("HH:mm") - @evt.EndTime.ToString("HH:mm")</p>
             </div>
         }
     </div>

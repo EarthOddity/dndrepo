@@ -22,15 +22,15 @@
     private Subject? selectedSubject;
     private void HandleBachelorSelected(Bachelor bachelor)
     {
-        selectedBachelor = selectedBachelor?.id == bachelor.id ? null : bachelor;
+        selectedBachelor = selectedBachelor?.Id == bachelor.Id ? null : bachelor;
     }
     private async Task HandleSubjectSelected(Subject subject)
     {
         if (selectedBachelor == null) return;
-        selectedSubject = selectedSubject?.id == subject.id ? null : subject;
-        Console.WriteLine(selectedBachelor.id);
-        Console.WriteLine(selectedSubject.id);
-        await AcademicService.AddSubjectToBachelor(selectedBachelor.id, selectedSubject.id);
+        selectedSubject = selectedSubject?.Id == subject.Id ? null : subject;
+        Console.WriteLine(selectedBachelor.Id);
+        Console.WriteLine(selectedSubject.Id);
+        await AcademicService.AddSubjectToBachelor(selectedBachelor.Id, selectedSubject.Id);
         Console.WriteLine("Subject added to bachelor");
         selectedSubject = null;
         selectedBachelor = null;

@@ -41,7 +41,7 @@
     protected override async Task OnInitializedAsync()
     {
         await LoadCalendar();
-        await LoadCalendarEvents(currentCalendar.id);
+        await LoadCalendarEvents(currentCalendar.Id);
     }
 
     private async Task LoadCalendar()
@@ -78,9 +78,9 @@
     private List<SBEvent> GetDayEvents(DateTime day)
     {   
         Console.WriteLine(curretCalendarEvents
-        .Where(e => e.startTime.Date == day.Date).ToList());
+        .Where(e => e.StartTime.Date == day.Date).ToList());
         return curretCalendarEvents
-        .Where(e => e.startTime.Date == day.Date)
+        .Where(e => e.StartTime.Date == day.Date)
         .ToList() ?? new List<SBEvent>();
     }
     private async Task BookEvent((DateTime date, int hour) args)
@@ -88,10 +88,10 @@
         var (date, hour) = args;
         var newEvent = new SBEvent
             {
-                title = "New Event",
-                startTime = new DateTime(date.Year, date.Month, date.Day, hour, 0, 0),
-                endTime = new DateTime(date.Year, date.Month, date.Day, hour + 1, 0, 0),
-                calendarId = calendarId
+                Title = "New Event",
+                StartTime = new DateTime(date.Year, date.Month, date.Day, hour, 0, 0),
+                EndTime = new DateTime(date.Year, date.Month, date.Day, hour + 1, 0, 0),
+                CalendarId = calendarId
             };
         await ISBCalendarService.CreateEvent(newEvent);
         StateHasChanged();

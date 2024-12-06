@@ -12,48 +12,48 @@
     <ValidationSummary />
     <div class="form-group">
         <label for="name">First Name</label>
-        <InputText id="name" @bind-Value="newStudent.name" class="form-control" />
-        <ValidationMessage For="@(() => newStudent.name)" />
+        <InputText id="name" @bind-Value="newStudent.Name" class="form-control" />
+        <ValidationMessage For="@(() => newStudent.Name)" />
     </div>
 
     <div class="form-group">
         <label for="surname">Last Name</label>
-        <InputText id="surname" @bind-Value="newStudent.surname" class="form-control" />
+        <InputText id="surname" @bind-Value="newStudent.Surname" class="form-control" />
     </div>
 
     <div class="form-group">
         <label for="email">Email</label>
-        <InputText id="email" @bind-Value="newStudent.email" class="form-control" />
+        <InputText id="email" @bind-Value="newStudent.Email" class="form-control" />
     </div>
 
     <div class="form-group">
         <label for="phoneNumber">Phone Number</label>
-        <InputNumber id="phoneNumber" @bind-Value="newStudent.phoneNumber" class="form-control" />
+        <InputNumber id="phoneNumber" @bind-Value="newStudent.PhoneNumber" class="form-control" />
     </div>
 
     <div class="form-group">
         <label for="language">Language</label>
-        <InputText id="language" @bind-Value="newStudent.language" class="form-control" />
+        <InputText id="language" @bind-Value="newStudent.Language" class="form-control" />
     </div>
 
     <div class="form-group">
         <label for="password">Password</label>
-        <InputText id="password" @bind-Value="newStudent.password" class="form-control" type="password" />
+        <InputText id="password" @bind-Value="newStudent.Password" class="form-control" type="password" />
     </div>
 
     <div class="form-group">
         <label for="isTutor">Are you a tutor?</label>
-        <InputCheckbox id="isTutor" @bind-Value="newStudent.isTutor" class="form-check-input" />
+        <InputCheckbox id="isTutor" @bind-Value="newStudent.IsTutor" class="form-check-input" />
     </div>
     <div class="form-group">
         <label for="bachelor">Bachelor Program</label>
-        <InputSelect id="bachelor" @bind-Value="newStudent.bachelorId" class="form-control">
+        <InputSelect id="bachelor" @bind-Value="newStudent.BachelorId" class="form-control">
             <option value="0">Select a Bachelor Program</option>
             @if (bachelors != null)
             {
                 @foreach (var bachelor in bachelors)
                 {
-                    <option value="@bachelor.id">@bachelor.programName</option>
+                    <option value="@bachelor.Id">@bachelor.ProgramName</option>
                 }
             }
         </InputSelect>
@@ -109,7 +109,7 @@
         {
 
             var registeredStudent = await authService.RegisterStudentAsync(newStudent);
-            generatedId = registeredStudent.id;
+            generatedId = registeredStudent.Id;
             // Show the success modal
             showModal = true;
             StartCountdown();

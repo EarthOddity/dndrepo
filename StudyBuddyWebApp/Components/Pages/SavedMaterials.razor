@@ -34,8 +34,8 @@ else
         {
             @foreach (var subject in userSubjects)
             {
-                <div class="subject-item" @onclick="() => NavigateToSubjectMaterials(subject.id)">
-                    <h4>@subject.name</h4>
+                <div class="subject-item" @onclick="() => NavigateToSubjectMaterials(subject.Id)">
+                    <h4>@subject.Name</h4>
                 </div>
             }
         }
@@ -95,12 +95,12 @@ else
         try
         {
             savedMaterials = (await AcademicService.GetSavedMaterialsByUserId(currentUserId.Value)).ToList();
-            savedMaterialIds = new HashSet<int>(savedMaterials.Select(m => m.id));
+            savedMaterialIds = new HashSet<int>(savedMaterials.Select(m => m.Id));
 
             var userBachelor = await AcademicService.GetBachelorByStudentId(currentUserId.Value);
             if (userBachelor != null)
             {
-                userSubjects = (await AcademicService.GetSubjectsByBachelorId(userBachelor.id)).ToList();
+                userSubjects = (await AcademicService.GetSubjectsByBachelorId(userBachelor.Id)).ToList();
             }
             else
             {
