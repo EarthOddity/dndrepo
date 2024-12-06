@@ -1,8 +1,7 @@
 
 using System.ComponentModel.DataAnnotations;
 
-public class Student : User
-{
+public class Student : User {
     public bool isTutor { get; set; }
     public string language { get; set; }
     public Bachelor? bachelor { get; set; }
@@ -32,4 +31,4 @@ public class Student : User
         this.language = string.Empty;
     }
 
-}
+    }
