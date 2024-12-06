@@ -45,7 +45,7 @@ public class SBCalendarController : ControllerBase
     public async Task<ActionResult<SBCalendar>> CreateCalendar(Student student)
     {
         var newCalendar = await _calendarService.CreateCalendar(student);
-        return CreatedAtAction(nameof(GetCalendar), new { id = newCalendar.id }, newCalendar);
+        return CreatedAtAction(nameof(GetCalendar), new { id = newCalendar.Id }, newCalendar);
     }
 
 /*     [HttpPost("{calendarId}/event")]
