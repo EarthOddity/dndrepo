@@ -23,12 +23,12 @@ public class DatabaseContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<User>().UseTpcMappingStrategy();
-        modelBuilder.Entity<Student>().ToTable("Students").Property(s => s.id).ValueGeneratedOnAdd();
-        modelBuilder.Entity<Moderator>().ToTable("Moderators").Property(s => s.id).ValueGeneratedOnAdd();
+        modelBuilder.Entity<Student>().ToTable("Students").Property(s => s.Id).ValueGeneratedOnAdd();
+        modelBuilder.Entity<Moderator>().ToTable("Moderators").Property(s => s.Id).ValueGeneratedOnAdd();
         modelBuilder.Entity<TeachingMaterial>()
-       .HasOne(t => t.subject)
+       .HasOne(t => t.Subject)
        .WithMany()
-       .HasForeignKey(t => t.subjectId);
+       .HasForeignKey(t => t.SubjectId);
         modelBuilder.Entity<SBCalendar>().ToTable("Calendars");
         modelBuilder.Entity<SBEvent>().ToTable("Events");
 
