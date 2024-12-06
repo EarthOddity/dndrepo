@@ -77,6 +77,6 @@ Accept: application/json
 ## Next Steps 🚀
 - Integration of these services with the web application.  
 - Comprehensive unit and integration testing to ensure reliability.  
-- Enhancing API documentation for better developer experience.
+- Enhancing documentation for better developer experience.
 
 Stay tuned for our next update, where we'll share insights on our web application development journey!  
