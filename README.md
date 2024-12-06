@@ -20,6 +20,7 @@ https://github.com/EarthOddity/dndrepo/blob/MartynaNew/Web%20Service%20Design%20
 https://github.com/EarthOddity/dndrepo/blob/MartynaNew/Web%20Application.md
 
 ### Curious about our User Management? -> 
+https://github.com/EarthOddity/dndrepo/blob/MartynaNew/User%20Management.md
 
 ### Here's how we solved Data Access -> 
 https://github.com/EarthOddity/dndrepo/blob/MartynaNew/Data%20Access.md
