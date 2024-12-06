@@ -33,11 +33,5 @@ public class DatabaseContext : DbContext
        .HasOne(t => t.subject)
        .WithMany()
        .HasForeignKey(t => t.subjectId);
-
-        modelBuilder.Entity<TeachingMaterial>()
-            .HasOne(t => t.subject)
-            .WithMany()
-            .HasForeignKey(t => t.subjectId);
-
     }
 }
