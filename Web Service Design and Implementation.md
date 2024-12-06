@@ -39,9 +39,49 @@ We've also created controllers for each service, ensuring smooth interaction bet
 
 ---
 
+### An example of working with our API endpoints:
+
+### Get all bachelors
+GET http://localhost:5044/api/Bachelor
+Accept: application/json
+
+### Get bachelor by id
+GET http://localhost:5044/api/Bachelor/3
+Accept: application/json
+
+### Create new bachelor
+POST http://localhost:5044/api/Bachelor
+Content-Type: application/json
+
+{
+    "programName": "Computer Science",
+    "description": "Study of computation and information",
+    "associatedSubjects": []
+}
+
+### Update bachelor
+PUT http://localhost:5044/api/Bachelor/1
+Content-Type: application/json
+
+{
+    "id": 1,
+    "programName": "Software Engineering",
+    "description": "Updated program description",
+    "associatedSubjects": []
+}
+
+### Delete bachelor
+DELETE http://localhost:5044/api/Bachelor/1
+Accept: application/json
+
+## File Context & Database Context
+We started the project by using a filecontext to simulate how a database should work this was done to later facilitate the implementation of a database.
+Once the web app was mostly finished and we wanted to test the components and how they were interacting is when we decided to change the context to a database. This context was created using the entity framework and SQLite. The model classess we had were completed with some extra object references to other clasess to represent the relationships between the different clasess and the database was implemented. 
+Evidently, we put the database file in gitignore to avoid any possible problems but a base can be located in the main branch.
+
 ## Next Steps 🚀
 - Integration of these services with the web application.  
 - Comprehensive unit and integration testing to ensure reliability.  
-- Enhancing API documentation for better developer experience.
+- Enhancing documentation for better developer experience.
 
 Stay tuned for our next update, where we'll share insights on our web application development journey!  
