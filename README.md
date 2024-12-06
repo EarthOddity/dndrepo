@@ -15,3 +15,11 @@ https://github.com/EarthOddity/dndrepo/blob/main/Project%20Formulation%20%26%20R
 
 ### Check out our post about Web Services! -> 
 https://github.com/EarthOddity/dndrepo/blob/MartynaNew/Web%20Service%20Design%20and%20Implementation.md
+
+### Web Application here! -> 
+
+### Curious about our User Management? -> 
+
+### Here's how we solved Data Access -> 
+
+### Lastly, Project Conclusion and Demonstration -> 
