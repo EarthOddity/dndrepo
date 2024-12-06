@@ -1,28 +1,33 @@
+
 public class SBEvent
 {
     public int Id { get; set; }
     public int OwnerId { get; set; }
     public string Title { get; set; }
     public string Description { get; set; }
-    public List<SBCalendar> Calendars { get; set; }
+    // public List<SBCalendar> Calendars { get; set; }
+    //public List<Student> participants { get; set; }
+    public SBCalendar? Calendar { get; set; }
+    public int CalendarId { get; set; }
+
     public DateTime StartTime { get; set; }
     public DateTime EndTime { get; set; }
-    public DateTime Timestamp { get; set; }
+    public DateTime Timestamp { get; set; } = DateTime.UtcNow;
 
     public SBEvent()
     {
 
     }
-    public SBEvent(int id, int ownerId, string title, string description, List<TeachingMaterial> materials, DateTime startTime, DateTime endTime)
+    public SBEvent(int Id, string Title, string Description, List<Student> Participants, List<TeachingMaterial> Materials, DateTime StartTime, DateTime EndTime)
     {
-        this.Id = id;
-        this.OwnerId = ownerId;
-        this.Title = title ?? throw new ArgumentNullException(nameof(title));
-        this.Description = description ?? throw new ArgumentNullException(nameof(description));
-        this.StartTime = startTime;
-        this.EndTime = endTime;
+        this.Id = Id;
+        this.Title = Title ?? throw new ArgumentNullException(nameof(Title));
+        this.Description = Description ?? throw new ArgumentNullException(nameof(Description));
+        //this.participants = participants ?? new List<Student>();
+        // this.materials = materials ?? new List<TeachingMaterial>();
+        this.StartTime = StartTime;
+        this.EndTime = EndTime;
         this.Timestamp = DateTime.UtcNow;
-
     }
 
 }

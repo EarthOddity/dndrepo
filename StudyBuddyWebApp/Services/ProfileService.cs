@@ -1,3 +1,6 @@
+using System.Collections.Specialized;
+using System.ComponentModel;
+
 public class ProfileService : IProfileService
 {
     private readonly HttpClient _httpClient;
@@ -16,7 +19,12 @@ public class ProfileService : IProfileService
         }
         return await response.Content.ReadFromJsonAsync<Student>();
     }
-
+    public async Task<List<Student>> GetAllStudents()
+    {
+        var response = await _httpClient.GetAsync("api/Student");
+        response.EnsureSuccessStatusCode();
+        return await response.Content.ReadFromJsonAsync<List<Student>>();
+    }
     public async Task UpdateStudentProfile(int id, Student student)
     {
         var response = await _httpClient.PutAsJsonAsync($"api/Student/{id}", student);

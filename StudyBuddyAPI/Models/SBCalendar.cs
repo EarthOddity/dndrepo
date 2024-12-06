@@ -1,11 +1,14 @@
+using System.Text.Json.Serialization;
+
 public class SBCalendar
 {
     public int Id { get; set; }
 
-    [System.Text.Json.Serialization.JsonIgnore]
-    public Student Owner { get; set; }
-    public int OwnerId { get; set; }
-    public List<SBEvent> EventList { get; set; } = new List<SBEvent>();
+    public int StudentId { get; set; }
+
+    public List<SBEvent>? Events { get; set; }
+    [JsonIgnore]
+    public Student? Student { get; set; }
 
     public SBCalendar()
     {
@@ -15,10 +18,14 @@ public class SBCalendar
     public SBCalendar(int id, Student owner)
     {
         this.Id = id;
-        this.Owner = owner;
-        this.OwnerId = owner.id;
+        this.Student = owner;
+        this.StudentId = owner.id;
 
     }
-
+    public SBCalendar(Student student)
+    {
+        this.Student = student;
+        StudentId = student.id;
+    }
 
 }

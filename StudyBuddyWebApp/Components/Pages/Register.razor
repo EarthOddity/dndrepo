@@ -1,11 +1,12 @@
 @page "/register"
 @inject IAuthService authService
 @inject NavigationManager navMgr
+@inject IAcademicService AcademicService
 @rendermode InteractiveServer
 @inject AcademicService academicService
 
 <h3>Register</h3>
-<h5>Please introduce the requiered information</h5>
+<h5>Please introduce the required information</h5>
 
 <EditForm Model="newStudent" OnValidSubmit="RegisterStudent">
     <DataAnnotationsValidator />
@@ -57,6 +58,20 @@
         <label for="isTutor">Are you a tutor?</label>
         <InputCheckbox id="isTutor" @bind-Value="newStudent.isTutor" class="form-check-input" />
     </div>
+    <div class="form-group">
+        <label for="bachelor">Bachelor Program</label>
+        <InputSelect id="bachelor" @bind-Value="newStudent.bachelorId" class="form-control">
+            <option value="0">Select a Bachelor Program</option>
+            @if (bachelors != null)
+            {
+                @foreach (var bachelor in bachelors)
+                {
+                    <option value="@bachelor.Id">@bachelor.ProgramName</option>
+                }
+            }
+        </InputSelect>
+    </div>
+
 
     <button type="submit" class="btn btn-primary">Register</button>
     <button type="button" class="btn btn-secondary" @onclick="GoToLogin">Already have an account?</button>
@@ -86,17 +101,26 @@
     private int generatedId;
     private bool showModal = false;
     private int countdown = 5; // Seconds before redirect
-    private List<Bachelor> bachelors = new List<Bachelor>();
+    private List<Bachelor> bachelors;
+    private int selectedBachelorId;
 
     protected override async Task OnInitializedAsync()
     {
-        bachelors = (await academicService.GetAllBachelors()).ToList();
+        try
+        {
+            bachelors = (await AcademicService.GetAllBachelors()).ToList();
+        }
+        catch (Exception ex)
+        {
+            errorMessage = "Failed to load bachelor programs";
+            Console.WriteLine($"Error loading bachelors: {ex.Message}");
+        }
     }
-
     private async Task RegisterStudent()
     {
         try
         {
+
             var registeredStudent = await authService.RegisterStudentAsync(newStudent);
             generatedId = registeredStudent.id;
             // Show the success modal

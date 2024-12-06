@@ -48,18 +48,6 @@ public class StudentService(DatabaseContext context) : IStudentService
         {
             throw new ValidationException("Language is required");
         }
-        if (student.bachelor == null)
-        {
-            throw new ValidationException("Bachelor is required");
-        }
-
-        student.bachelor = await context.Bachelors.FindAsync(student.bachelor.Id);
-
-        if (student.calendar == null)
-        {
-            student.calendar = new SBCalendar { Owner = student };
-        }
-
         await context.Students.AddAsync(student);
         await context.SaveChangesAsync();
         return student;
@@ -75,8 +63,7 @@ public class StudentService(DatabaseContext context) : IStudentService
             studentToUpdate.phoneNumber = student.phoneNumber;
             studentToUpdate.isTutor = student.isTutor;
             studentToUpdate.language = student.language;
-            studentToUpdate.bachelor = student.bachelor;
-            studentToUpdate.calendar = student.calendar;
+            // studentToUpdate.bachelor = student.bachelor;
             await context.SaveChangesAsync();
         }
 

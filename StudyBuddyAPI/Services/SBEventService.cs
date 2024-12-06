@@ -1,12 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 
-public class SBEventService : ISBEventService
+public class SBEventService(DatabaseContext context) : ISBEventService
 {
-    private readonly DatabaseContext _context;
-    public SBEventService(DatabaseContext context)
-    {
-        _context = context;
-    }
+    private readonly DatabaseContext _context = context;
 
     public Task<IEnumerable<SBEvent>> GetAllEvents()
     {
@@ -21,24 +17,30 @@ public class SBEventService : ISBEventService
         {
             throw new KeyNotFoundException($"Event with id {id} not found.");
         }
-        return @event;
+        return await Task.FromResult(@event);
+    }
+    public async Task<IEnumerable<SBEvent>> GetEventsByCalendarId(int calendarId)
+    {
+        var events = _context.Events.Where(e => e.CalendarId == calendarId);
+        return await Task.FromResult(events.AsEnumerable());
     }
     public async Task<SBEvent> CreateEvent(SBEvent @event)
     {
-        _context.Events.Add(@event);
+        await _context.Events.AddAsync(@event);
         await _context.SaveChangesAsync();
         return @event;
     }
 
     public async Task<SBEvent> UpdateEvent(int id, SBEvent updatedEvent)
     {
-        var eventToUpdate = _context.Events.FirstOrDefault(e => e.Id == id);
+        var eventToUpdate = await _context.Events.FirstOrDefaultAsync(e => e.Id == id);
         if (eventToUpdate != null)
         {
             eventToUpdate.Title = updatedEvent.Title;
             eventToUpdate.Description = updatedEvent.Description;
             eventToUpdate.StartTime = updatedEvent.StartTime;
             eventToUpdate.EndTime = updatedEvent.EndTime;
+            eventToUpdate.Timestamp = DateTime.UtcNow;
             await _context.SaveChangesAsync();
             return updatedEvent;
         }

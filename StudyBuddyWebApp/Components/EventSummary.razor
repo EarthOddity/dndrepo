@@ -7,7 +7,6 @@
         CultureInfo.CurrentCulture)
     </span>
     <span class="event-title">@Event.Title</span>
-    <span class="event-participants">@string.Join(", ", Event.Calendars.Select(c => c.Owner.name))</span>
     <button class="edit-button" @onclick="() => EditEvent(Event.Id)">Edit</button>
 </div>
 

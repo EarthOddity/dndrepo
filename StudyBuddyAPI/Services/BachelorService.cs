@@ -43,9 +43,10 @@ public class BachelorService(DatabaseContext context) : IBachelorService
         return false;
     }
 
-    public async Task<bool> AddSubjectToBachelor(int bachelorId, Subject subject)
+    public async Task<bool> AddSubjectToBachelor(int bachelorId, int subjectId)
     {
         var bachelor = _context.Bachelors.FirstOrDefault(b => b.Id == bachelorId);
+        var subject = _context.Subjects.FirstOrDefault(s => s.id == subjectId);
         if (bachelor != null)
         {
             bachelor.AssociatedSubjects.Add(subject);
@@ -57,10 +58,11 @@ public class BachelorService(DatabaseContext context) : IBachelorService
 
     public async Task<List<Subject>> GetSubjectsByBachelorId(int bachelorId)
     {
-        var bachelor = await _context.Bachelors
-            .Include(b => b.AssociatedSubjects)
-            .FirstOrDefaultAsync(b => b.Id == bachelorId);
-        return bachelor?.AssociatedSubjects.ToList() ?? new List<Subject>();
+        var subjects = await _context.Bachelors
+            .Where(b => b.Id == bachelorId)
+            .SelectMany(b => b.AssociatedSubjects)
+            .ToListAsync();
+        return subjects;
     }
 
     public Task<Bachelor> GetBachelorByStudentId(int studentId)

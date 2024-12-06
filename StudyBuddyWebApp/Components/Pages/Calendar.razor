@@ -1,8 +1,6 @@
-@page "/calendar"
-@inject ICalendarService ICalendarService
-@inject NavigationManager NavigationManager
-@inject AuthenticationStateProvider AuthenticationStateProvider
-@inject IProfileService ProfileService
+@* @page "/calendar"
+@inject ICalendarService ISBCalendarService
+@inject NavigationManager NavigationManager 
 @rendermode InteractiveServer
 @using StudyBuddyWebApp.Components
 
@@ -42,28 +40,24 @@
 
 @code {
     private DateTime currentWeek = DateTime.Today.AddDays(-(int)DateTime.Today.DayOfWeek);
-    private SBCalendar currentCalendar;
-    private string errorMessage;
-    @* private int userId; *@
-    private int userId = 1;
+    private SBCalendar? currentCalendar;
+    private int calendarId = 1; // Placeholder for the owner ID
 
+    private List<SBEvent> curretCalendarEvents = new ();
     protected override async Task OnInitializedAsync()
     {
-        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-        var user = authState.User;
-
-        if (user.Identity != null && user.Identity.IsAuthenticated)
-        {
-            userId = int.Parse(user.Claims.First(claim => claim.Type.Equals("id")).Value);
-            // Load the calendar for the user
-            currentCalendar = await ICalendarService.GetCalendarByUserId(userId);
-        }
-        else
-        {
-            errorMessage = "User is not authenticated.";
-        }
+        await LoadCalendar();
+        await LoadCalendarEvents(currentCalendar.id);
     }
 
+    private async Task LoadCalendar()
+    {
+        currentCalendar = await ISBCalendarService.GetCalendarById(calendarId);
+    }
+    private async Task LoadCalendarEvents(int calendarId)
+    {
+        curretCalendarEvents = (await ISBCalendarService.GetEventsByCalendarId(calendarId)).ToList();    
+    }
 
     private string GetWeekTitle()
     {
@@ -97,22 +91,26 @@
     }
 
     private List<SBEvent> GetDayEvents(DateTime day)
-    {
-        return currentCalendar?.EventList.Where(e => e.StartTime.Date == day.Date).ToList() ?? new List<SBEvent>();
+    {   
+        Console.WriteLine(curretCalendarEvents
+        .Where(e => e.startTime.Date == day.Date).ToList());
+        return curretCalendarEvents
+        .Where(e => e.StartTime.Date == day.Date)
+        .ToList() ?? new List<SBEvent>();
     }
 
     private void NavigateToEventDetails(int eventId)
     {
-        var eventExists = currentCalendar?.EventList.Any(e => e.Id == eventId) ?? false;
-        if (eventExists)
-        {
-            NavigationManager.NavigateTo($"/event/{eventId}");
-        }
-        else
-        {
-            errorMessage = "Event does not exist.";
-            StateHasChanged();
-        }
+        var (date, hour) = args;
+        var newEvent = new SBEvent
+            {
+                Title = "New Event",
+                StartTime = new DateTime(date.Year, date.Month, date.Day, hour, 0, 0),
+                EndTime = new DateTime(date.Year, date.Month, date.Day, hour + 1, 0, 0),
+                CalendarId = calendarId
+            };
+        await ISBCalendarService.CreateEvent(newEvent);
+        StateHasChanged();
     }
 }
 
@@ -215,4 +213,4 @@
         background: linear-gradient(135deg, #53b5ff 0%, #002a74 100%);
         transform: scale(1.05);
     }
-</style>
+</style> *@
