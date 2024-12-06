@@ -21,6 +21,7 @@ The front-end started to be developed by splitting the work into components and 
 
 Snippet from Event.razor:
 
+---
 
 @code {
     [Parameter] public int calendarId { get; set; }
