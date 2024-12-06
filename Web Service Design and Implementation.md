@@ -39,6 +39,41 @@ We've also created controllers for each service, ensuring smooth interaction bet
 
 ---
 
+### An example of using and testing API endpoints:
+
+### Get all bachelors
+GET http://localhost:5044/api/Bachelor
+Accept: application/json
+
+### Get bachelor by id
+GET http://localhost:5044/api/Bachelor/3
+Accept: application/json
+
+### Create new bachelor
+POST http://localhost:5044/api/Bachelor
+Content-Type: application/json
+
+{
+    "programName": "Computer Science",
+    "description": "Study of computation and information",
+    "associatedSubjects": []
+}
+
+### Update bachelor
+PUT http://localhost:5044/api/Bachelor/1
+Content-Type: application/json
+
+{
+    "id": 1,
+    "programName": "Software Engineering",
+    "description": "Updated program description",
+    "associatedSubjects": []
+}
+
+### Delete bachelor
+DELETE http://localhost:5044/api/Bachelor/1
+Accept: application/json
+
 ## Next Steps 🚀
 - Integration of these services with the web application.  
 - Comprehensive unit and integration testing to ensure reliability.  
