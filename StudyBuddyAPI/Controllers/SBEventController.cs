@@ -38,7 +38,7 @@ public class SBEventController : ControllerBase
     public async Task<ActionResult<SBEvent>> CreateEvent(SBEvent @event)
     {
         var newEvent = await _eventService.CreateEvent(@event);
-        return CreatedAtAction(nameof(GetEvent), new { id = newEvent.id }, newEvent);
+        return CreatedAtAction(nameof(GetEvent), new { id = newEvent.Id }, newEvent);
     }
 
     [HttpPut("{id}")]
