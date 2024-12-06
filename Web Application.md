@@ -20,6 +20,7 @@ The front-end started to be developed by splitting the work into components and 
    - **Add Calendar and Event Components:** Create new events for sessions, as well as update already existing ones and remove them from your upcoming events (calendarDay) section.
 
 Snippet from Event.razor:
+
 @code {
     [Parameter] public int calendarId { get; set; }
     [Parameter] public int? eventId { get; set; } // optional eventId for editing
