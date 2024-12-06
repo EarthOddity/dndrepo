@@ -8,6 +8,7 @@
 @inject NavigationManager NavigationManager 
 @inject AuthenticationStateProvider AuthStateProvider
 @rendermode InteractiveServer
+@attribute [Authorize ("MustBeStudent")]
 
 <div class="study-buddy-container">
     <section class="introduction">
