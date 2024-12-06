@@ -45,16 +45,5 @@ msbuild.wrn
 #Ignore data.json file 
 data.json
 
-# Ignore SQLite database files
-*.db
-*.db-shm
-*.db-wal
-
-# Ignore SQLite backup files
-*.sqlite3
-*.sqlite
-*.sqlite3-journal
-*.sqlite-journal
-
 # Ignore Entity Framework Core migration snapshots (optional, if you don't want to track snapshots)
 Migrations/
