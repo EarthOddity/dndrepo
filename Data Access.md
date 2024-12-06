@@ -17,7 +17,9 @@ Since we already have File Context, it made it easy for us to switch to Database
 using Microsoft.EntityFrameworkCore;
 
 public class DatabaseContext : DbContext
+
 {
+
     public DbSet<User> Users { get; set; }
     public DbSet<Student> Students { get; set; }
     public DbSet<Moderator> Moderators { get; set; }
@@ -56,8 +58,12 @@ public class DatabaseContext : DbContext
 ### **Step 3: Saving data**
 We used CRUD operations (Create, Read, Update, Delete) to manage data.
 
+New, combined files inside services for the WebApp were created, such as ProfileService, and AcademicService (combines handling for Bachelor, Subject, Teaching Material and Review). We also added Interfaces for them, though later we realised we could have also used services directly from the API.
+
 ### **Why This Matters:**
-With EF Core, we have a flexible database that grows with StudyBuddy. This setup makes it easy for students to access materials and tutors, ensuring a smooth and secure learning experience. 🚀
+With EF Core, we have a flexible database that grows with StudyBuddy. It is very easy to update data by simply creating a new migration whenever the model is changed, and then updating the database through the terminal commands.
+
+This setup makes it easy for users to save and manage data, such as accessing materials and tutors, editing events and leaving reviews, ensuring a smooth and secure learning experience. 🚀
 
 More to come as we enhance our platform! Stay connected! 💡
 
