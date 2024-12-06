@@ -1,8 +1,15 @@
 ﻿@page "/"
 @using StudyBuddyWebApp.Components
-@inject IAcademicService AcademicService
-@using Microsoft.AspNetCore.Components.Authorization
 @using System.Security.Claims
+@using StudyBuddyWebApp.Components.Layout
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Authorization
+@inject IAcademicService AcademicService
+@inject ICalendarService eventService
+@inject NavigationManager NavigationManager
+@inject AuthenticationStateProvider AuthStateProvider
+@rendermode InteractiveServer
+@attribute [Authorize("MustBeStudent")]
 
 <div class="study-buddy-container">
     <section class="introduction">
@@ -14,8 +21,23 @@
     <main class="content-grid">
         <div class="events-section">
             <h3>Upcoming Events</h3>
-            <CalendarDay />
+            @if (events == null)
+            {
+                <p>Loading events...</p>
+            }
+            else if (!events.Any())
+            {
+                <p>No Upcoming events.</p>
+            }
+            else
+            {
+                <CalendarDay Events="events" />
+            }
+            <div class="button-container">
+                <button class="create-event-button" @onclick="CreateEvent">Create A New Event</button>
+            </div>
         </div>
+
         <div class="materials-section">
             <OverviewMaterialsSaved Title="Saved Materials" Materials="@savedMaterials" SavingMethod="@ToggleSave"
                 SavedMaterialIds="@savedMaterialIds" />
@@ -24,22 +46,33 @@
 </div>
 
 @code {
+    private int id;
     private List<TeachingMaterial> savedMaterials = new();
     private HashSet<int> savedMaterialIds = new();
     private int? currentUserId;
+    private List<SBEvent> events = new List<SBEvent>();
+    private int calendarId;
     private bool loading = true;
     private string error;
+    private IEnumerable<Claim>? userClaims;
+    private bool isLoggedIn;
 
     [CascadingParameter]
     private Task<AuthenticationState> AuthState { get; set; } = null!;
 
     protected override async Task OnInitializedAsync()
     {
+        AuthenticationState authState = await AuthState;
+        ClaimsPrincipal user = authState.User;
+        isLoggedIn = user.Identity != null;
+        if (!isLoggedIn) return;
+        userClaims = user.Claims;
+        id = int.Parse(user.Claims.First(claim => claim.Type.Equals("id")).Value);
+        calendarId = await eventService.GetCalendarIdByStudentId(id);
+        Console.WriteLine("Calendar id" + calendarId);
+        events = (await eventService.GetEventsByCalendarId(calendarId)).ToList();
         try
         {
-            var authState = await AuthState;
-            var user = authState.User;
-
             if (user.Identity?.IsAuthenticated ?? false)
             {
                 var idClaim = user.Claims.FirstOrDefault(c => c.Type == "id");
@@ -86,6 +119,14 @@
             Console.WriteLine($"Error toggling save state: {ex.Message}");
         }
     }
+
+    private void CreateEvent()
+    {
+        NavigationManager.NavigateTo($"/calendar/{calendarId}/event");
+    }
+
+
+
 }
 
 <style>
@@ -115,5 +156,17 @@
         border-radius: 8px;
         min-height: fit-content;
         height: 800px;
+    }
+       .create-event-button {
+        background: linear-gradient(135deg, #71b3e5 0%, #013faa 100%);
+        color: #000000;
+        border: none;
+        text-align: center;
+        padding: 10px 15px;
+        cursor: pointer;
+        margin-right: 30px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        transition: background 0.3s ease, transform 0.2s ease;
     }
 </style>

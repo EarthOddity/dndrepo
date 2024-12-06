@@ -1,7 +1,9 @@
 using Microsoft.EntityFrameworkCore;
+
 public class SBCalendarService(DatabaseContext context) : ISBCalendarService
 {
     private readonly DatabaseContext _context = context;
+    static SBCalendarService(){}
 
     public Task<IEnumerable<SBCalendar>> GetAllCalendars()
     {
@@ -10,13 +12,14 @@ public class SBCalendarService(DatabaseContext context) : ISBCalendarService
 
     public async Task<SBCalendar> GetCalendarById(int id)
     {
-        var calendar = _context.Calendars.FirstOrDefault(c => c.id == id);
+        var calendar = await _context.Calendars.FirstOrDefaultAsync(c => c.id == id);
         return await Task.FromResult(calendar);
     }
 
-    public async Task<SBCalendar> CreateCalendar(SBCalendar calendar)
+    public async Task<SBCalendar> CreateCalendar(Student student)
     {
-        _context.Calendars.AddAsync(calendar);
+        var calendar = new SBCalendar(student);
+        await _context.Calendars.AddAsync(calendar);
         await _context.SaveChangesAsync();
         return calendar;
     }
@@ -32,8 +35,12 @@ public class SBCalendarService(DatabaseContext context) : ISBCalendarService
         }
         return false;
     }
-
-    public async Task<IEnumerable<SBEvent>> GetEventsByCalendarId(int calendarId)
+    public async Task<int> getCalendarIdByStudentId(int studentId)
+    {
+        var calendar = await _context.Calendars.FirstOrDefaultAsync(c => c.studentId == studentId);
+        return calendar.id;
+    }
+  /*   public async Task<IEnumerable<SBEvent>> GetEventsByCalendarId(int calendarId)
     {
         var calendar = await _context.Calendars.Include(c => c.events).FirstOrDefaultAsync(c => c.id == calendarId);
         return calendar?.events ?? Enumerable.Empty<SBEvent>();
@@ -66,6 +73,6 @@ public class SBCalendarService(DatabaseContext context) : ISBCalendarService
             }
         }
         return await Task.FromResult(calendar);
-    }
+    } */
 
 }

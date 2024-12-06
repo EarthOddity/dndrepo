@@ -3,14 +3,14 @@
         <img src="images/studybuddylogo.png" alt="StudyBuddy Logo" width="220px" />
     </div>
     <div class="nav-links">
-        <NavLink href="/" Match="NavLinkMatch.All">
-            <span class="nav-icon">🏠</span>
-            Home
-        </NavLink>
-        <NavLink href="/calendar">
-            <span class="nav-icon">📅</span>
-            Calendar
-        </NavLink>
+        <AuthorizeView Policy="MustBeStudent">
+            <Authorized>
+                <NavLink href="/" Match="NavLinkMatch.All">
+                    <span class="nav-icon">🏠</span>
+                    Home
+                </NavLink>
+            </Authorized>
+        </AuthorizeView>
         <NavLink href="/materials">
             <span class="nav-icon">📚</span>
             Materials
@@ -19,6 +19,14 @@
             <span class="nav-icon">👥</span>
             Tutors
         </NavLink>
+        <AuthorizeView Policy= "MustBeModerator">
+            <Authorized>
+                <NavLink href="/moderator-overview" Match="NavLinkMatch.All">
+                    <span class="nav-icon">🏠</span>
+                    Moderator Overview
+                </NavLink>
+            </Authorized>
+        </AuthorizeView>
         <NavLink href="/moderator-reviews">
             <span class="nav-icon">📝</span>
             Review Management

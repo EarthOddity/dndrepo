@@ -1,0 +1,23 @@
+@page "/events"
+@inject ICalendarService eventService
+
+<h2>Events</h2>
+
+<div class="event-list">
+    @foreach (var evt in events)
+    {
+      <div>
+        <h3>@evt.title</h3>
+        <p>@evt.description</p>
+      </div>
+    }
+</div>
+
+@code{
+    private List<SBEvent> events = new List<SBEvent>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        events = (await eventService.GetEventsByCalendarId(1)).ToList();
+    }
+}

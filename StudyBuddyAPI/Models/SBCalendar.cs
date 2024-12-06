@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 public class SBCalendar
 {
 
@@ -5,7 +7,9 @@ public class SBCalendar
 
     public int studentId { get; set; }
 
-    public List<SBEvent> events { get; set; }
+    public List<SBEvent>? events { get; set; }
+    [JsonIgnore]
+    public Student? student { get; set; }
 
     public SBCalendar()
     {
@@ -18,6 +22,9 @@ public class SBCalendar
         this.studentId = studentId;
         this.events = new List<SBEvent>(); // initialize to avoid null errors hiuhi
     }
-
+    public SBCalendar(Student student){
+        this.student = student;
+        studentId = student.id;
+    }
 
 }

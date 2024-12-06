@@ -1,26 +1,26 @@
+
 @inject NavigationManager NavigationManager
 @inject IProfileService ProfileService
 @inject IAuthService authService
 @rendermode InteractiveServer
 @using System.Security.Claims
 @using StudyBuddyWebApp.Components.Layout
-@using Microsoft.AspNetCore.Components.Authorization
 @inject AuthenticationStateProvider AuthStateProvider
 
 
 <div class="user-icon-dropdown">
     <button class="user-icon" @onclick="ToggleDropdown">
-        <img src="images/profilepic.jpg" alt="" class="user-avatar">
+        <img src="images/profilepic.jpg" alt="" class="user-avatar" width="10px"  height="10px" >
     </button>
 
     @if (user1 != null && !string.IsNullOrEmpty(user1.name))
-    {
-        <span>Hello, @user1.name</span>
-    }
+        {
+            <span>Hello, @user1.name</span>
+        }
     else
-    {
-        <span>Hello, User</span>
-    }
+        {
+            <span>Hello, User</span>
+        }
 
     <div class="dropdown-menu @(isDropdownOpen ? "show" : "")">
         <AuthorizeView>
@@ -36,7 +36,7 @@
             </Authorized>
         </AuthorizeView>
     </div>
-
+        
 
 </div>
 
@@ -56,28 +56,25 @@
     private bool isLoggedIn;
 
     protected override async Task OnInitializedAsync()
-    {
+    {   
         AuthStateProvider.AuthenticationStateChanged += OnAuthenticationStateChanged;
         await LoadUserInfo();
-
+ 
     }
-    private async Task LoadUserInfo()
-    {
+    private async Task LoadUserInfo(){
         AuthenticationState authState = await AuthState;
         ClaimsPrincipal user = authState.User;
         isLoggedIn = user.Identity != null;
 
         if (!isLoggedIn) return;
         userClaims = user.Claims;
-        id = int.Parse(user.Claims.First(claim => claim.Type.Equals("id")).Value);
+        id  = int.Parse(user.Claims.First(claim => claim.Type.Equals("id")).Value);
         Console.WriteLine("Id is : " + id);
         role = user.Claims.FirstOrDefault(c => c.Type == "Role")?.Value;
-        if (role == "Student")
-        {
+        if(role == "Student"){
             user1 = await ProfileService.GetStudentProfile(id);
         }
-        else if (role == "Moderator")
-        {
+        else if(role == "Moderator"){
             user1 = await ProfileService.GetModeratorProfile(id);
             Console.WriteLine("User is authenticated with role: " + role);
         }
@@ -94,9 +91,9 @@
     private void GoToProfile()
     {
         isDropdownOpen = false;
-        if (role == "Student")
+        if(role == "Student")
             NavigationManager.NavigateTo("/user-profile");
-        else if (role == "Moderator")
+        else if(role == "Moderator")
             NavigationManager.NavigateTo("/moderator-profile");
     }
 
@@ -138,56 +135,5 @@
         await LoadUserInfo();
         StateHasChanged(); // Notify Blazor to re-render the component
     }
-
+    
 }
-
-<style>
-    .user-icon-dropdown {
-        position: relative;
-        display: inline-block;
-    }
-
-    .user-icon {
-        background: none;
-        border: none;
-        cursor: pointer;
-    }
-
-    .dropdown-menu {
-        display: none;
-        position: absolute;
-        top: 100%;
-        left: 0;
-        background-color: rgb(86, 78, 78);
-        box-shadow: 0 8px 16px rgba(51, 49, 49, 0.2);
-        z-index: 1;
-        min-width: 160px;
-    }
-
-    .dropdown-menu.show {
-        display: block;
-        /* Show when the dropdown is open */
-    }
-
-    .dropdown-item {
-        padding: 12px 16px;
-        text-decoration: none;
-        display: block;
-        color: black;
-    }
-
-    .dropdown-item:hover {
-        background-color: #f0f0f0;
-    }
-
-    .user-avatar {
-        width: 40px;
-        /* Adjust size as needed */
-        height: 40px;
-        border-radius: 50%;
-        /* Makes the image circular */
-        object-fit: cover;
-        /* Ensures the image scales nicely */
-        margin-right: 0.5rem;
-    }
-</style>
