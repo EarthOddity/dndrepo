@@ -35,7 +35,8 @@ We've created and configured the following core services, each aligned with spec
 ---
 
 ## 🛠️ Controller Development:
-We've also created controllers for each service, ensuring smooth interaction between the front end and back end. Controllers handle incoming requests, process data, and return appropriate responses, making the system robust and user-friendly.
+We've also created controllers for each service, ensuring smooth interaction between the front end and back end. Controllers handle incoming requests, process data, and return appropriate responses, making the system robust and user-friendly. 
+Something worth mention is that the Student controller, is the one making sure that when a student is registered, a calendar is also created and associated with that student. This way the database mantains its integrity. 
 
 ---
 
