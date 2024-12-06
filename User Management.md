@@ -21,4 +21,46 @@ Our new **role-based authorization** system controls access based on user roles:
 **Example:**  
 Only moderators can delete inappropriate reviews, while students can filter tutors by subject, language, or availability.
 
+The following part includes the implementation of our login page, including the login credentials and the option to log in as a moderator. There is a separate page for the user and the moderator profile. While registering, one can choose a role to be assigned to.
+
+ private int id ;
+    private string email = "";
+    private string password = "";
+    private string errorLabel = "";
+    private bool isModerator = false;
+    private async Task LoginAsync()
+    {   
+        errorLabel = "";
+        try
+        {
+            Console.WriteLine(isModerator);
+            await authService.LoginAsync(id, password, isModerator);
+            
+
+            if(!isModerator)
+                navMgr.NavigateTo("/user-profile");
+            else
+                navMgr.NavigateTo("/moderator-profile");
+            
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            errorLabel = $"Error: {e.Message}";
+        }
+        
+    }
+    private async Task Logout()
+    {
+        await authService.LogoutAsync();
+        navMgr.NavigateTo("/login");
+    }
+
+    private void GoToRegister()
+    {
+        navMgr.NavigateTo("/register");
+    }
+    
+}
+
 Thank you for being part of the StudyBuddy journey! 🌟
