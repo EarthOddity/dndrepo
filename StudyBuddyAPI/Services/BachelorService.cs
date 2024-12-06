@@ -56,7 +56,7 @@ public class BachelorService(DatabaseContext context) : IBachelorService
         return false;
     }
 
-    public async Task<List<int>> GetSubjectsByBachelorId(int bachelorId)
+    public async Task<List<Subject>> GetSubjectsByBachelorId(int bachelorId)
     {
         var subjects = await _context.Bachelors
             .Where(b => b.id == bachelorId)

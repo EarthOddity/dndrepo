@@ -12,6 +12,8 @@ public class TeachingMaterialService : ITeachingMaterialService
 
     public async Task<TeachingMaterial> CreateTeachingMaterial(TeachingMaterial material)
     {
+        context.Entry(material.author).State = EntityState.Unchanged;
+
         context.TeachingMaterials.AddAsync(material);
         await context.SaveChangesAsync();
         return await Task.FromResult(material);

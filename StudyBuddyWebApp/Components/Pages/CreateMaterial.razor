@@ -1,5 +1,6 @@
 @page "/create-material"
 @inject IAcademicService AcademicService
+@inject IProfileService ProfileService
 @inject NavigationManager NavigationManager
 @using Microsoft.AspNetCore.Components.Authorization
 @using System.Security.Claims
@@ -66,13 +67,16 @@
             var authState = await AuthState;
             var user = authState.User;
 
-            if (user.Identity?.IsAuthenticated ?? false)
+            if (user.Identity?.IsAuthenticated == false)
             {
-                var idClaim = user.Claims.FirstOrDefault(c => c.Type == "id");
-                if (idClaim != null && int.TryParse(idClaim.Value, out int userId))
-                {
-                    currentUserId = userId;
-                }
+                NavigationManager.NavigateTo("/login");
+                return;
+            }
+
+            var idClaim = user.Claims.FirstOrDefault(c => c.Type == "id");
+            if (idClaim != null && int.TryParse(idClaim.Value, out int userId))
+            {
+                currentUserId = userId;
             }
 
             subjects = (await AcademicService.GetAllSubjects()).ToList();
@@ -94,8 +98,16 @@
                 return;
             }
 
+            // Fetch the logged-in user's details
+            var user = await ProfileService.GetStudentProfile(currentUserId.Value);
+            if (user == null)
+            {
+                error = "Failed to fetch user details";
+                return;
+            }
+
             // Initialize all required properties
-            newMaterial.author = new Student { id = currentUserId.Value };
+            newMaterial.author = user;
             newMaterial.isApproved = false;
             newMaterial.savedMaterials = new List<SavedMaterial>();
             newMaterial.reviews = new List<Review>();
@@ -148,40 +160,26 @@
     .create-material-container {
         margin: 0 auto;
         padding: 20px;
-        background-color: #0f172a;
+        background-color: #1e293b;
         color: #e2e8f0;
-        max-width: 800px;
+        border-radius: 8px;
     }
 
     .form-section {
-        background-color: #1e293b;
-        padding: 25px;
-        border-radius: 8px;
-        margin: 20px 0;
+        margin-top: 20px;
     }
 
     .form-group {
         margin-bottom: 20px;
     }
 
-    .form-group label {
-        display: block;
-        margin-bottom: 8px;
-        color: #e2e8f0;
-    }
-
     .form-control {
         width: 100%;
-        padding: 8px 12px;
-        background-color: #0f172a;
-        border: 1px solid #2d3748;
+        padding: 8px;
         border-radius: 4px;
+        border: 1px solid #ddd;
+        background-color: #2d3748;
         color: #e2e8f0;
-    }
-
-    .form-control:focus {
-        border-color: #3182ce;
-        outline: none;
     }
 
     .button-group {

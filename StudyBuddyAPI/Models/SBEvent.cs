@@ -17,14 +17,14 @@ public class SBEvent
     {
 
     }
-    public SBEvent(int id, string title, string description, List<Student> participants, List<TeachingMaterial> materials, DateTime startTime, DateTime endTime)
+    public SBEvent(int id, string title, string description, DateTime startTime, DateTime endTime)
     {
         this.id = id;
         // initializing non-nullable properties xd
         this.title = title ?? throw new ArgumentNullException(nameof(title));
         this.description = description ?? throw new ArgumentNullException(nameof(description));
-        this.participants = participants ?? new List<Student>();
-        this.materials = materials ?? new List<TeachingMaterial>();
+        // this.participants = participants ?? new List<Student>();
+        // this.materials = materials ?? new List<TeachingMaterial>();
         this.startTime = startTime;
         this.endTime = endTime;
         this.timestamp = DateTime.UtcNow;
