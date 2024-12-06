@@ -74,6 +74,10 @@ Content-Type: application/json
 DELETE http://localhost:5044/api/Bachelor/1
 Accept: application/json
 
+## File Context & Database Context
+We started with using a filecontext to simulate how a database should work. Once the web app was mostly finish and we wanted to test the requirements is when we decided to change the context to a database. This context was created using the entity framework and with SQLite. The model class we had was completed with some extra object references to other clasess to represent the connections and relationships between the different clasess and the database was implemented. 
+Evidently, we put the database file in gitignore to avoid any possible problems but a base can be located in the main branch.
+
 ## Next Steps 🚀
 - Integration of these services with the web application.  
 - Comprehensive unit and integration testing to ensure reliability.  
