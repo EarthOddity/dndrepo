@@ -1,4 +1,6 @@
 
+using System.ComponentModel.DataAnnotations;
+
 public class Student : User
 {
     public bool isTutor { get; set; }
@@ -21,6 +23,7 @@ public class Student : User
         this.isTutor = isTutor;
         this.language = language;
         this.bachelor = bachelor;
+
     }
 
     public Student() : base()

@@ -168,7 +168,7 @@ public class CalendarService : ICalendarService
     {
         try
         {
-            var response = await _httpClient.PutAsJsonAsync($"api/SBEvent/{@event.id}", @event);
+            var response = await _httpClient.PutAsJsonAsync($"api/SBEvent/{@event.Id}", @event);
             response.EnsureSuccessStatusCode();
             var result = await response.Content.ReadFromJsonAsync<SBEvent>();
             if (result == null)

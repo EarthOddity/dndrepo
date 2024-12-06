@@ -25,12 +25,15 @@ public class DatabaseContext : DbContext
         modelBuilder.Entity<User>().UseTpcMappingStrategy();
         modelBuilder.Entity<Student>().ToTable("Students").Property(s => s.id).ValueGeneratedOnAdd();
         modelBuilder.Entity<Moderator>().ToTable("Moderators").Property(s => s.id).ValueGeneratedOnAdd();
+        modelBuilder.Entity<Bachelor>().ToTable("Bachelors").Property(b => b.Id).ValueGeneratedOnAdd();
+        modelBuilder.Entity<SBCalendar>().ToTable("Calendars");
+        modelBuilder.Entity<SBEvent>().ToTable("Events");
+
         modelBuilder.Entity<TeachingMaterial>()
        .HasOne(t => t.subject)
        .WithMany()
        .HasForeignKey(t => t.subjectId);
-        modelBuilder.Entity<SBCalendar>().ToTable("Calendars");
-        modelBuilder.Entity<SBEvent>().ToTable("Events");
+
 
     }
 }
