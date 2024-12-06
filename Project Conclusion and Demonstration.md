@@ -1,6 +1,6 @@
 ### **Finishing Touches: Bringing StudyBuddy to Life with Design and Testing** 🎨🛠️  
 
-As we near the final stages of building StudyBuddy, we’ve focused on polishing the layout and ensuring everything runs smoothly. Here’s a peek at how we refined the design and tested the platform for a seamless experience.
+As we near the final stages of building StudyBuddy, we’ve focused on polishing the layout and ensuring everything runs smoothly. We focused on merging everyone's changes, making sure everyone can access the newest version and that the final project works as intended. Lastly, having the finished product enabled us to record a video presenting our outcome. Here’s a peek at how we refined the design and tested the platform for a seamless experience.
 
 ---
 
