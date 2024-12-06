@@ -39,7 +39,7 @@ We've also created controllers for each service, ensuring smooth interaction bet
 
 ---
 
-### An example of using and testing API endpoints:
+### An example of working with our API endpoints:
 
 ### Get all bachelors
 GET http://localhost:5044/api/Bachelor
