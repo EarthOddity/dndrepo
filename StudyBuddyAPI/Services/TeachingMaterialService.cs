@@ -12,7 +12,7 @@ public class TeachingMaterialService : ITeachingMaterialService
 
     public async Task<TeachingMaterial> CreateTeachingMaterial(TeachingMaterial material)
     {
-        context.Entry(material.author).State = EntityState.Unchanged;
+        context.Entry(material.Author).State = EntityState.Unchanged;
 
         context.TeachingMaterials.AddAsync(material);
         await context.SaveChangesAsync();

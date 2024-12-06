@@ -40,27 +40,8 @@
         </div>
 
         <div class="materials-section">
-            <h3>Saved Materials</h3>
-            <div class="materials-grid">
-                @if (savedMaterials == null)
-                {
-                    <p>Loading materials...</p>
-                }
-                else if (!savedMaterials.Any())
-                {
-                    <p>No materials available.</p>
-                }
-                else
-                {
-                    @foreach (var material in savedMaterials)
-                    {
-                        <div class="material-card">
-                            <h4>@material.Title</h4>
-                            <p>@material.Description</p>
-                        </div>
-                    }
-                }
-            </div>
+            <OverviewMaterialsSaved Title="Saved Materials" Materials="@savedMaterials" SavingMethod="@ToggleSave"
+                SavedMaterialIds="@savedMaterialIds" />
         </div>
     </main>
 </div>
@@ -116,7 +97,7 @@
         try
         {
             savedMaterials = (await AcademicService.GetSavedMaterialsByUserId(currentUserId.Value)).ToList();
-            savedMaterialIds = new HashSet<int>(savedMaterials.Select(m => m.id));
+            savedMaterialIds = new HashSet<int>(savedMaterials.Select(m => m.Id));
         }
         catch (Exception ex)
         {

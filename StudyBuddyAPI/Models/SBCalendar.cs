@@ -4,8 +4,6 @@ public class SBCalendar
 {
     public int Id { get; set; }
 
-    public int Id { get; set; }
-
     public int StudentId { get; set; }
 
     public List<SBEvent>? Events { get; set; }

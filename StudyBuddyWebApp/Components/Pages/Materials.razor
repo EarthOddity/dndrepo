@@ -37,9 +37,9 @@
                         <div class="materials-grid">
                             @foreach (var subject in selectedSubjects)
                             {
-                                <div class="material-card @(selectedSubject?.id == subject.id ? "selected" : "")"
+                                <div class="material-card @(selectedSubject?.Id == subject.Id ? "selected" : "")"
                                     @onclick="() => SelectSubject(subject)">
-                                    <p>@subject.name</p>
+                                    <p>@subject.Name</p>
                                 </div>
                             }
                         </div>
@@ -162,14 +162,14 @@
 
     private void SelectSubject(Subject subject)
     {
-        selectedSubject = selectedSubject?.id == subject.id ? null : subject;
+        selectedSubject = selectedSubject?.Id == subject.Id ? null : subject;
         FilterMaterials();
     }
 
     private void FilterMaterials()
     {
         filteredMaterials = teachingMaterials.Where(m =>
-        (selectedSubject == null || m.subjectId == selectedSubject.id)
+        (selectedSubject == null || m.SubjectId == selectedSubject.Id)
         ).ToList();
     }
 
