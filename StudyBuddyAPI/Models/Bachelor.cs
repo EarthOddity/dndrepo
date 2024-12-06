@@ -1,15 +1,9 @@
 public class Bachelor
 {
-    public int id { get; set; }
-    public string programName { get; set; }
+    public int Id { get; set; }
+    public string ProgramName { get; set; }
 
-
-    public class Bachelor
-    {
-        public int id { get; set; }
-        public string programName { get; set; }
-
-    public List<Subject> associatedSubjects { get; set; }
+    public List<Subject> AssociatedSubjects { get; set; } = [];
 
     public Bachelor()
     {
@@ -18,8 +12,8 @@ public class Bachelor
 
     public Bachelor(int id, string programName)
     {
-        this.id = id;
-        this.programName = programName ?? throw new ArgumentNullException(nameof(programName));
-        //associatedSubjects = new List<Subject>();
+        this.Id = id;
+        this.ProgramName = programName ?? throw new ArgumentNullException(nameof(programName));
+        AssociatedSubjects = new List<Subject>();
     }
 }

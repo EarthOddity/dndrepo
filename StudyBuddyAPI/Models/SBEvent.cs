@@ -1,31 +1,33 @@
+
 public class SBEvent
 {
-    public int id { get; set; }
-    public int ownerId { get; set; }
-    public string title { get; set; }
-    public string description { get; set; }
+    public int Id { get; set; }
+    public int OwnerId { get; set; }
+    public string Title { get; set; }
+    public string Description { get; set; }
+    // public List<SBCalendar> Calendars { get; set; }
     //public List<Student> participants { get; set; }
-    //public List<TeachingMaterial> materials { get; set; }
-    public List<SBCalendar> calendars { get; set; }
+    public SBCalendar? Calendar { get; set; }
+    public int CalendarId { get; set; }
 
-    public DateTime startTime { get; set; }
-    public DateTime endTime { get; set; }
+    public DateTime StartTime { get; set; }
+    public DateTime EndTime { get; set; }
+    public DateTime Timestamp { get; set; } = DateTime.UtcNow;
 
     public SBEvent()
     {
 
     }
-    public SBEvent(int id, int ownerId, string title, string description, List<Student> participants, List<TeachingMaterial> materials, DateTime startTime, DateTime endTime)
+    public SBEvent(int Id, string Title, string Description, List<Student> Participants, List<TeachingMaterial> Materials, DateTime StartTime, DateTime EndTime)
     {
-        this.id = id;
-        this.ownerId = ownerId;
-        // initializing non-nullable properties xd
-        this.title = title ?? throw new ArgumentNullException(nameof(title));
-        this.description = description ?? throw new ArgumentNullException(nameof(description));
+        this.Id = Id;
+        this.Title = Title ?? throw new ArgumentNullException(nameof(Title));
+        this.Description = Description ?? throw new ArgumentNullException(nameof(Description));
         //this.participants = participants ?? new List<Student>();
         // this.materials = materials ?? new List<TeachingMaterial>();
-        this.startTime = startTime;
-        this.endTime = endTime;
+        this.StartTime = StartTime;
+        this.EndTime = EndTime;
+        this.Timestamp = DateTime.UtcNow;
     }
 
 }

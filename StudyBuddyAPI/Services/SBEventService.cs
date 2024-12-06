@@ -1,6 +1,8 @@
-public class SBEventService(FileContext context) : ISBEventService
+using Microsoft.EntityFrameworkCore;
+
+public class SBEventService(DatabaseContext context) : ISBEventService
 {
-    private readonly FileContext _context = context;
+    private readonly DatabaseContext _context = context;
 
     public Task<IEnumerable<SBEvent>> GetAllEvents()
     {
@@ -10,38 +12,44 @@ public class SBEventService(FileContext context) : ISBEventService
 
     public async Task<SBEvent> GetEventById(int id)
     {
-        var @event = _context.Events.FirstOrDefault(e => e.id == id);
+        var @event = await _context.Events.FirstOrDefaultAsync(e => e.Id == id);
         if (@event == null)
         {
             throw new KeyNotFoundException($"Event with id {id} not found.");
         }
         return await Task.FromResult(@event);
     }
+    public async Task<IEnumerable<SBEvent>> GetEventsByCalendarId(int calendarId)
+    {
+        var events = _context.Events.Where(e => e.CalendarId == calendarId);
+        return await Task.FromResult(events.AsEnumerable());
+    }
     public async Task<SBEvent> CreateEvent(SBEvent @event)
     {
-        _context.Events.Add(@event);
+        await _context.Events.AddAsync(@event);
         await _context.SaveChangesAsync();
         return @event;
     }
 
-    public async Task<bool> UpdateEvent(int id, SBEvent updatedEvent)
+    public async Task<SBEvent> UpdateEvent(int id, SBEvent updatedEvent)
     {
-        var eventToUpdate = _context.Events.FirstOrDefault(e => e.id == id);
+        var eventToUpdate = await _context.Events.FirstOrDefaultAsync(e => e.Id == id);
         if (eventToUpdate != null)
         {
-            eventToUpdate.title = updatedEvent.title;
-            eventToUpdate.description = updatedEvent.description;
-            eventToUpdate.startTime = updatedEvent.startTime;
-            eventToUpdate.endTime = updatedEvent.endTime;
+            eventToUpdate.Title = updatedEvent.Title;
+            eventToUpdate.Description = updatedEvent.Description;
+            eventToUpdate.StartTime = updatedEvent.StartTime;
+            eventToUpdate.EndTime = updatedEvent.EndTime;
+            eventToUpdate.Timestamp = DateTime.UtcNow;
             await _context.SaveChangesAsync();
-            return true;
+            return updatedEvent;
         }
-        return false;
+        return null;
     }
 
     public async Task<bool> DeleteEvent(int id)
     {
-        var @event = _context.Events.FirstOrDefault(b => b.id == id);
+        var @event = _context.Events.FirstOrDefault(b => b.Id == id);
         if (@event != null)
         {
             _context.Events.Remove(@event);
@@ -53,7 +61,7 @@ public class SBEventService(FileContext context) : ISBEventService
 
     public async Task<IEnumerable<SBEvent>> GetEventsInRange(DateTime start, DateTime end)
     {
-        var eventsInRange = _context.Events.Where(e => e.startTime >= start && e.endTime <= end);
+        var eventsInRange = _context.Events.Where(e => e.StartTime >= start && e.EndTime <= end);
         return await Task.FromResult(eventsInRange.AsEnumerable());
     }
 

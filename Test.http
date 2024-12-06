@@ -3,7 +3,7 @@ GET http://localhost:5044/api/Student
 Accept: application/json
 
 ### Get student by id
-GET http://localhost:5044/api/Student/2
+GET http://localhost:5044/api/Student/3
 Accept: application/json
 
 ###Get student by name
@@ -19,7 +19,7 @@ Content-Type: application/json
       "isTutor": true,
       "language": "string",
       "name": "Jos\u00E9",
-      "surname": "Papa",
+      "surname": "aaaaaaaaaaaaaa",
       "email": "string",
       "phoneNumber": 123456,
       "password": "abc"
@@ -119,14 +119,28 @@ POST http://localhost:5044/api/Bachelor
 Content-Type: application/json
 
 {
-  "id": 1,
+  "id": 2,
   "programName": "Computer Science"
 }
 
+### Update a bachelor
+PUT http://localhost:5044/api/Bachelor/1
+Content-Type: application/json
+
+{
+    "id": 1,
+    "programName": "Aaaaaaaaaaaa"
+}
 ### Get all bachelors
 GET http://localhost:5044/api/Bachelor
 Accept: application/json
 
+### Get Subjects in Bachelor 
+GET http://localhost:5044/api/Bachelor/1/subjects
+Accept: application/json
+
+### Add a subject to a bachelor
+POST http://localhost:5044/api/Bachelor/1/add-subject/2
 ### Get all teaching materials
 GET http://localhost:5044/api/TeachingMaterial
 Accept: application/json
@@ -147,6 +161,7 @@ Content-Type: application/json
     "title": "Calculus Basics",
     "description": "Introduction to differential calculus",
     "isApproved": false
+
     }
 
 ### Update teaching material
@@ -305,4 +320,89 @@ Content-Type: application/json
 
 ### Delete review
 DELETE http://localhost:5044/api/Review/1
+Accept: application/json
+
+### Get All Calendars
+GET http://localhost:5044/api/Calendar
+Accept: application/json
+
+### Get Calendar by ID
+GET http://localhost:5044/api/SBCalendar/3
+Accept: application/json
+
+### Get events 
+GET http://localhost:5044/api/SBCalendar/1/events
+Accept: application/json
+
+### Create New Calendar
+POST http://localhost:5044/api/SBCalendar
+Content-Type: application/json
+
+{
+  "id": 1,
+  "studentId": 3,
+  "events": [
+  ]
+}
+
+### Update Calendar
+PUT http://localhost:5044/api/SBCalendar/3
+Content-Type: application/json
+
+{
+  "events": [
+    {
+      "id": 1,
+      "title": "Updated Study Session",
+      "description": "Prepare for exam",
+      "startTime": "2024-03-20T15:00:00",
+      "endTime": "2024-03-20T17:00:00"
+    }
+  ]
+}
+
+### Delete Calendar
+DELETE http://localhost:5044/api/SBCalendar/3
+
+### Get All Events
+GET http://localhost:5044/api/SBEvent
+Accept: application/json
+
+### Get Event by ID
+GET http://localhost:5044/api/SBEvent/1
+Accept: application/json
+
+### Create New Event
+POST http://localhost:5044/api/SBEvent
+Content-Type: application/json
+
+{
+  "title": "Event2",
+  "description": "Group study for Database exam",
+  "startTime": "2024-03-20T14:00:00",
+  "endTime": "2024-03-20T16:00:00",
+  "calendarId": 1
+}
+
+### Update Event
+PUT http://localhost:5044/api/SBEvent/2
+Content-Type: application/json
+
+{
+  "title": "Updated Study Session",
+  "description": "Preparing for Database final exam",
+  "startTime": "2024-03-20T15:00:00",
+  "endTime": "2024-03-20T17:00:00",
+  "calendarId": 1
+}
+
+### Delete Event
+DELETE http://localhost:5044/api/SBEvent/5
+
+### Get events by calendar id
+GET http://localhost:5044/api/SBEvent/calendar/1
+Accept: application/json
+
+### Get calendar by student id
+GET http://localhost:5044/api/SBCalendar/student/3
 Accept: application/json

@@ -4,9 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 [Route("api/[controller]")]
 public class SBEventController : ControllerBase
 {
-    private readonly SBEventService _eventService;
+    private readonly ISBEventService _eventService;
 
-    public SBEventController(SBEventService eventService)
+    public SBEventController(ISBEventService eventService)
     {
         _eventService = eventService;
     }
@@ -28,23 +28,28 @@ public class SBEventController : ControllerBase
         }
         return Ok(@event);
     }
-
+    [HttpGet("calendar/{calendarId}")]
+    public async Task<ActionResult<IEnumerable<SBEvent>>> GetEventsByCalendarId(int calendarId)
+    {
+        var events = await _eventService.GetEventsByCalendarId(calendarId);
+        return Ok(events);
+    }
     [HttpPost]
     public async Task<ActionResult<SBEvent>> CreateEvent(SBEvent @event)
     {
         var newEvent = await _eventService.CreateEvent(@event);
-        return CreatedAtAction(nameof(GetEvent), new { id = newEvent.id }, newEvent);
+        return CreatedAtAction(nameof(GetEvent), new { id = newEvent.Id }, newEvent);
     }
 
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateEvent(int id, SBEvent @event)
     {
-        var updated = await _eventService.UpdateEvent(id, @event);
-        if (!updated)
+        var updatedEvent = await _eventService.UpdateEvent(id, @event);
+        if (updatedEvent == null)
         {
             return NotFound();
         }
-        return NoContent();
+        return Ok(updatedEvent);
     }
 
     [HttpGet("range")]
@@ -64,4 +69,5 @@ public class SBEventController : ControllerBase
         }
         return NoContent();
     }
+
 }

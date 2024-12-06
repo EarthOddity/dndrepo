@@ -2,7 +2,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 
-public class StudentService (DatabaseContext context) : IStudentService{
+public class StudentService(DatabaseContext context) : IStudentService
+{
     //private static List<Student> studentsList = new List<Student>();
     private readonly DatabaseContext context = context;
     static StudentService()
@@ -11,7 +12,7 @@ public class StudentService (DatabaseContext context) : IStudentService{
     public Task<IEnumerable<Student>> GetAllStudents()
     {
         return Task.FromResult(context.Students.AsEnumerable());
-        
+
     }
 
     public Task<Student> GetStudentById(int id)
@@ -51,7 +52,7 @@ public class StudentService (DatabaseContext context) : IStudentService{
         await context.SaveChangesAsync();
         return student;
     }
-    public async Task UpdateStudent(int id, [FromBody]Student student)
+    public async Task UpdateStudent(int id, [FromBody] Student student)
     {
         var studentToUpdate = context.Students.FirstOrDefault(s => s.id == id);
         if (studentToUpdate != null)
@@ -62,31 +63,31 @@ public class StudentService (DatabaseContext context) : IStudentService{
             studentToUpdate.phoneNumber = student.phoneNumber;
             studentToUpdate.isTutor = student.isTutor;
             studentToUpdate.language = student.language;
-           // studentToUpdate.bachelor = student.bachelor;
+            // studentToUpdate.bachelor = student.bachelor;
             await context.SaveChangesAsync();
         }
 
     }
 
     public async Task DeleteStudent(int id)
-{
-    var student = context.Students.FirstOrDefault(student => student.id == id);
-    
-    if (student != null)
     {
-        Console.WriteLine(student.name + " found");
-        context.Students.Remove(student);
-        Console.WriteLine(student.name + " removed");
-       // Console.WriteLine("Total students after removal: " + context.Students.Count);
-        
-        await context.SaveChangesAsync();
-        Console.WriteLine("Changes saved to file");
-    }   
-    else
-    {
-        Console.WriteLine("Student with id " + id + " not found.");
+        var student = context.Students.FirstOrDefault(student => student.id == id);
+
+        if (student != null)
+        {
+            Console.WriteLine(student.name + " found");
+            context.Students.Remove(student);
+            Console.WriteLine(student.name + " removed");
+            // Console.WriteLine("Total students after removal: " + context.Students.Count);
+
+            await context.SaveChangesAsync();
+            Console.WriteLine("Changes saved to file");
+        }
+        else
+        {
+            Console.WriteLine("Student with id " + id + " not found.");
+        }
     }
-}
 
     public async Task<IEnumerable<Student>> GetStudentsByName(string name)
     {

@@ -5,9 +5,9 @@ using Microsoft.AspNetCore.Mvc;
 [Route("api/[controller]")]
 public class SBCalendarController : ControllerBase
 {
-    private readonly SBCalendarService _calendarService; //injecting dependencies to access the methods of CalendarService without directly creating an instance in te controller -> easier to manage dependencies and test the controller
+    private readonly ISBCalendarService _calendarService;
 
-    public SBCalendarController(SBCalendarService calendarService)
+    public SBCalendarController(ISBCalendarService calendarService)
     {
         _calendarService = calendarService;
     }
@@ -18,6 +18,17 @@ public class SBCalendarController : ControllerBase
         var calendars = await _calendarService.GetAllCalendars();
         return Ok(calendars);
     }
+    [HttpGet("student/{studentId}")]
+    public async Task<ActionResult<SBCalendar>> GetCalendarByStudentId(int studentId)
+    {
+        var calendar = await _calendarService.getCalendarIdByStudentId(studentId);
+        if (calendar == null)
+        {
+            return NotFound();
+        }
+        return Ok(calendar);
+    }
+
 
     [HttpGet("{id}")]
     public async Task<ActionResult<SBCalendar>> GetCalendar(int id)
@@ -31,34 +42,34 @@ public class SBCalendarController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<SBCalendar>> CreateCalendar(SBCalendar calendar)
+    public async Task<ActionResult<SBCalendar>> CreateCalendar(Student student)
     {
-        var newCalendar = await _calendarService.CreateCalendar(calendar);
-        return CreatedAtAction(nameof(GetCalendar), new { id = newCalendar.id }, newCalendar);
+        var newCalendar = await _calendarService.CreateCalendar(student);
+        return CreatedAtAction(nameof(GetCalendar), new { id = newCalendar.Id }, newCalendar);
     }
 
-    [HttpPost("{calendarId}/event")]
-    public async Task<ActionResult<SBCalendar>> AddEvent(int calendarId, SBEvent @event) // need the @ to distinguish it from the event keyword
-    {
-        var calendar = await _calendarService.AddEventToCalendar(calendarId, @event);
-        if (calendar == null)
+    /*     [HttpPost("{calendarId}/event")]
+        public async Task<ActionResult<SBCalendar>> AddEvent(int calendarId, SBEvent @event) // need the @ to distinguish it from the event keyword
         {
-            return NotFound();
+            var calendar = await _calendarService.AddEventToCalendar(calendarId, @event);
+            if (calendar == null)
+            {
+                return NotFound();
+            }
+            return Ok(calendar);
         }
-        return Ok(calendar);
-    }
+     */
 
-
-    [HttpDelete("{calendarId}/events/{eventId}")]
-    public async Task<IActionResult> DeleteEvent(int calendarId, int eventId)
-    {
-        var updatedCalendar = await _calendarService.DeleteEventFromCalendar(calendarId, eventId);
-        if (updatedCalendar == null)
+    /*     [HttpDelete("{calendarId}/events/{eventId}")]
+        public async Task<IActionResult> DeleteEvent(int calendarId, int eventId)
         {
-            return NotFound();
-        }
-        return NoContent();
-    }
+            var updatedCalendar = await _calendarService.DeleteEventFromCalendar(calendarId, eventId);
+            if (updatedCalendar == null)
+            {
+                return NotFound();
+            }
+            return NoContent();
+        } */
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteCalendar(int id)
@@ -71,10 +82,10 @@ public class SBCalendarController : ControllerBase
         return NoContent();
     }
 
-    [HttpGet("{id}/events")]
-    public async Task<ActionResult<IEnumerable<SBEvent>>> GetEventsByCalendarId(int id)
-    {
-        var events = await _calendarService.GetEventsByCalendarId(id);
-        return Ok(events);
-    }
+    /*     [HttpGet("{id}/events")]
+        public async Task<ActionResult<IEnumerable<SBEvent>>> GetEventsByCalendarId(int id)
+        {
+            var events = await _calendarService.GetEventsByCalendarId(id);
+            return Ok(events);
+        } */
 }

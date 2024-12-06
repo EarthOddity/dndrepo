@@ -1,8 +1,11 @@
 
+using System.ComponentModel.DataAnnotations;
+
 public class Student : User {
     public bool isTutor { get; set; }
     public string language { get; set; }
     public Bachelor? bachelor { get; set; }
+    public int? bachelorId { get; set; }
     public SBCalendar? calendar { get; set; }
 
     public List<SavedMaterial> savedMaterials { get; set; } = [];
@@ -19,6 +22,7 @@ public class Student : User {
         this.isTutor = isTutor;
         this.language = language;
         this.bachelor = bachelor;
+
     }
 
     public Student() : base()

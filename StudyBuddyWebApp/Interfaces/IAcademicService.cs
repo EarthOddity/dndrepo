@@ -18,7 +18,7 @@ public interface IAcademicService
     Task<Bachelor> CreateBachelor(Bachelor bachelor);
     Task UpdateBachelor(int id, Bachelor bachelor);
     Task DeleteBachelor(int id);
-    Task AddSubjectToBachelor(int bachelorId, Subject subject);
+    Task AddSubjectToBachelor(int bachelorId, int subjectId);
     Task<List<Subject>> GetSubjectsByBachelorId(int bachelorId);
     Task<Bachelor> GetBachelorByStudentId(int studentId);
     Task<IEnumerable<Bachelor>> SearchBachelors(string searchTerm);

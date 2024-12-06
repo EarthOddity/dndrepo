@@ -17,7 +17,9 @@ builder.Services.AddScoped<ISBEventService, SBEventService>();
 builder.Services.AddScoped<ISubjectService, SubjectService>();
 builder.Services.AddScoped<IReviewService, ReviewService>();
 builder.Services.AddScoped<IProfileService, ProfileService>();
+builder.Services.AddScoped<ICalendarService, CalendarService>();
 builder.Services.AddScoped<IAuthService, JwtAuthService>();
+builder.Services.AddScoped<ICalendarService, CalendarService>();
 builder.Services.AddScoped<FileContext>();
 
 builder.Services.AddDbContext<DatabaseContext>(options =>

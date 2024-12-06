@@ -4,9 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 
 public class BachelorController : ControllerBase
 {
-    private BachelorService _bachelorService;
+    private IBachelorService _bachelorService;
 
-    public BachelorController(BachelorService bachelorService)
+    public BachelorController(IBachelorService bachelorService)
     {
         _bachelorService = bachelorService;
     }
@@ -33,7 +33,7 @@ public class BachelorController : ControllerBase
     public async Task<ActionResult<Bachelor>> CreateBachelor(Bachelor bachelor)
     {
         var newBachelor = await _bachelorService.CreateBachelor(bachelor);
-        return CreatedAtAction(nameof(GetBachelor), new { id = newBachelor.id }, newBachelor);
+        return CreatedAtAction(nameof(GetBachelor), new { id = newBachelor.Id }, newBachelor);
     }
 
     [HttpPut("{id}")]
@@ -54,10 +54,10 @@ public class BachelorController : ControllerBase
         return NoContent();
     }
 
-    [HttpPost("{bachelorId}/subjects")]
-    public async Task<IActionResult> AddSubject(int bachelorId, Subject @subject)
+    [HttpPost("{bachelorId}/add-subject/{subjectId}")]
+    public async Task<IActionResult> AddSubject(int bachelorId, int subjectId)
     {
-        var added = await _bachelorService.AddSubjectToBachelor(bachelorId, @subject);
+        var added = await _bachelorService.AddSubjectToBachelor(bachelorId, subjectId);
         if (!added)
         {
             return NotFound();

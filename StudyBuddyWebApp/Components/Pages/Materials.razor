@@ -18,8 +18,8 @@
         {
             @foreach (var bachelor in bachelors)
             {
-                <div class="bachelor-item" @onclick="() => LoadSubjects(bachelor.id)">
-                    <h4>@bachelor.programName</h4>
+                <div class="bachelor-item" @onclick="() => LoadSubjects(bachelor.Id)">
+                    <h4>@bachelor.ProgramName</h4>
                 </div>
             }
         }
