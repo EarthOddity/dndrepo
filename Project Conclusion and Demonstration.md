@@ -65,4 +65,10 @@ Throughout development, we ran general tests on each part of the system to catch
 
 These final touches—both in design and testing—ensure StudyBuddy is not only functional but also enjoyable to use. We want students to feel supported and confident navigating the platform, whether they’re searching for a tutor or sharing notes.
 
+### **Summary of our project outcome **
+
+### **Updated Requirements **
+
+
+
 
