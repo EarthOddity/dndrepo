@@ -1,0 +1,64 @@
+.event-item {
+    position: absolute;
+    width: calc(100% - 10px);
+    left: 5px;
+    margin-top: 2px;
+    padding: 5px;
+    border-radius: 4px;
+    color: white;
+    font-size: 0.8em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease;
+}
+
+.event-item:hover {
+    transform: scale(1.02);
+    z-index: 10;
+}
+
+.event-title {
+    font-weight: 600;
+    margin-bottom: 2px;
+}
+
+.event-time {
+    font-size: 0.7em;
+    opacity: 0.9;
+}
+
+/* Scrollbar Styling */
+.week-grid::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+.week-grid::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.week-grid::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 5px;
+}
+
+.week-grid::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .week-calendar {
+        font-size: 14px;
+    }
+
+    .time-labels {
+        width: 50px;
+    }
+
+    .hour-label {
+        padding-right: 10px;
+    }
+}

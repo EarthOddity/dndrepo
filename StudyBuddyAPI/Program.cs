@@ -1,22 +1,26 @@
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllers();
 builder.Services.AddScoped<IStudentService, StudentService>();
-builder.Services.AddSingleton<IModeratorService, ModeratorService>();
-builder.Services.AddSingleton<ISubjectService, SubjectService>();
-builder.Services.AddSingleton<BachelorService>();
-builder.Services.AddSingleton<CalendarService>();
-builder.Services.AddSingleton<EventService>();
-builder.Services.AddSingleton<FileContext>();
+builder.Services.AddScoped<IModeratorService, ModeratorService>();
+builder.Services.AddScoped<ISubjectService, SubjectService>();
+builder.Services.AddScoped<ITeachingMaterialService, TeachingMaterialService>();
+builder.Services.AddScoped<IBachelorService, BachelorService>();
+builder.Services.AddScoped<ISBCalendarService, SBCalendarService>();
+builder.Services.AddScoped<ISBEventService, SBEventService>();
+builder.Services.AddScoped<FileContext>();
+builder.Services.AddDbContext<DatabaseContext>(options =>
+    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddScoped<IAuthServiceAPI, AuthService>();
+builder.Services.AddScoped<IReviewService, ReviewService>();
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -35,6 +39,7 @@ builder.Services.AddAuthentication().AddJwtBearer(JwtBearerDefaults.Authenticati
         ClockSkew = TimeSpan.Zero,
     };
 });
+
 
 AuthorizationPolicies.AddPolicies(builder.Services);
 

@@ -1,21 +1,15 @@
 @page "/material/{id:int}"
-@inject ITeachingMaterialService TeachingMaterialService
-@inject ISubjectService SubjectService
-@inject IReviewService ReviewService
+@inject IAcademicService AcademicService
 
 <h3>Teaching Material Details</h3>
 
-@if (teachingMaterial == null)
-{
-    <p>Loading...</p>
-}
-else
+@if (teachingMaterial != null)
 {
     <div class="material-header">
         <div class="material-info">
             <h4>@teachingMaterial.title</h4>
             <p>@teachingMaterial.description</p>
-            <p><strong>Author:</strong> @teachingMaterial.author.name</p>
+            <p><strong>Author:</strong> @teachingMaterial.author?.name</p>
             <p><strong>Approved:</strong> @(teachingMaterial.isApproved ? "Yes" : "No")</p>
         </div>
         <button class="heart-button @(isSaved ? "saved" : "")" @onclick="ToggleSave">
@@ -38,7 +32,7 @@ else
             @foreach (var review in reviews)
             {
                 <div>
-                    <p><strong>@review.author.name:</strong> @review.reviewText</p>
+                    <p><strong>@review.author?.name:</strong> @review.reviewText</p>
                     <p><strong>Approved:</strong> @(review.isApproved ? "Yes" : "No")</p>
                 </div>
             }
@@ -49,13 +43,18 @@ else
         <p>No reviews available.</p>
     }
 }
+else
+{
+    <p>Loading...</p>
+
+}
 
 @code {
     [Parameter]
     public int id { get; set; }
 
-    private TeachingMaterial teachingMaterial;
-    private Subject subject;
+    private TeachingMaterial teachingMaterial { get; set; }
+    private Subject subject { get; set; }
     private IEnumerable<global::Review> reviews;
     private readonly int currentUserId = 1; // For future: Get actual user ID
     private bool isSaved;
@@ -63,23 +62,34 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        teachingMaterial = await TeachingMaterialService.GetMaterialById(id);
-        if (teachingMaterial != null)
+        try
         {
-            subject = await SubjectService.GetSubjectById(teachingMaterial.id);
-            reviews = await ReviewService.GetReviewsByMaterialId(teachingMaterial.id);
-            var savedMaterials = await TeachingMaterialService.GetSavedMaterialsByUserId(currentUserId);
-            isSaved = savedMaterials.Any(m => m.id == id);
+            teachingMaterial = await AcademicService.GetMaterialById(id);
+            if (teachingMaterial != null)
+            {
+                subject = await AcademicService.GetSubjectById(teachingMaterial.id);
+                reviews = await AcademicService.GetReviewsByMaterialId(teachingMaterial.id);
+                var savedMaterials = await AcademicService.GetSavedMaterialsByUserId(1); // Replace with actual user ID
+                isSaved = savedMaterials.Any(m => m.id == id);
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error loading material: {ex.Message}");
         }
 
     }
     private async Task ToggleSave()
     {
-        var success = await TeachingMaterialService.ToggleSaveMaterial(currentUserId, id);
-        if (success)
+        try
         {
+            await AcademicService.ToggleSaveMaterial(currentUserId, id);
             isSaved = !isSaved;
             StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error toggling save state: {ex.Message}");
         }
     }
 }

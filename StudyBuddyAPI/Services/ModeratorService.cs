@@ -1,9 +1,9 @@
 
-public class ModeratorService(FileContext context): IModeratorService{
+public class ModeratorService(DatabaseContext context): IModeratorService{
     //private static List<Moderator> moderatorsList = new List<Moderator>();
     private static List<Review> reviews = new List<Review>();
 
-    private readonly FileContext context = context;
+    private readonly DatabaseContext context = context;
     static ModeratorService()
     {
     }
