@@ -5,7 +5,8 @@ We’re excited to share the latest progress on **StudyBuddy**, focusing on two 
 ---
 
 ### 🔒 **Secure Access with Authentication**
-We’ve introduced an advanced **authentication system** using **JSON Web Tokens (JWT)**. This ensures that every user—whether a student, tutor, or moderator—can securely log in and access their personalized StudyBuddy experience.
+We’ve introduced an **authentication system** using **JSON Web Tokens (JWT)**. This ensures that every user—whether they are a student, tutor, or moderator—can securely log in and access their personalized StudyBuddy experience.
+Based on the role, the user then will be able to access and manage different views.
 
 **Why it matters:**  
 Students and tutors can safely create profiles, upload materials, and manage bookings, knowing their data is protected and their identities verified.
