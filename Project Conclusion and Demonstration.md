@@ -66,6 +66,7 @@ Throughout development, we ran general tests on each part of the system to catch
 These final touches—both in design and testing—ensure StudyBuddy is not only functional but also enjoyable to use. We want students to feel supported and confident navigating the platform, whether they’re searching for a tutor or sharing notes.
 
 ### **Summary of our project outcome **
+StudyBuddyAPI is a platform designed to create a student-centered community for knowledge sharing, collaboration, and support. It enables students to access teaching materials, connect with tutors, and share resources like notes and presentations, fostering an efficient and collaborative learning environment. Overall, the project turned out quite successfull, meeting most of our expectations and providing inspiring learning outcomes.
 
 ### **Update on Requirements **
 Considering the workload of this semester, the following requirements have not been met. We started with an overly ambitious approach and some tasks turned out to be irrelevant or out of reach along the way considering the scale of the project. Nevertheless, most of the general functionality has been implemented, and the app works as intended.
