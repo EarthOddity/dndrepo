@@ -25,7 +25,7 @@ Snippet from Event.razor:
 
 @code {
     [Parameter] public int calendarId { get; set; }
-    [Parameter] public int? eventId { get; set; } // optional eventId for editing
+    [Parameter] public int? eventId { get; set; }
     private SBEvent newEvent = new SBEvent();
     private string errorMessage = "";
     private string successMessage = string.Empty;
