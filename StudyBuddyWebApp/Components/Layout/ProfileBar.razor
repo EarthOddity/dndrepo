@@ -25,7 +25,6 @@
             </NotAuthorized>
             <Authorized>
                 <a class="dropdown-item" @onclick="GoToProfile">Profile</a>
-                <a class="dropdown-item" @onclick="GoToSettings">Settings</a>
                 <a class="dropdown-item" @onclick="Logout">Log Out</a>
             </Authorized>
         </AuthorizeView>
@@ -79,7 +78,7 @@
             Console.WriteLine("User is authenticated with role: " + role);
         }
         Console.WriteLine("User is authenticated with role: " + role);
-        StateHasChanged(); // Trigger UI update
+        StateHasChanged();
 
     }
 
@@ -97,12 +96,6 @@
             NavigationManager.NavigateTo("/moderator-profile");
     }
 
-    private void GoToSettings()
-    {
-        isDropdownOpen = false;
-        NavigationManager.NavigateTo("/settings"); // Example settings page
-    }
-
     private async Task Logout()
     {
         isDropdownOpen = false;
@@ -110,7 +103,7 @@
         isLoggedIn = false;
         role = null;
         await authService.LogoutAsync();
-        StateHasChanged(); // Trigger UI update
+        StateHasChanged();
 
         NavigationManager.NavigateTo("/login");
     }
@@ -127,7 +120,7 @@
     private async void OnAuthenticationStateChanged(Task<AuthenticationState> authStateTask)
     {
         await LoadUserInfo();
-        StateHasChanged(); // Notify Blazor to re-render the component
+        StateHasChanged();
     }
 
 }
