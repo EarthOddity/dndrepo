@@ -1,3 +1,5 @@
+using System.Text.Json;
+
 public class AcademicService : IAcademicService
 {
     private readonly HttpClient _httpClient;
@@ -25,6 +27,8 @@ public class AcademicService : IAcademicService
     public async Task<TeachingMaterial> CreateMaterial(TeachingMaterial material)
     {
         var response = await _httpClient.PostAsJsonAsync("api/TeachingMaterial", material);
+        var content = await response.Content.ReadAsStringAsync();
+        Console.WriteLine($"Response content: {content}");
         response.EnsureSuccessStatusCode();
         return await response.Content.ReadFromJsonAsync<TeachingMaterial>();
     }
@@ -46,7 +50,7 @@ public class AcademicService : IAcademicService
 
     public async Task<IEnumerable<TeachingMaterial>> GetMaterialByAuthor(Student author)
     {
-        var response = await _httpClient.GetAsync($"api/TeachingMaterial/author/{author.id}");
+        var response = await _httpClient.GetAsync($"api/TeachingMaterial/author/{author.Id}");
         response.EnsureSuccessStatusCode();
         return await response.Content.ReadFromJsonAsync<IEnumerable<TeachingMaterial>>();
     }
@@ -58,6 +62,12 @@ public class AcademicService : IAcademicService
         return await response.Content.ReadFromJsonAsync<IEnumerable<TeachingMaterial>>();
     }
 
+    public async Task<IEnumerable<TeachingMaterial>> GetMaterialsBySubjectId(int subjectId)
+    {
+        var response = await _httpClient.GetAsync($"api/TeachingMaterial/subject/{subjectId}");
+        response.EnsureSuccessStatusCode();
+        return await response.Content.ReadFromJsonAsync<IEnumerable<TeachingMaterial>>();
+    }
     public async Task<IEnumerable<TeachingMaterial>> SearchMaterials(string searchTerm)
     {
         var response = await _httpClient.GetAsync($"api/TeachingMaterial/search/{searchTerm}");
@@ -72,10 +82,14 @@ public class AcademicService : IAcademicService
         return await response.Content.ReadFromJsonAsync<IEnumerable<TeachingMaterial>>();
     }
 
-    public async Task ToggleSaveMaterial(int userId, int materialId)
+    public async Task<bool> ToggleSaveMaterial(int userId, int materialId)
     {
         var response = await _httpClient.PostAsync($"api/TeachingMaterial/toggle-save?userId={userId}&materialId={materialId}", null);
-        response.EnsureSuccessStatusCode();
+        if (response.IsSuccessStatusCode)
+        {
+            return true;
+        }
+        return false;
     }
 
     // Bachelor Methods
@@ -126,9 +140,30 @@ public class AcademicService : IAcademicService
 
     public async Task<List<Subject>> GetSubjectsByBachelorId(int bachelorId)
     {
-        var response = await _httpClient.GetAsync($"api/Bachelor/{bachelorId}/subjects");
-        response.EnsureSuccessStatusCode();
-        return await response.Content.ReadFromJsonAsync<List<Subject>>();
+        try
+        {
+            var response = await _httpClient.GetAsync($"api/Bachelor/{bachelorId}/subjects");
+            response.EnsureSuccessStatusCode();
+
+            var content = await response.Content.ReadAsStringAsync();
+            Console.WriteLine($"Raw JSON response: {content}");
+
+            // Deserialize directly to List<Subject>
+            var subjects = await response.Content.ReadFromJsonAsync<List<Subject>>();
+            return subjects ?? new List<Subject>();
+        }
+        catch (JsonException ex)
+        {
+            Console.WriteLine($"JSON Deserialization Error: {ex.Message}");
+            Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+            return new List<Subject>();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"General Error: {ex.Message}");
+            return new List<Subject>();
+        }
+
     }
 
     public async Task<Bachelor> GetBachelorByStudentId(int studentId)
@@ -176,7 +211,7 @@ public class AcademicService : IAcademicService
 
     public async Task UpdateSubject(Subject updatedSubject)
     {
-        var response = await _httpClient.PutAsJsonAsync($"api/Subject/{updatedSubject.id}", updatedSubject);
+        var response = await _httpClient.PutAsJsonAsync($"api/Subject/{updatedSubject.Id}", updatedSubject);
         if (!response.IsSuccessStatusCode)
         {
             throw new HttpRequestException($"Failed to update subject. Status code: {response.StatusCode}");

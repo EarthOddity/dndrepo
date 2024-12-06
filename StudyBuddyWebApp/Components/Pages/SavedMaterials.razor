@@ -1,62 +1,143 @@
 @page "/saved-materials"
-@inject ITeachingMaterialService TeachingMaterialService
-@inject IBachelorService BachelorService
-@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject IAcademicService AcademicService
 @inject NavigationManager NavigationManager
+@using Microsoft.AspNetCore.Components.Authorization
+@using System.Security.Claims
 
 <h3>My Saved Materials</h3>
 
-<OverviewMaterialsSaved Title="Saved Materials" Materials="@savedMaterials" SavingMethod="@ToggleSaveMaterial" />
+@if (error != null)
+{
+    <div class="alert alert-danger">@error</div>
+}
 
-<div class="subjects-list">
-    <h4>My Subjects</h4>
-    @if (userSubjects == null)
-    {
-        <p>Loading subjects...</p>
-    }
-    else if (!userSubjects.Any())
-    {
-        <p>No subjects found for your bachelor program.</p>
-    }
-    else
-    {
-        @foreach (var subject in userSubjects)
+@if (loading)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <OverviewMaterialsSaved Title="Saved Materials" Materials="@savedMaterials"
+        SavingMethod="EventCallback.Factory.Create<int>(this, ToggleSaveMaterial)" SavedMaterialIds="@savedMaterialIds" />
+
+    <div class="subjects-list">
+        <h4>My Subjects</h4>
+        @if (userSubjects == null)
         {
-            <div class="subject-item" @onclick="() => NavigateToSubjectMaterials(subject.id)">
-                <h4>@subject.name</h4>
-            </div>
+            <p>Loading subjects...</p>
         }
-    }
-</div>
+        else if (!userSubjects.Any())
+        {
+            <p>No subjects found for your bachelor program.</p>
+        }
+        else
+        {
+            @foreach (var subject in userSubjects)
+            {
+                <div class="subject-item" @onclick="() => NavigateToSubjectMaterials(subject.Id)">
+                    <h4>@subject.Name</h4>
+                </div>
+            }
+        }
+    </div>
+}
 
 @code {
-    private List<TeachingMaterial> savedMaterials;
-    private List<Subject> userSubjects;
-    private readonly int currentUserId = 1;
+    private List<TeachingMaterial> savedMaterials = new();
+    private List<Subject> userSubjects = new();
+    private HashSet<int> savedMaterialIds = new();
+    private int? currentUserId;
+    private bool loading = true;
+    private string error;
+
+    [CascadingParameter]
+    private Task<AuthenticationState> AuthState { get; set; } = null!;
 
     protected override async Task OnInitializedAsync()
     {
-        await LoadSavedMaterials();
-
-        var userBachelor = await BachelorService.GetBachelorByStudentId(currentUserId);
-        if (userBachelor != null)
+        try
         {
-            userSubjects = (await BachelorService.GetSubjectsByBachelorId(userBachelor.Id)).ToList();
+            loading = true;
+            var authState = await AuthState;
+            var user = authState.User;
+
+            if (!user.Identity?.IsAuthenticated ?? false)
+            {
+                NavigationManager.NavigateTo("/login");
+                return;
+            }
+
+            var idClaim = user.Claims.FirstOrDefault(c => c.Type == "id");
+            if (idClaim == null || !int.TryParse(idClaim.Value, out int userId))
+            {
+                error = "User ID not found";
+                return;
+            }
+
+            currentUserId = userId;
+            await LoadUserData();
+        }
+        catch (Exception ex)
+        {
+            error = $"Error loading saved materials: {ex.Message}";
+            Console.WriteLine($"Error: {ex.Message}");
+        }
+        finally
+        {
+            loading = false;
         }
     }
 
-    private async Task LoadSavedMaterials()
+    private async Task LoadUserData()
     {
-        savedMaterials = (await TeachingMaterialService.GetSavedMaterialsByUserId(currentUserId)).ToList();
+        if (!currentUserId.HasValue) return;
+
+        try
+        {
+            savedMaterials = (await AcademicService.GetSavedMaterialsByUserId(currentUserId.Value)).ToList();
+            savedMaterialIds = new HashSet<int>(savedMaterials.Select(m => m.Id));
+
+            var userBachelor = await AcademicService.GetBachelorByStudentId(currentUserId.Value);
+            if (userBachelor != null)
+            {
+                userSubjects = (await AcademicService.GetSubjectsByBachelorId(userBachelor.Id)).ToList();
+            }
+            else
+            {
+                Console.WriteLine("No bachelor found for user");
+                userSubjects = new List<Subject>();
+            }
+        }
+        catch (Exception ex)
+        {
+            error = $"Error loading user data: {ex.Message}";
+            Console.WriteLine($"LoadUserData error: {ex.Message}");
+            savedMaterials = new List<TeachingMaterial>();
+            userSubjects = new List<Subject>();
+        }
     }
 
     private async Task ToggleSaveMaterial(int materialId)
     {
-        var success = await TeachingMaterialService.ToggleSaveMaterial(currentUserId, materialId);
-        if (success)
+        if (!currentUserId.HasValue)
         {
-            await LoadSavedMaterials();
-            StateHasChanged();
+            NavigationManager.NavigateTo("/login");
+            return;
+        }
+
+        try
+        {
+            var success = await AcademicService.ToggleSaveMaterial(currentUserId.Value, materialId);
+            if (success)
+            {
+                await LoadUserData();
+                StateHasChanged();
+            }
+        }
+        catch (Exception ex)
+        {
+            error = $"Error toggling save state: {ex.Message}";
+            Console.WriteLine($"Error: {ex.Message}");
         }
     }
 
@@ -77,7 +158,8 @@
         flex: 1;
     }
 
-    .material-item {
+    .material-item .subject-item {
+        cursor: pointer;
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -107,14 +189,6 @@
 
     .heart-button:hover {
         transform: scale(1.1);
-    }
-
-    .subject-item {
-        cursor: pointer;
-        padding: 1rem;
-        margin-bottom: 1rem;
-        border: 1px solid #ddd;
-        border-radius: 4px;
     }
 
     .subject-item:hover {

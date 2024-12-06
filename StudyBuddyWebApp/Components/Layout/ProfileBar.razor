@@ -8,9 +8,13 @@
 
 
 <div class="user-icon-dropdown">
-    @if (user1 != null && !string.IsNullOrEmpty(user1.name))
+    <button class="user-icon" @onclick="ToggleDropdown">
+        <img src="images/profilepic.jpg" alt="" class="user-avatar" width="10px" height="10px">
+    </button>
+
+    @if (user1 != null && !string.IsNullOrEmpty(user1.Name))
     {
-        <span>Hello, @user1.name</span>
+        <span>Hello, @user1.Name</span>
     }
     else
     {
@@ -25,14 +29,11 @@
             </NotAuthorized>
             <Authorized>
                 <a class="dropdown-item" @onclick="GoToProfile">Profile</a>
+                <a class="dropdown-item" @onclick="GoToSaveMaterials">My Materials</a>
                 <a class="dropdown-item" @onclick="Logout">Log Out</a>
             </Authorized>
         </AuthorizeView>
     </div>
-    <button class="user-icon" @onclick="ToggleDropdown">
-        <img src="images/profilepic.jpg" alt="" class="user-avatar" width="10px" height="10px">
-    </button>
-
 
 </div>
 
@@ -78,7 +79,7 @@
             Console.WriteLine("User is authenticated with role: " + role);
         }
         Console.WriteLine("User is authenticated with role: " + role);
-        StateHasChanged();
+        StateHasChanged(); // Trigger UI update
 
     }
 
@@ -96,6 +97,18 @@
             NavigationManager.NavigateTo("/moderator-profile");
     }
 
+    private void GoToSaveMaterials()
+    {
+        isDropdownOpen = false;
+        NavigationManager.NavigateTo("/saved-materials");
+    }
+
+    private void GoToSettings()
+    {
+        isDropdownOpen = false;
+        NavigationManager.NavigateTo("/settings"); // Example settings page
+    }
+
     private async Task Logout()
     {
         isDropdownOpen = false;
@@ -103,7 +116,7 @@
         isLoggedIn = false;
         role = null;
         await authService.LogoutAsync();
-        StateHasChanged();
+        StateHasChanged(); // Trigger UI update
 
         NavigationManager.NavigateTo("/login");
     }
@@ -120,13 +133,64 @@
     private async void OnAuthenticationStateChanged(Task<AuthenticationState> authStateTask)
     {
         await LoadUserInfo();
-        StateHasChanged();
+        StateHasChanged(); // Notify Blazor to re-render the component
     }
 
 }
 
 <style>
+    .user-icon-dropdown {
+        position: relative;
+        display: inline-block;
+    }
+
     .user-icon {
-        margin-left: 10px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        transition: transform 0.3s ease;
+    }
+
+    .user-icon:hover {
+        transform: scale(1.1);
+    }
+
+
+    .dropdown-menu {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        background-color: rgb(86, 78, 78);
+        box-shadow: 0 8px 16px rgba(51, 49, 49, 0.2);
+        z-index: 1;
+        min-width: 160px;
+    }
+
+    .dropdown-menu.show {
+        display: block;
+        /* Show when the dropdown is open */
+    }
+
+    .dropdown-item {
+        padding: 12px 16px;
+        text-decoration: none;
+        display: block;
+        color: black;
+    }
+
+    .dropdown-item:hover {
+        background-color: #f0f0f0;
+    }
+
+    .user-avatar {
+        width: 40px;
+        /* Adjust size as needed */
+        height: 40px;
+        border-radius: 50%;
+        /* Makes the image circular */
+        object-fit: cover;
+        /* Ensures the image scales nicely */
+        margin-right: 0.5rem;
     }
 </style>

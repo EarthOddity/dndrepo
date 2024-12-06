@@ -1,34 +1,35 @@
 
 using System.ComponentModel.DataAnnotations;
 
-public class Student : User {
-    public bool isTutor { get; set; }
-    public string language { get; set; }
-    public Bachelor? bachelor { get; set; }
-    public int? bachelorId { get; set; }
-    public SBCalendar? calendar { get; set; }
+public class Student : User
+{
+    public bool IsTutor { get; set; }
+    public string Language { get; set; }
+    public Bachelor? Bachelor { get; set; }
+    public int? BachelorId { get; set; }
+    public SBCalendar? Calendar { get; set; }
 
-    public List<SavedMaterial> savedMaterials { get; set; } = [];
-    public List<Review> reviews { get; set; } = [];
+    public List<SavedMaterial> SavedMaterials { get; set; } = [];
+    public List<Review> Reviews { get; set; } = [];
 
-    public Student(int id, string name, string surname, string email, int phoneNumber, bool isTutor, string language, string password) : base(id, name, surname, email, phoneNumber, password)
+    public Student(int Id, string Name, string Surname, string Email, int PhoneNumber, bool IsTutor, string Language, string Password) : base(Id, Name, Surname, Email, PhoneNumber, Password)
     {
-        this.isTutor = isTutor;
-        this.language = language;
+        this.IsTutor = IsTutor;
+        this.Language = Language;
 
     }
-    public Student(int id, string name, string surname, string email, int phoneNumber, bool isTutor, string language, Bachelor bachelor, string password) : base(id, name, surname, email, phoneNumber, password)
+    public Student(int Id, string Name, string Surname, string Email, int PhoneNumber, bool IsTutor, string Language, Bachelor Bachelor, string Password) : base(Id, Name, Surname, Email, PhoneNumber, Password)
     {
-        this.isTutor = isTutor;
-        this.language = language;
-        this.bachelor = bachelor;
+        this.IsTutor = IsTutor;
+        this.Language = Language;
+        this.Bachelor = Bachelor;
 
     }
 
     public Student() : base()
     {
-        this.isTutor = false;
-        this.language = string.Empty;
+        this.IsTutor = false;
+        this.Language = string.Empty;
     }
 
-    }
+}

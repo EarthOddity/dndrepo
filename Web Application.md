@@ -32,4 +32,3 @@ We're thrilled to share our progress on the web application that will bring the 
 ## Next Steps 🛠️
 - Integrate the web application with the back-end services.  
 - Perform end-to-end testing to ensure smooth functionality across all modules. 
-

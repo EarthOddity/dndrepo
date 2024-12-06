@@ -36,11 +36,11 @@
                 <div class="col-sm-6 col-md-4 col-lg-3">
                     <div class="card shadow-lg h-100">
                         <div class="card-body d-flex flex-column">
-                            <h5 class="card-title">@student.name @student.surname</h5>
+                            <h5 class="card-title">@student.Name @student.Surname</h5>
                             <p class="card-text">
-                                <strong>Email:</strong> @student.email <br />
-                                <strong>Phone:</strong> @student.phoneNumber <br />
-                                <strong>Language:</strong> @student.language
+                                <strong>Email:</strong> @student.Email <br />
+                                <strong>Phone:</strong> @student.PhoneNumber <br />
+                                <strong>Language:</strong> @student.Language
                             </p>
                         </div>
                     </div>
@@ -58,7 +58,7 @@
         try
         {
             var students = await ProfileService.GetAllStudents();
-            tutors = students.Where(s => s.isTutor).ToList();
+            tutors = students.Where(s => s.IsTutor).ToList();
         }
         catch (Exception ex)
         {

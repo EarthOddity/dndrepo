@@ -10,10 +10,10 @@ public class Bachelor
 
     }
 
-    public Bachelor(int id, string programName)
+    public Bachelor(int Id, string ProgramName)
     {
-        this.Id = id;
-        this.ProgramName = programName ?? throw new ArgumentNullException(nameof(programName));
-        AssociatedSubjects = new List<Subject>();
+        this.Id = Id;
+        this.ProgramName = ProgramName ?? throw new ArgumentNullException(nameof(ProgramName));
+        //associatedSubjects = new List<Subject>();
     }
 }

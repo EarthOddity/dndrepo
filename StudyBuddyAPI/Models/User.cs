@@ -1,24 +1,24 @@
 public abstract class User
 {
-    public int id { get; set; }
-    public string name { get; set; }
-    public string surname { get; set; }
-    public string email { get; set; }
-    public int phoneNumber { get; set; }
-    public string password { get; set; }
+    public int Id { get; set; }
+    public string Name { get; set; }
+    public string Surname { get; set; }
+    public string Email { get; set; }
+    public int PhoneNumber { get; set; }
+    public string Password { get; set; }
     public User() { }
-    public User(int id, string password)
+    public User(int Id, string Password)
     {
-        this.id = id;
-        this.password = password;
+        this.Id = Id;
+        this.Password = Password;
     }
-    public User(int id, string name, string surname, string email, int phoneNumber, string password)
+    public User(int Id, string Name, string Surname, string Email, int PhoneNumber, string Password)
     {
-        this.id = id;
-        this.name = name;
-        this.surname = surname;
-        this.email = email;
-        this.phoneNumber = phoneNumber;
-        this.password = password;
+        this.Id = Id;
+        this.Name = Name;
+        this.Surname = Surname;
+        this.Email = Email;
+        this.PhoneNumber = PhoneNumber;
+        this.Password = Password;
     }
 }

@@ -1,16 +1,16 @@
 public class Subject
 {
-    public int id { get; set; }
-    public string name { get; set; }
-    public string description { get; set; }
-    public List<Bachelor> bachelors { get; set; } =[];
+    public int Id { get; set; }
+    public string Name { get; set; }
+    public string Description { get; set; }
+    public List<Bachelor> Bachelors { get; set; } =[];
 
 
-    public Subject(int id, string name, string description)
+    public Subject(int Id, string Name, string Description)
     {
-        this.id = id;
-        this.name = name;
-        this.description = description;
+        this.Id = Id;
+        this.Name = Name;
+        this.Description = Description;
     }
     public Subject()
     {

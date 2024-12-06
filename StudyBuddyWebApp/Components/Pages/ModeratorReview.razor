@@ -1,0 +1,205 @@
+@page "/moderator-reviews"
+@inject IAcademicService AcademicService
+@attribute [Authorize("MustBeModerator")]
+
+<div class="study-buddy-container">
+    <h3>Review Management</h3>
+
+    @if (loading)
+    {
+                <p>Loading reviews...</p>
+    }
+    else if (error != null)
+    {
+                <div class="alert alert-danger">@error</div>
+    }
+    else
+    {
+                <div class="reviews-section">
+            @if (selectedReview != null && isEditing)
+            {
+                                <div class="edit-panel">
+                                    <h4>Edit Review</h4>
+                                    <form @onsubmit="HandleUpdate">
+                                        <textarea @bind="editText" rows="4" cols="50" class="form-control"></textarea>
+                                        <div class="button-group">
+                                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                                            <button type="button" class="btn btn-secondary" @onclick="CancelEdit">Cancel</button>
+                                        </div>
+                                    </form>
+                                </div>
+            }
+
+                    <div class="reviews-grid">
+                @foreach (var review in allReviews)
+                {
+                                    <div class="review-card @(selectedReview?.Id == review.Id ? "selected" : "")" 
+                                         @onclick="() => SelectReview(review)">
+                                        <div class="review-content">
+                                            <p><strong>@review.Author?.Name:</strong></p>
+                                            <p>@review.ReviewText</p>
+                                            <p><small>Approved: @(review.IsApproved ? "Yes" : "No")</small></p>
+                                        </div>
+                                        <div class="button-group">
+                                            <button class="btn btn-warning" @onclick="() => EnableEdit(review)">Edit</button>
+                                            <button class="btn btn-danger" @onclick="() => HandleDelete(review.Id)">Delete</button>
+                                        </div>
+                                    </div>
+                }
+                    </div>
+                </div>
+    }
+</div>
+
+@code {
+    private List<Review> allReviews = new();
+    private Review selectedReview;
+    private string editText;
+    private bool isEditing;
+    private bool loading = true;
+    private string error;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            loading = true;
+            allReviews = (await AcademicService.GetAllReviews()).ToList();
+        }
+        catch (Exception ex)
+        {
+            error = "Error loading reviews";
+            Console.WriteLine($"Error: {ex.Message}");
+        }
+        finally
+        {
+            loading = false;
+        }
+    }
+
+    private void SelectReview(Review review)
+    {
+        selectedReview = review;
+        editText = review.ReviewText;
+    }
+
+    private void EnableEdit(Review review)
+    {
+        selectedReview = review;
+        editText = review.ReviewText;
+        isEditing = true;
+    }
+
+    private void CancelEdit()
+    {
+        isEditing = false;
+        selectedReview = null;
+        editText = string.Empty;
+    }
+
+    private async Task HandleUpdate()
+    {
+        try
+        {
+            if (selectedReview != null)
+            {
+                var success = await AcademicService.UpdateReview(selectedReview.Id, editText, selectedReview.IsApproved);
+                if (success)
+                {
+                    allReviews = (await AcademicService.GetAllReviews()).ToList();
+                    CancelEdit();
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            error = "Error updating review";
+            Console.WriteLine($"Error: {ex.Message}");
+        }
+    }
+
+    private async Task HandleDelete(int reviewId)
+    {
+        try
+        {
+            var success = await AcademicService.DeleteReview(reviewId);
+            if (success)
+            {
+                allReviews = (await AcademicService.GetAllReviews()).ToList();
+                if (selectedReview?.Id == reviewId)
+                {
+                    CancelEdit();
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            error = "Error deleting review";
+            Console.WriteLine($"Error: {ex.Message}");
+        }
+    }
+}
+
+<style>
+    .study-buddy-container {
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #0f172a;
+        color: #e2e8f0;
+    }
+
+    .reviews-section {
+        background-color: #1e293b;
+        padding: 20px;
+        border-radius: 8px;
+    }
+
+    .edit-panel {
+        background-color: #0f172a;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+    }
+
+    .reviews-grid {
+        display: grid;
+        gap: 15px;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    }
+
+    .review-card {
+        background-color: #0f172a;
+        padding: 15px;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .review-card:hover {
+        transform: scale(1.02);
+    }
+
+    .review-card.selected {
+        border: 2px solid #3182ce;
+    }
+
+    .button-group {
+        display: flex;
+        gap: 10px;
+        margin-top: 10px;
+    }
+
+    .form-control {
+        background-color: #1e293b;
+        border: 1px solid #2d3748;
+        color: #e2e8f0;
+        border-radius: 4px;
+        padding: 8px;
+        width: 100%;
+    }
+
+    .form-control:focus {
+        border-color: #3182ce;
+        outline: none;
+    }
+</style>

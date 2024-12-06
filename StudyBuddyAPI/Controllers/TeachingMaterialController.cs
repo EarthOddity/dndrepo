@@ -15,7 +15,6 @@ public class TeachingMaterialController(ITeachingMaterialService _teachingMateri
     public async Task<ActionResult<List<TeachingMaterial>>> GetAllMaterials()
     {
         return Ok(await _teachingMaterialService.GetAllMaterials());
-        return Ok(await _teachingMaterialService.GetAllMaterials());
     }
     [HttpGet("title/{title}")]
     public async Task<ActionResult<List<TeachingMaterial>>> GetMaterialByTitle(string title)
@@ -43,13 +42,13 @@ public class TeachingMaterialController(ITeachingMaterialService _teachingMateri
             return BadRequest("Teaching material data is required.");
         }
         await _teachingMaterialService.CreateTeachingMaterial(material);
-        return CreatedAtAction(nameof(GetMaterialById), new { id = material.id }, material);
+        return CreatedAtAction(nameof(GetMaterialById), new { id = material.Id }, material);
     }
 
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateMaterial(int id, TeachingMaterial updatedMaterial)
     {
-        var success = await _teachingMaterialService.UpdateMaterial(id, updatedMaterial.title, updatedMaterial.description, updatedMaterial.isApproved, updatedMaterial.author);
+        var success = await _teachingMaterialService.UpdateMaterial(id, updatedMaterial.Title, updatedMaterial.Description, updatedMaterial.IsApproved, updatedMaterial.Author);
         if (!success)
             return NotFound();
 
@@ -86,6 +85,13 @@ public class TeachingMaterialController(ITeachingMaterialService _teachingMateri
             return BadRequest("Failed to toggle save state.");
         }
         return Ok();
+    }
+
+    [HttpGet("subject/{subjectId}")]
+    public async Task<ActionResult<IEnumerable<TeachingMaterial>>> GetMaterialsBySubjectId(int subjectId)
+    {
+        var materials = await _teachingMaterialService.GetMaterialsBySubjectId(subjectId);
+        return Ok(materials);
     }
 
     [HttpGet("search/{searchTerm}")]

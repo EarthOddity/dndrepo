@@ -1,9 +1,9 @@
-@inject ITeachingMaterialService TeachingMaterialService
 @inject NavigationManager NavigationManager
+
 
 <div class="materials-container">
     <div class="materials-list">
-        <h4>Title</h4>
+        <h4>@Title</h4>
         @if (Materials == null)
         {
             <p>Loading materials...</p>
@@ -17,11 +17,12 @@
             @foreach (var material in Materials)
             {
                 <div class="material-item">
-                    <div class="material-content" @onclick="() => NavigateToMaterial(material.id)">
-                        <h4>@material.title</h4>
-                        <p>@material.description</p>
+                    <div class="material-content" @onclick="() => NavigateToMaterial(material.Id)">
+                        <h4>@material.Title</h4>
+                        <p>@material.Description</p>
                     </div>
-                    <button class="heart-button saved" @onclick="() => SavingMethod.InvokeAsync(material.id)">
+                    <button class="heart-button @(SavedMaterialIds?.Contains(material.Id) == true ? "saved" : "")"
+                        @onclick="() => SavingMethod.InvokeAsync(material.Id)">
                         <i class="fas fa-heart"></i>
                     </button>
                 </div>
@@ -31,21 +32,22 @@
 </div>
 
 @code {
-
     [Parameter]
     public string Title { get; set; }
 
     [Parameter]
-    public List<TeachingMaterial> Materials { get; set; }
+    public List<TeachingMaterial>? Materials { get; set; }
 
     [Parameter]
     public EventCallback<int> SavingMethod { get; set; }
+
+    [Parameter]
+    public HashSet<int>? SavedMaterialIds { get; set; }
 
     private void NavigateToMaterial(int materialId)
     {
         NavigationManager.NavigateTo($"/material/{materialId}");
     }
-
 }
 
 <style>
@@ -79,8 +81,12 @@
         border: none;
         cursor: pointer;
         padding: 8px;
+        font-size: 1.2rem;
         color: #888;
-        transition: color 0.3s ease;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
     .heart-button.saved {

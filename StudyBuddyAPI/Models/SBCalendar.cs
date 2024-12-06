@@ -15,17 +15,15 @@ public class SBCalendar
 
     }
 
-    public SBCalendar(int id, Student owner)
+    public SBCalendar(int Id, int StudentId)
     {
-        this.Id = id;
-        this.Student = owner;
-        this.StudentId = owner.id;
-
+        this.Id = Id;
+        this.StudentId = StudentId;
+        this.Events = new List<SBEvent>(); // initialize to avoid null errors hiuhi
     }
-    public SBCalendar(Student student)
-    {
-        this.Student = student;
-        StudentId = student.id;
+    public SBCalendar(Student Student){
+        this.Student = Student;
+        StudentId = Student.Id;
     }
 
 }

@@ -25,11 +25,11 @@ else
             <label>First Name:</label>
             @if (isEditing)
             {
-                <InputText @bind-Value="moderator.name" class="form-control" />
+                <InputText @bind-Value="moderator.Name" class="form-control" />
             }
             else
             {
-                <span>@moderator.name</span>
+                <span>@moderator.Name</span>
             }
         </div>
 
@@ -37,11 +37,11 @@ else
             <label>Surname:</label>
             @if (isEditing)
             {
-                <InputText @bind-Value="moderator.surname" class="form-control" />
+                <InputText @bind-Value="moderator.Surname" class="form-control" />
             }
             else
             {
-                <span>@moderator.surname</span>
+                <span>@moderator.Surname</span>
             }
         </div>
 
@@ -49,11 +49,11 @@ else
             <label>Email:</label>
             @if (isEditing)
             {
-                <InputText @bind-Value="moderator.email" class="form-control" />
+                <InputText @bind-Value="moderator.Email" class="form-control" />
             }
             else
             {
-                <span>@moderator.email</span>
+                <span>@moderator.Email</span>
             }
         </div>
 
@@ -61,11 +61,11 @@ else
             <label>Phone Number:</label>
             @if (isEditing)
             {
-                <InputNumber @bind-Value="moderator.phoneNumber" class="form-control" />
+                <InputNumber @bind-Value="moderator.PhoneNumber" class="form-control" />
             }
             else
             {
-                <span>@moderator.phoneNumber</span>
+                <span>@moderator.PhoneNumber</span>
             }
         </div>
 

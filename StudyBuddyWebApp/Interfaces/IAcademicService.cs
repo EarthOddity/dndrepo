@@ -8,9 +8,12 @@ public interface IAcademicService
     Task DeleteMaterial(int id);
     Task<IEnumerable<TeachingMaterial>> GetMaterialByAuthor(Student author);
     Task<IEnumerable<TeachingMaterial>> GetMaterialByTitle(string title);
+
+    Task<IEnumerable<TeachingMaterial>> GetMaterialsBySubjectId(int subjectId);
+
     Task<IEnumerable<TeachingMaterial>> SearchMaterials(string searchTerm);
     Task<IEnumerable<TeachingMaterial>> GetSavedMaterialsByUserId(int userId);
-    Task ToggleSaveMaterial(int userId, int materialId);
+    Task<bool> ToggleSaveMaterial(int userId, int materialId);
 
     // Bachelor methods
     Task<IEnumerable<Bachelor>> GetAllBachelors();

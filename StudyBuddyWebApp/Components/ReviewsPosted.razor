@@ -1,0 +1,330 @@
+@inject IAcademicService AcademicService
+@implements IDisposable
+
+<ErrorBoundary>
+    <ChildContent>
+        <div class="review-section">
+            @if (loading)
+            {
+                <p>Loading...</p>
+            }
+            else if (userReview != null)
+            {
+                <div class="existing-review">
+                    @if (isEditing)
+                    {
+                        <form @onsubmit="HandleUpdate">
+                            <textarea @bind="reviewText" rows="4" cols="50" placeholder="Update your review..."></textarea>
+                            <div class="button-group">
+                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                                <button type="button" class="btn btn-secondary" @onclick="CancelEdit">Cancel</button>
+                            </div>
+                        </form>
+                    }
+                    else
+                    {
+                        <div class="review-content">
+                            <p>@userReview.ReviewText</p>
+                            <div class="button-group">
+                                <button type="button" class="btn btn-warning" @onclick="EnableEdit">Edit</button>
+                                <button type="button" class="btn btn-danger" @onclick="HandleDelete">Delete</button>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                @if (!isSubmitted)
+                {
+                    <form @onsubmit="HandleSubmit">
+                        <textarea @bind="reviewText" rows="4" cols="50" placeholder="Write your review here..."></textarea>
+                        <button type="submit" class="btn btn-primary">Submit Review</button>
+                    </form>
+                }
+                else
+                {
+                    <p class="success-message">Thank you for your review!</p>
+                }
+            }
+        </div>
+    </ChildContent>
+    <ErrorContent>
+        <p class="error">An error occurred while processing your request.</p>
+    </ErrorContent>
+</ErrorBoundary>
+
+@code {
+    [Parameter] public int MaterialId { get; set; }
+    [Parameter] public int CurrentUserId { get; set; }
+
+    private Review userReview;
+    private string reviewText = "";
+    private bool isSubmitted;
+    private bool isEditing;
+    private bool loading = true;
+    private bool isDisposed;
+    private CancellationTokenSource cts = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            await LoadUserReview();
+        }
+        catch (Exception ex) when (ex is not OperationCanceledException)
+        {
+            Console.WriteLine($"Error in initialization: {ex.Message}");
+        }
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (!isDisposed)
+        {
+            await LoadUserReview();
+        }
+    }
+
+    private async Task LoadUserReview()
+    {
+        try
+        {
+            if (!isDisposed)
+            {
+                loading = true;
+                var reviews = await AcademicService.GetReviewsByMaterialId(MaterialId);
+                userReview = reviews.FirstOrDefault(r => r.AuthorId == CurrentUserId);
+
+
+                if (userReview != null && !isDisposed)
+                {
+                    reviewText = userReview.ReviewText;
+                }
+            }
+        }
+        catch (Exception ex) when (ex is not OperationCanceledException)
+        {
+            Console.WriteLine($"Error loading review: {ex.Message}");
+        }
+        finally
+        {
+            if (!isDisposed)
+            {
+                loading = false;
+                StateHasChanged();
+            }
+        }
+    }
+
+    private async Task HandleSubmit()
+    {
+        if (isDisposed) return;
+
+        try
+        {
+            var newReview = new Review
+                {
+                    ReviewText = reviewText,
+                    AuthorId = CurrentUserId,
+                    MaterialId = MaterialId,
+                    IsApproved = false
+                };
+
+            await AcademicService.AddReview(newReview);
+            if (!isDisposed)
+            {
+                await LoadUserReview();
+                isSubmitted = true;
+            }
+        }
+        catch (Exception ex) when (ex is not OperationCanceledException)
+        {
+            Console.WriteLine($"Error submitting review: {ex.Message}");
+        }
+    }
+
+    private void EnableEdit()
+    {
+        if (!isDisposed)
+        {
+            isEditing = true;
+            reviewText = userReview.ReviewText;
+        }
+    }
+
+    private void CancelEdit()
+    {
+        if (!isDisposed)
+        {
+            isEditing = false;
+            reviewText = userReview.ReviewText;
+        }
+    }
+
+    private async Task HandleUpdate()
+    {
+        if (isDisposed) return;
+
+        try
+        {
+            bool success = await AcademicService.UpdateReview(userReview.Id, reviewText, userReview.IsApproved);
+            if (success && !isDisposed)
+            {
+                await LoadUserReview();
+                isEditing = false;
+            }
+        }
+        catch (Exception ex) when (ex is not OperationCanceledException)
+        {
+            Console.WriteLine($"Error updating review: {ex.Message}");
+        }
+    }
+
+    private async Task HandleDelete()
+    {
+        if (isDisposed) return;
+
+        try
+        {
+            bool success = await AcademicService.DeleteReview(userReview.Id);
+            if (success && !isDisposed)
+            {
+                userReview = null;
+                reviewText = "";
+                isSubmitted = false;
+            }
+        }
+        catch (Exception ex) when (ex is not OperationCanceledException)
+        {
+            Console.WriteLine($"Error deleting review: {ex.Message}");
+        }
+    }
+
+    public void Dispose()
+    {
+        isDisposed = true;
+        cts.Cancel();
+        cts.Dispose();
+    }
+}
+
+<style>
+    .review-section {
+        font-family: 'Arial', sans-serif;
+        color: #e2e8f0;
+        background-color: #1e293b;
+        margin: 30px auto;
+        max-width: 700px;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .review-section .existing-review {
+        background-color: #1e293b;
+        padding: 20px;
+        border-radius: 8px;
+    }
+
+    .review-section .review-content p {
+        font-size: 1.1em;
+        line-height: 1.5;
+        color: #e2e8f0;
+        margin-bottom: 15px;
+    }
+
+    .review-section textarea {
+        width: 100%;
+        padding: 12px;
+        margin-bottom: 20px;
+        font-size: 1em;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        resize: vertical;
+        box-sizing: border-box;
+    }
+
+    .review-section textarea:focus {
+        outline: none;
+        border-color: #007bff;
+        box-shadow: 0 0 5px rgba(0, 123, 255, 0.4);
+    }
+
+    .review-section .button-group {
+        display: flex;
+        justify-content: flex-start;
+        gap: 15px;
+    }
+
+    .review-section button {
+        padding: 10px 20px;
+        border: none;
+        font-size: 1em;
+        cursor: pointer;
+        border-radius: 6px;
+        transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .review-section button:hover {
+        opacity: 0.9;
+    }
+
+    .review-section button:focus {
+        outline: none;
+    }
+
+    .review-section button.btn-primary {
+        background: linear-gradient(135deg, #71b3e5 0%, #013faa 100%);
+        color: white;
+    }
+
+    .review-section button.btn-primary:hover {
+        background: linear-gradient(135deg, #53b5ff 0%, #002a74 100%);
+        transform: scale(1.05);
+    }
+
+    .review-section button.btn-warning {
+        background-color: #ffc107;
+        color: white;
+    }
+
+    .review-section button.btn-warning:hover {
+        background-color: #e0a800;
+    }
+
+    .review-section button.btn-danger {
+        background-color: #dc3545;
+        color: white;
+    }
+
+    .review-section button.btn-danger:hover {
+        background-color: #c82333;
+    }
+
+    .review-section .error {
+        color: #dc3545;
+        background-color: #f8d7da;
+        padding: 15px;
+        margin: 20px 0;
+        border-radius: 5px;
+        font-size: 1.1em;
+    }
+
+    .review-section .success-message {
+        color: #28a745;
+        background-color: #d4edda;
+        padding: 15px;
+        margin: 20px 0;
+        border-radius: 5px;
+        font-weight: bold;
+        font-size: 1.1em;
+    }
+
+    .review-section .loading {
+        text-align: center;
+        padding: 20px;
+        font-size: 1.2em;
+        color: #007bff;
+    }
+</style>

@@ -1,92 +1,189 @@
 @page "/materials"
 @inject IAcademicService AcademicService
 @inject NavigationManager NavigationManager
+@using System.Security.Claims
+@using Microsoft.AspNetCore.Components.Authorization
 
-<h3>Available Teaching Materials</h3>
+<div class="study-buddy-container">
+    <SearchBar />
+    <div class="content-grid">
+        <div class="materials-section">
+            <OverviewMaterialsSaved Title="Available Materials" Materials="@filteredMaterials"
+                SavingMethod="@ToggleSave" SavedMaterialIds="@savedMaterialIds" />
+        </div>
 
-<div class="materials-container">
-    <OverviewMaterialsSaved Title="Available Materials" Materials="@teachingMaterials" SavingMethod="@ToggleSave" />
-
-
-    <div class="bachelors-list">
-        <h3>Available Bachelors</h3>
-        @if (bachelors == null)
-        {
-            <p>Loading bachelors...</p>
-        }
-        else
-        {
-            @foreach (var bachelor in bachelors)
+        <div class="bachelors-section">
+            <h3>Available Bachelors</h3>
+            @if (bachelors == null)
             {
-                <div class="bachelor-item" @onclick="() => LoadSubjects(bachelor.Id)">
-                    <h4>@bachelor.ProgramName</h4>
+                <p>Loading bachelors...</p>
+            }
+            else
+            {
+                <div class="bachelors-grid">
+                    @foreach (var bachelor in bachelors)
+                    {
+                        <div class="material-card @(selectedBachelor?.Id == bachelor.Id ? "selected" : "")"
+                            @onclick="() => SelectBachelor(bachelor)">
+                            <h4>@bachelor.ProgramName</h4>
+                        </div>
+                    }
+                </div>
+
+                <div class="subjects-section">
+                    @if (selectedSubjects != null)
+                    {
+                        <h4>Subjects</h4>
+                        <div class="materials-grid">
+                            @foreach (var subject in selectedSubjects)
+                            {
+                                <div class="material-card @(selectedSubject?.Id == subject.Id ? "selected" : "")"
+                                    @onclick="() => SelectSubject(subject)">
+                                    <p>@subject.Name</p>
+                                </div>
+                            }
+                        </div>
+                    }
                 </div>
             }
-        }
-        <div class="subjects-list">
-            @if (selectedSubjects != null)
-            {
-                <h4>Subjects</h4>
-                @foreach (var subject in selectedSubjects)
-                {
-                    <p>@subject.name</p>
-                }
-            }
         </div>
+        <button class="create-button" @onclick="NavigateToCreate">
+            <i class="fas fa-plus"></i> Create Material
+        </button>
     </div>
 </div>
 
-
 @code {
-    private List<TeachingMaterial> teachingMaterials;
-    private List<Bachelor> bachelors;
-    private List<Subject> selectedSubjects;
+    private List<TeachingMaterial> teachingMaterials = new();
+    private List<TeachingMaterial> filteredMaterials = new();
+    private List<Bachelor> bachelors = new();
+    private List<Subject> selectedSubjects = new();
     private HashSet<int> savedMaterialIds = new();
+    private int? currentUserId;
+    private Bachelor? selectedBachelor;
+    private Subject? selectedSubject;
 
-    private readonly int currentUserId = 1; // For future: Get actual user ID
+    [CascadingParameter]
+    private Task<AuthenticationState> AuthState { get; set; } = null!;
+
+    private string error;
+    private bool loading = true;
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
-            teachingMaterials = (await AcademicService.GetAllMaterials()).ToList();
-            bachelors = (await AcademicService.GetAllBachelors()).ToList();
+            var authState = await AuthState;
+            var user = authState.User;
 
-            var savedMaterials = await AcademicService.GetSavedMaterialsByUserId(currentUserId);
-            savedMaterialIds = new HashSet<int>(savedMaterials.Select(m => m.id));
+            if (user.Identity?.IsAuthenticated ?? false)
+            {
+                var idClaim = user.Claims.FirstOrDefault(c => c.Type == "id");
+                if (idClaim != null && int.TryParse(idClaim.Value, out int userId))
+                {
+                    currentUserId = userId;
+                    await LoadSavedMaterials();
+                }
+            }
+
+            await LoadMaterials();
+            await LoadBachelors();
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error loading materials: {ex.Message}");
+            Console.WriteLine($"Error in initialization: {ex.Message}");
         }
+    }
+
+    private async Task LoadMaterials()
+    {
+        teachingMaterials = (await AcademicService.GetAllMaterials()).ToList();
+        FilterMaterials();
+    }
+
+    private async Task LoadSavedMaterials()
+    {
+        if (currentUserId.HasValue)
+        {
+            var savedMaterials = await AcademicService.GetSavedMaterialsByUserId(currentUserId.Value);
+            savedMaterialIds = new HashSet<int>(savedMaterials.Select(m => m.Id));
+        }
+    }
+
+    private async Task LoadBachelors()
+    {
+        bachelors = (await AcademicService.GetAllBachelors()).ToList();
     }
 
     private async Task LoadSubjects(int bachelorId)
     {
         try
         {
+            loading = true;
+            error = null;
+            selectedSubjects.Clear();
+
             var subjects = await AcademicService.GetSubjectsByBachelorId(bachelorId);
             selectedSubjects = subjects.ToList();
+
+            if (!selectedSubjects.Any())
+            {
+                error = "No subjects found for this bachelor";
+            }
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error loading subjects: {ex.Message}");
+            error = "Error loading subjects";
+            Console.WriteLine($"LoadSubjects error: {ex.Message}");
             selectedSubjects = new List<Subject>();
+        }
+        finally
+        {
+            loading = false;
+            StateHasChanged();
         }
     }
 
-    private bool IsMaterialSaved(int materialId)
+    private void SelectBachelor(Bachelor bachelor)
     {
-        return savedMaterialIds.Contains(materialId);
+        if (selectedBachelor?.Id == bachelor.Id)
+        {
+            selectedBachelor = null;
+            selectedSubjects.Clear();
+        }
+        else
+        {
+            selectedBachelor = bachelor;
+            selectedSubject = null;
+            LoadSubjects(bachelor.Id);
+        }
+        FilterMaterials();
     }
 
+    private void SelectSubject(Subject subject)
+    {
+        selectedSubject = selectedSubject?.Id == subject.Id ? null : subject;
+        FilterMaterials();
+    }
+
+    private void FilterMaterials()
+    {
+        filteredMaterials = teachingMaterials.Where(m =>
+        (selectedSubject == null || m.SubjectId == selectedSubject.Id)
+        ).ToList();
+    }
 
     private async Task ToggleSave(int materialId)
     {
+        if (!currentUserId.HasValue)
+        {
+            NavigationManager.NavigateTo("/login");
+            return;
+        }
+
         try
         {
-            await AcademicService.ToggleSaveMaterial(currentUserId, materialId);
-
+            await AcademicService.ToggleSaveMaterial(currentUserId.Value, materialId);
             if (savedMaterialIds.Contains(materialId))
             {
                 savedMaterialIds.Remove(materialId);
@@ -95,7 +192,6 @@
             {
                 savedMaterialIds.Add(materialId);
             }
-
             StateHasChanged();
         }
         catch (Exception ex)
@@ -103,22 +199,77 @@
             Console.WriteLine($"Error toggling save state: {ex.Message}");
         }
     }
+
+    private void NavigateToCreate()
+    {
+        NavigationManager.NavigateTo("/create-material");
+    }
 }
 
 <style>
-    .material-item {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 1rem;
-        margin-bottom: 1rem;
-        border: 1px solid #ddd;
-        border-radius: 4px;
+    .study-buddy-container {
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #0f172a;
+        color: #e2e8f0;
     }
 
-    .material-content {
-        flex-grow: 1;
+    .content-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+
+    .materials-section,
+    .bachelors-section {
+        background-color: #1e293b;
+        padding: 20px;
+        border-radius: 8px;
+    }
+
+    .bachelors-grid,
+    .materials-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+        margin-top: 15px;
+    }
+
+    .material-card {
+        background-color: #0f172a;
+        padding: 15px;
+        border-radius: 6px;
         cursor: pointer;
+        transition: transform 0.2s ease;
+    }
+
+    .material-card:hover {
+        transform: scale(1.02);
+    }
+
+    .create-button {
+        margin-left: auto;
+        background: linear-gradient(135deg, #71b3e5 0%, #013faa 100%);
+        color: #e2e8f0;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 8px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .create-button:hover {
+        background: linear-gradient(135deg, #53b5ff 0%, #002a74 100%);
+        transform: scale(1.05);
+    }
+
+    .subjects-section {
+        margin-top: 20px;
     }
 
     .heart-button {
@@ -126,8 +277,9 @@
         border: none;
         cursor: pointer;
         padding: 8px;
-        color: #888;
-        transition: color 0.3s ease;
+        font-size: 1.2rem;
+        color: #e2e8f0;
+        transition: all 0.3s ease;
     }
 
     .heart-button.saved {
@@ -136,5 +288,13 @@
 
     .heart-button:hover {
         transform: scale(1.1);
+    }
+
+    .material-card:hover {
+        background-color: #4a5568;
+    }
+
+    .material-card.selected {
+        background-color: #3182ce;
     }
 </style>

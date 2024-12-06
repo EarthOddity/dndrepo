@@ -37,9 +37,9 @@ public class BachelorController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateBachelor(int id, Bachelor bachelor)
+    public async Task<IActionResult> UpdateBachelor(int Id, Bachelor Bachelor)
     {
-        await _bachelorService.UpdateBachelor(id, bachelor);
+        await _bachelorService.UpdateBachelor(Id, Bachelor);
         return NoContent();
     }
 

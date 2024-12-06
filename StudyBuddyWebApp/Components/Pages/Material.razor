@@ -1,19 +1,27 @@
 @page "/material/{id:int}"
 @inject IAcademicService AcademicService
+@inject NavigationManager NavigationManager
+@using Microsoft.AspNetCore.Components.Authorization
+@using System.Security.Claims
 
 <h3>Teaching Material Details</h3>
+
+@if (error != null)
+{
+    <div class="alert alert-danger">@error</div>
+}
 
 @if (teachingMaterial != null)
 {
     <div class="material-header">
         <div class="material-info">
-            <h4>@teachingMaterial.title</h4>
-            <p>@teachingMaterial.description</p>
-            <p><strong>Author:</strong> @teachingMaterial.author?.name</p>
-            <p><strong>Approved:</strong> @(teachingMaterial.isApproved ? "Yes" : "No")</p>
+            <h4>@teachingMaterial.Title</h4>
+            <p>@teachingMaterial.Description</p>
+            <p><strong>Author:</strong> @teachingMaterial.Author?.Name</p>
+            <p><strong>Approved:</strong> @(teachingMaterial.IsApproved ? "Yes" : "No")</p>
         </div>
         <button class="heart-button @(isSaved ? "saved" : "")" @onclick="ToggleSave">
-            <i class="fas fa-heart"></i>
+            <i class="@(isSaved ? "fas" : "far") fa-heart"></i>
         </button>
     </div>
 
@@ -21,105 +29,200 @@
     {
         <div>
             <h4>Subject</h4>
-            <p>@subject.name</p>
+            <p id="subject-name">@subject.Name</p>
         </div>
     }
 
-    @if (reviews?.Any() == true)
-    {
-        <div>
-            <h4>Reviews</h4>
-            @foreach (var review in reviews)
+    <div class="reviews-section">
+        @if (currentUserId.HasValue)
+        {
+            <ReviewsPosted MaterialId="@id" CurrentUserId="@currentUserId.Value" />
+        }
+
+        <h4>All Reviews</h4>
+        @if (reviews?.Any() == true)
+        {
+            @foreach (var review in reviews.Where(r => !currentUserId.HasValue || r.AuthorId != currentUserId.Value))
             {
-                <div>
-                    <p><strong>@review.author?.name:</strong> @review.reviewText</p>
-                    <p><strong>Approved:</strong> @(review.isApproved ? "Yes" : "No")</p>
+                <div class="review-item">
+                    <p><strong>@review.Author?.Name:</strong> @review.ReviewText</p>
+                    <p><strong>Approved:</strong> @(review.IsApproved ? "Yes" : "No")</p>
                 </div>
             }
-        </div>
-    }
-    else
-    {
-        <p>No reviews available.</p>
-    }
+        }
+        else
+        {
+            <p>No other reviews available.</p>
+        }
+    </div>
+}
+else if (loading)
+{
+    <p>Loading...</p>
 }
 else
 {
-    <p>Loading...</p>
-
+    <p>Material not found</p>
 }
 
 @code {
     [Parameter]
     public int id { get; set; }
 
-    private TeachingMaterial teachingMaterial { get; set; }
-    private Subject subject { get; set; }
-    private IEnumerable<global::Review> reviews;
-    private readonly int currentUserId = 1; // For future: Get actual user ID
+    private TeachingMaterial teachingMaterial;
+    private Subject subject;
+    private IEnumerable<Review> reviews;
+    private int? currentUserId;
     private bool isSaved;
+    private bool loading = true;
+    private string error;
 
+    [CascadingParameter]
+    private Task<AuthenticationState> AuthState { get; set; } = null!;
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
+            loading = true;
+            var authState = await AuthState;
+            var user = authState.User;
+
+            if (user.Identity?.IsAuthenticated ?? false)
+            {
+                var idClaim = user.Claims.FirstOrDefault(c => c.Type == "id");
+                if (idClaim != null && int.TryParse(idClaim.Value, out int userId))
+                {
+                    currentUserId = userId;
+                }
+            }
+
             teachingMaterial = await AcademicService.GetMaterialById(id);
             if (teachingMaterial != null)
             {
-                subject = await AcademicService.GetSubjectById(teachingMaterial.id);
-                reviews = await AcademicService.GetReviewsByMaterialId(teachingMaterial.id);
-                var savedMaterials = await AcademicService.GetSavedMaterialsByUserId(1); // Replace with actual user ID
-                isSaved = savedMaterials.Any(m => m.id == id);
+                await Task.WhenAll(
+                LoadSubject(),
+                LoadReviews(),
+                LoadSavedStatus()
+                );
             }
         }
         catch (Exception ex)
         {
+            error = "Error loading material details";
             Console.WriteLine($"Error loading material: {ex.Message}");
         }
-
+        finally
+        {
+            loading = false;
+        }
     }
+
+    private async Task LoadSubject()
+    {
+        if (teachingMaterial?.SubjectId > 0)
+        {
+            subject = await AcademicService.GetSubjectById(teachingMaterial.SubjectId);
+        }
+    }
+
+    private async Task LoadReviews()
+    {
+        reviews = await AcademicService.GetReviewsByMaterialId(teachingMaterial.Id);
+    }
+
+    private async Task LoadSavedStatus()
+    {
+        if (currentUserId.HasValue)
+        {
+            var savedMaterials = await AcademicService.GetSavedMaterialsByUserId(currentUserId.Value);
+            isSaved = savedMaterials.Any(m => m.Id == id);
+        }
+    }
+
     private async Task ToggleSave()
     {
+        if (!currentUserId.HasValue)
+        {
+            NavigationManager.NavigateTo("/login");
+            return;
+        }
+
         try
         {
-            await AcademicService.ToggleSaveMaterial(currentUserId, id);
+            await AcademicService.ToggleSaveMaterial(currentUserId.Value, id);
             isSaved = !isSaved;
             StateHasChanged();
         }
         catch (Exception ex)
         {
+            error = "Error saving material";
             Console.WriteLine($"Error toggling save state: {ex.Message}");
         }
     }
 }
 
 <style>
+    .review-item {
+        margin-left: 20px;
+    }
+
+    h3 {
+        text-align: center;
+        margin: 15px;
+    }
+
+    h4 {
+        margin-left: 20px;
+    }
+
+    #subject-name {
+        margin-left: 20px;
+    }
+
     .material-header {
         display: flex;
         justify-content: space-between;
         align-items: flex-start;
-        margin-bottom: 2rem;
+        margin: 0 20px 20px 20px;
+        /* top, right, bottom, left */
+        padding: 20px;
+        background-color: #1e293b;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
 
-    .material-info {
-        flex-grow: 1;
+    .material-info h4 {
+        font-size: 1.5rem;
+        color: #e2e8f0;
+        margin-bottom: 10px;
+    }
+
+    .material-info p {
+        font-size: 1rem;
+        color: #e2e8f0;
+        margin: 5px 0;
     }
 
     .heart-button {
         background: none;
         border: none;
         cursor: pointer;
-        padding: 8px;
-        color: #888;
+        padding: 10px;
+    }
+
+    .heart-button i {
+        font-size: 1.8rem;
+        color: #ccc;
         transition: color 0.3s ease;
     }
 
-    .heart-button.saved {
+    .heart-button.saved i {
         color: #ff4444;
     }
 
-    .heart-button:hover {
+    .heart-button:hover i {
+        color: #ff6666;
         transform: scale(1.1);
     }
 </style>
